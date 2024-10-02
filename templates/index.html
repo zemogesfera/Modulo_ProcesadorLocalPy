@@ -4,22 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <title>Procesador de Archivos</title>
+    <title>Sistema de Procesamiento de Archivos</title>
 </head>
 <body>
     <div class="container">
-        <h1>Procesar Archivos</h1>
+        <h1>Sistema de Procesamiento de Archivos</h1>
         <form id="procesar-form" action="/procesar" method="POST">
-            <label for="ruta">Especificar Ruta de la Carpeta:</label>
+            <label for="ruta">Ruta de la Carpeta:</label>
             <input type="text" id="ruta" name="ruta" required>
-            <button type="submit">Procesar</button>
+            <button type="submit">Iniciar Procesamiento</button>
         </form>
+        <div id="spinner" class="spinner" style="display: none;">Procesando...</div>
         <pre id="resultado"></pre>
-
         <button id="descargar-btn" style="display: none;">Descargar JSON</button>
     </div>
-
+    <footer>
+        <p>&copy; 2024 Sistema de Procesamiento de Archivos. Esfera Consultores SAS.</p>
+    </footer>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
-
