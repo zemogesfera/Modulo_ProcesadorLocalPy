@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Procesador de Archivos</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Procesar Archivos</h1>
+        <form id="procesar-form" action="/procesar" method="POST">
+            <label for="ruta">Especificar Ruta de la Carpeta:</label>
+            <input type="text" id="ruta" name="ruta" required>
+            <button type="submit">Procesar</button>
+        </form>
+        <pre id="resultado"></pre>
+
+        <button id="descargar-btn" style="display: none;">Descargar JSON</button>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
+
