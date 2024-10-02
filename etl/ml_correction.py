@@ -7,7 +7,7 @@ nlp = spacy.load("es_core_news_md")
 
 # Lista de palabras clave que suelen tener errores, ir ampliando con el contexto de los documentos
 palabras_comunes = ["documentación", "autorización", "prescripción", "aseguradora", "paciente", 
-                    "sentencia","razones", "referencia","conductas","punibles","Republica"]
+                    "sentencia","razones", "referencia","conductas","punibles","Republica","Python"]
 
 
 def similaridad(palabra1, palabra2):

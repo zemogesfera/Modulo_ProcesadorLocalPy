@@ -11,7 +11,6 @@ def index():
 
 @app.route('/procesar', methods=['POST'])
 def procesar():
-    # Cambiar 'ruta_pdf' a 'ruta'
     ruta = request.form['ruta']
     
     if not os.path.exists(ruta):
@@ -39,3 +38,4 @@ def descargar():
 
 if __name__ == "__main__":
     app.run(debug=True)
+

@@ -8,6 +8,7 @@ import cv2
 import numpy as np
 import os
 import logging
+from docx import Document
 from .ml_correction import aplicar_correcciones
 
 # Configurar logging
@@ -28,7 +29,7 @@ def preprocess_image(image):
     img = cv2.erode(img, kernel, iterations=1)
     return Image.fromarray(img)
 
-def extract_text(pdf_file: str) -> str:
+def extract_text_from_pdf(pdf_file: str) -> str:
     """
     Extrae texto de un archivo PDF, primero intenta con texto directo luego con OCR.
     """
@@ -70,6 +71,31 @@ def extract_text(pdf_file: str) -> str:
     
     return extracted_text.strip()
 
+def extract_text_from_docx(docx_file: str) -> str:
+    """
+    Extrae texto de un archivo .docx (Word).
+    """
+    extracted_text = ""
+    logger.info(f"Iniciando extracción de texto para {docx_file}")
+
+    try:
+        doc = Document(docx_file)
+        for para in doc.paragraphs:
+            extracted_text += para.text + "\n"
+        logger.debug(f"Extraídos {len(extracted_text)} caracteres del archivo Word")
+    except Exception as e:
+        logger.error(f"Error extrayendo texto de Word: {e}", exc_info=True)
+    
+    # Normalizar y limpiar el texto
+    extracted_text = unicodedata.normalize('NFKD', extracted_text)
+    extracted_text = re.sub(r'[^\w\s.,;:!¡?¿()áéíóúÁÉÍÓÚñÑüÜ@-]', '', extracted_text)
+    extracted_text = ' '.join(extracted_text.split())
+
+    # Aplicar correcciones con el modelo de machine learning
+    extracted_text = aplicar_correcciones(extracted_text)
+    
+    return extracted_text.strip()
+
 def clasificar_documento(nombre_archivo):
     nombre = nombre_archivo.upper()
     if "T" in nombre:
@@ -81,7 +107,7 @@ def clasificar_documento(nombre_archivo):
     else:
         tipo = "Sin identificar"
     
-    providencia = nombre.replace(".PDF", "")
+    providencia = nombre.replace(".PDF", "").replace(".DOCX", "")
     
     try:
         ano = int(nombre.split("-")[-1][:2]) + 2000
@@ -90,25 +116,35 @@ def clasificar_documento(nombre_archivo):
     
     return tipo, providencia, ano
 
-def extract_data(ruta_pdf: str, cantidad: int):
+def extract_data(ruta_archivos: str, cantidad: int = None):
     resultado = []
-    pdf_files = [f for f in os.listdir(ruta_pdf) if f.lower().endswith('.pdf')][:cantidad]
+    archivos = [f for f in os.listdir(ruta_archivos) if f.lower().endswith(('.pdf', '.jpg', '.png', '.docx'))][:cantidad]
     
-    for pdf_file in pdf_files:
-        full_path = os.path.join(ruta_pdf, pdf_file)
+    for archivo in archivos:
+        full_path = os.path.join(ruta_archivos, archivo)
         logger.info(f"Procesando archivo: {full_path}")
-        texto_extraido = extract_text(full_path)
-        
-        tipo_documento, providencia, ano = clasificar_documento(pdf_file)
+
+        if archivo.lower().endswith('.pdf'):
+            texto_extraido = extract_text_from_pdf(full_path)
+        elif archivo.lower().endswith(('.jpg', '.png')):
+            image = Image.open(full_path)
+            preprocessed_image = preprocess_image(image)
+            texto_extraido = pytesseract.image_to_string(preprocessed_image, lang='spa', config='--psm 6 --oem 3')
+        elif archivo.lower().endswith('.docx'):
+            texto_extraido = extract_text_from_docx(full_path)
+        else:
+            texto_extraido = ""
+
+        tipo_documento, providencia, ano = clasificar_documento(archivo)
         
         resultado.append({
-            "nombre_archivo": pdf_file,
+            "nombre_archivo": archivo,
             "texto_extraido": texto_extraido,
             "tipo_documento": tipo_documento,
             "providencia": providencia,
             "ano": ano
         })
         
-        logger.info(f"Archivo procesado: {pdf_file}")
+        logger.info(f"Archivo procesado: {archivo}")
     
     return resultado
