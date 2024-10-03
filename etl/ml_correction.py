@@ -6,8 +6,24 @@ import re
 nlp = spacy.load("es_core_news_md")
 
 # Lista de palabras clave que suelen tener errores, ir ampliando con el contexto de los documentos
-palabras_comunes = ["documentación", "autorización", "prescripción", "aseguradora", "paciente", 
-                    "sentencia","razones", "referencia","conductas","punibles","Republica","Python"]
+palabras_comunes = ["circuito","documentacion", "aseguradora", "paciente",
+    "sentencia", "razones", "referencia", "conductas", "punibles", "republica",
+    "Python", "expediente", "medicamento", "recobro", "procedimiento",
+    "tutela", "afiliado", "informe", "clinico", "prescripcion",
+    "prestacion", "facturacion", "especialidad", "recuperacion", "hospital",
+    "institucion", "medico", "diagnóstico", "historia", "evolucion", 
+    "comite", "autorizacion", "ministerio", "salud", 
+    "servicio", "atencion", "dosis", "receta", "validacion", "proceso",
+    "glosa", "detalle", "suministro", "pacientes", "reporte", "reclamacion", 
+    "subsidio", "solicitud", "acuerdo", "declaracion", "registro", "certificado",
+    "intervencion", "terapia", "tratamiento", "diagnóstico", "especialista",
+    "urgencias", "farmacia", "medicacion", "prueba", "laboratorio",
+    "radiografía", "ultrasonido", "quimioterapia", "procedimientos", "cobertura",
+    "exclusiones", "incapacidad", "derecho", "demanda", "responsabilidad",
+    "delito", "apelacion", "legislacion", "consulta",
+    "sancion", "jurisprudencia", "constitucional", "audiencia", "acta",
+    "peritaje", "dictamen", "competencia", "testimonio",
+    "providencia", "reglamento", "orden judicial", "mandato", "juridico"]
 
 
 def similaridad(palabra1, palabra2):

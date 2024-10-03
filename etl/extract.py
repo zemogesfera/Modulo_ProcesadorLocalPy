@@ -49,6 +49,7 @@ def extract_text_from_pdf(pdf_file: str) -> str:
     if len(extracted_text.strip()) < 100:
         logger.info(f"Texto insuficiente extraído directamente. Intentando OCR.")
         try:
+            #Esta la posibilidad de pasar el dpi de 400 a 600 para mejorar la presicion del ocr
             images = convert_from_path(pdf_file, dpi=400)
             logger.info(f"Convertidas {len(images)} páginas a imágenes")
             for i, image in enumerate(images):
