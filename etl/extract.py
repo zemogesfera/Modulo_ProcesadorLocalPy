@@ -62,7 +62,8 @@ def extract_text_from_pdf(pdf_file: str) -> str:
     
     # Normalizar y limpiar el texto
     extracted_text = unicodedata.normalize('NFKD', extracted_text)
-    extracted_text = re.sub(r'[^\w\s.,;:!¡?¿()áéíóúÁÉÍÓÚñÑüÜ@-]', '', extracted_text)
+    #antes de editar: ^\w\s.,;:!¡?¿()áéóúÁÉÍÓÚñÑüÜ@-
+    extracted_text = re.sub(r'[^\w\s.,;:!¡?¿()óúÁÉÓñÑüÜ-]', '', extracted_text)
     extracted_text = ' '.join(extracted_text.split())
     
     logger.info(f"Extracción de texto completada. Total de caracteres: {len(extracted_text)}")
@@ -138,6 +139,7 @@ def extract_data(ruta_archivos: str, cantidad: int = None):
 
         tipo_documento, providencia, ano = clasificar_documento(archivo)
         
+        #Validar
         resultado.append({
             "nombre_archivo": archivo,
             "texto_extraido": texto_extraido,
