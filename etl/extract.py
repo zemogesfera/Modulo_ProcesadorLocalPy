@@ -15,12 +15,12 @@ from .ml_correction import aplicar_correcciones
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# Configurar la ruta de Tesseract (ajusta según tu instalación)
+# Configurar la ruta de Tesseract
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 def preprocess_image(image):
     """
-    Aplica preprocesamientos avanzados a la imagen para mejorar la extracción de texto con OCR.
+    Aplica preprocesamiento avanzado a la imagen para mejorar la extracción de texto con OCR.
     """
     if isinstance(image, np.ndarray):
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -57,19 +57,6 @@ def extract_text_from_pdf(pdf_file: str, upscale=False) -> str:
     except Exception as e:
         logger.error(f"Error extrayendo texto del PDF: {e}", exc_info=True)
     
-    # Siempre aplicar OCR a la primera página para capturar el número de radicación
-    try:
-        images = convert_from_path(pdf_file, first_page=1, last_page=1, dpi=300)
-        for image in images:
-            if upscale:
-                image = upscale_image(image)
-            preprocessed_image = preprocess_image(image)
-            text = pytesseract.image_to_string(preprocessed_image, lang='spa', config='--psm 6 --oem 3')
-            extracted_text = text + "\n" + extracted_text  # Agregar al principio
-    except Exception as e:
-        logger.error(f"Error aplicando OCR a la primera página: {e}", exc_info=True)
-    
-    # Si aún no hay suficiente texto, aplicar OCR a todas las páginas
     if len(extracted_text.strip()) < 100:
         logger.info(f"Texto insuficiente extraído directamente. Aplicando OCR a todas las páginas.")
         try:
@@ -123,103 +110,9 @@ def extract_text_from_docx(docx_file: str) -> str:
     return extracted_text.strip()
 
 def clasificar_documento(nombre_archivo):
-    nombre = nombre_archivo.upper()
-    if "T" in nombre:
-        tipo = "Tutela"
-    elif "C" in nombre:
-        tipo = "Constitucionalidad"
-    elif "A" in nombre:
-        tipo = "Auto"
-    else:
-        tipo = "Sin identificar"
-    
-    providencia = nombre.replace(".PDF", "").replace(".DOCX", "")
-    
-    try:
-        ano = int(nombre.split("-")[-1][:2]) + 2000
-    except ValueError:
-        ano = None
-    
-    return tipo, providencia, ano
-
-def extract_data(ruta_archivos: str, cantidad: int = None, upscale=False):
     """
-    Procesa los archivos de la ruta especificada y extrae campos clave.
+    Clasifica el tipo de documento según su nombre.
     """
-    resultado = []
-    archivos = [f for f in os.listdir(ruta_archivos) if f.lower().endswith(('.pdf', '.jpg', '.png', '.docx'))][:cantidad]
-    
-    for archivo in archivos:
-        full_path = os.path.join(ruta_archivos, archivo)
-        logger.info(f"Procesando archivo: {full_path}")
-
-        if archivo.lower().endswith('.pdf'):
-            texto_extraido = extract_text_from_pdf(full_path, upscale)
-        elif archivo.lower().endswith(('.jpg', '.png')):
-            image = Image.open(full_path)
-            if upscale:
-                image = upscale_image(image)
-            preprocessed_image = preprocess_image(image)
-            texto_extraido = pytesseract.image_to_string(preprocessed_image, lang='spa', config='--psm 6 --oem 3')
-        elif archivo.lower().endswith('.docx'):
-            texto_extraido = extract_text_from_docx(full_path)
-        else:
-            texto_extraido = ""
-
-        # Extraer los campos clave
-        campos_clave = extraer_campos_clave(texto_extraido)
-        
-        tipo_documento, providencia, ano = clasificar_documento(archivo)
-        
-        resultado.append({
-            "nombre_archivo": archivo,
-            "juzgado": campos_clave.get("juzgado"),
-            "tipo_documento": tipo_documento,
-            "tiempo_respuesta": campos_clave.get("tiempo_respuesta"),
-            "ciudad_juzgado": campos_clave.get("ciudad"),
-            "departamento_juzgado": campos_clave.get("departamento"),
-            "numero_radicado": campos_clave.get("numero_radicado"),
-            "ano": ano
-        })
-        
-        logger.info(f"Archivo procesado: {archivo}")
-    
-    return resultado
-
-def buscar_patron(patron, texto):
-    """
-    Busca un patrón regex en el texto y devuelve el resultado si lo encuentra.
-    """
-    match = re.search(patron, texto, re.IGNORECASE | re.DOTALL)
-    if match:
-        return match.group(1).strip()
-    return None
-
-def extraer_campos_clave(texto):
-    """
-    Extrae los campos clave específicos del texto extraído, limitando la longitud de los resultados.
-    """
-    def buscar_patron(patron, texto, max_length=30):
-        match = re.search(patron, texto, re.IGNORECASE | re.DOTALL)
-        if match:
-            return match.group(1).strip()[:max_length]
-        return None
-
-    campos = {
-        "juzgado": buscar_patron(r"JUZGADO\s+(\w+(?:\s+\w+)?)", texto),
-        "tiempo_respuesta": buscar_patron(r"(dentro\s*de\s*(\d+)\s*(horas|días|meses))", texto),
-        "ciudad_juzgado": buscar_patron(r"SECCIONAL\s+(\w+)", texto) or buscar_patron(r"(\w+),\s*Valle", texto),
-        "departamento_juzgado": buscar_patron(r"DEPARTAMENTO:\s*(\d+)", texto),
-        "numero_radicado": buscar_patron(r"RADICACI[OÓ]N\s*(?:No\.?|N[úu]mero)?\s*([-\d]+)", texto, max_length=50)
-    }
-    
-    # Si se encuentra el radicado con guiones, lo reformateamos sin guiones
-    if campos["numero_radicado"]:
-        campos["numero_radicado"] = campos["numero_radicado"].replace("-", "")
-    
-    return campos
-
-def clasificar_documento(nombre_archivo):
     nombre = nombre_archivo.upper()
     if "DEMANDA" in nombre or "ANEXOS" in nombre:
         tipo = "Auto"
@@ -239,6 +132,37 @@ def clasificar_documento(nombre_archivo):
     
     return tipo, None, ano
 
+def extraer_campos_clave(texto):
+    """
+    Extrae los campos clave específicos del texto extraído.
+    """
+    def buscar_patron(patron, texto, max_length=50):
+        match = re.search(patron, texto, re.IGNORECASE | re.DOTALL)
+        if match:
+            return match.group(1).strip()[:max_length]
+        return None
+
+    campos = {
+        "ciudad_juzgado": buscar_patron(r"CIUDAD\s*:\s*(\w+(?:\s*\w+)*)", texto),
+        "departamento_juzgado": buscar_patron(r"DEPARTAMENTO\s*:\s*(\w+(?:\s*\w+)*)", texto),
+        "fecha_emision_auto": buscar_patron(r"FECHA\s+DE\s+EMISI[ÓO]N\s+DEL\s+AUTO\s+ADMISORIO\s*:\s*([\d\/\-]+)", texto),
+        "fecha_vencimiento_auto": buscar_patron(r"FECHA\s+DE\s+VENCIMIENTO\s+DEL\s+AUTO\s+ADMISORIO\s*:\s*([\d\/\-]+)", texto),
+        "nombre_juzgado": buscar_patron(r"JUZGADO\s+(?:DE\s+|DEL\s+)?(?:[\w\s]+):\s*([\w\s]+)", texto),
+        "numero_radicado": buscar_patron(r"RADICACI[ÓO]N\s*(?:No\.?|N[úu]mero)?\s*([-\d]+)", texto, max_length=50),
+        "ano_radicado": buscar_patron(r"RADICADO\s*:\s*([\d]{4})", texto),
+        "codigo_proceso": buscar_patron(r"C[ÓO]DIGO\s+DEL\s+PROCESO\s*:\s*(\w+)", texto),
+        "recurso_proceso": buscar_patron(r"RECURSO\s+DEL\s+PROCESO\s*:\s*(\w+)", texto),
+        "tipo_documento_accionante": buscar_patron(r"(?:TIPO\s+DE\s+)?DOCUMENTO\s+ACCIONANTE\s*:\s*(\w+)", texto),
+        "numero_documento_accionante": buscar_patron(r"NÚMERO\s+DE\s+DOCUMENTO\s+ACCIONANTE\s*:\s*(\d+)", texto),
+        "clasificacion_peticion": buscar_patron(r"(ÁREAS\s+TÉCNICAS|ADMINISTRATIVAS|MEDICINA\s+DEL\s+TRABAJO|SALUD|SALUD\s+ODONTOLÓGICA)", texto)
+    }
+
+    # Formatear el número de radicado para eliminar guiones
+    if campos["numero_radicado"]:
+        campos["numero_radicado"] = campos["numero_radicado"].replace("-", "")
+
+    return campos
+
 def extract_data(ruta_archivos: str, cantidad: int = None, upscale=False):
     """
     Procesa los archivos de la ruta especificada y extrae campos clave.
@@ -248,8 +172,9 @@ def extract_data(ruta_archivos: str, cantidad: int = None, upscale=False):
     
     for archivo in archivos:
         full_path = os.path.join(ruta_archivos, archivo)
-        logger.info(f"Procesando archivo: {full_path}")
+        print(f"Procesando archivo: {full_path}")
 
+        # Proceso OCR según el tipo de archivo
         if archivo.lower().endswith('.pdf'):
             texto_extraido = extract_text_from_pdf(full_path, upscale)
         elif archivo.lower().endswith(('.jpg', '.png')):
@@ -261,24 +186,29 @@ def extract_data(ruta_archivos: str, cantidad: int = None, upscale=False):
         elif archivo.lower().endswith('.docx'):
             texto_extraido = extract_text_from_docx(full_path)
         else:
-            texto_extraido = ""
+            print(f"Tipo de archivo no soportado: {archivo}")
+            continue
 
         # Extraer los campos clave
-        campos_clave = extraer_campos_clave(texto_extraido)
+        campos_extraidos = extraer_campos_clave(texto_extraido)
         
-        tipo_documento, _, ano = clasificar_documento(archivo)
-        
-        resultado.append({
+        datos_documento = {
             "nombre_archivo": archivo,
-            "juzgado": campos_clave.get("juzgado"),
-            "tipo_documento": tipo_documento,
-            "tiempo_respuesta": campos_clave.get("tiempo_respuesta"),
-            "ciudad_juzgado": campos_clave.get("ciudad_juzgado"),
-            "departamento_juzgado": campos_clave.get("departamento_juzgado"),
-            "numero_radicado": campos_clave.get("numero_radicado"),
-            "ano": ano
-        })
+            "ciudad_juzgado": campos_extraidos.get("ciudad_juzgado"),
+            "departamento_juzgado": campos_extraidos.get("departamento_juzgado"),
+            "fecha_emision_auto": campos_extraidos.get("fecha_emision_auto"),
+            "fecha_vencimiento_auto": campos_extraidos.get("fecha_vencimiento_auto"),
+            "nombre_juzgado": campos_extraidos.get("nombre_juzgado"),
+            "numero_radicado": campos_extraidos.get("numero_radicado"),
+            "ano_radicado": campos_extraidos.get("ano_radicado"),
+            "codigo_proceso": campos_extraidos.get("codigo_proceso"),
+            "recurso_proceso": campos_extraidos.get("recurso_proceso"),
+            "tipo_documento_accionante": campos_extraidos.get("tipo_documento_accionante"),
+            "numero_documento_accionante": campos_extraidos.get("numero_documento_accionante"),
+            "clasificacion_peticion": campos_extraidos.get("clasificacion_peticion")
+        }
         
-        logger.info(f"Archivo procesado: {archivo}")
-    
+        print(f"Campos extraídos para {archivo}: {datos_documento}")
+        resultado.append(datos_documento)
+
     return resultado
