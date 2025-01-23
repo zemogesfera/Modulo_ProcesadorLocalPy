@@ -3,6 +3,7 @@ import os
 import json
 from etl.extract import extract_data
 
+
 app = Flask(__name__)
 
 @app.route('/')
