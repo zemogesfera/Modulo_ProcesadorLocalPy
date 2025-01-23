@@ -256,6 +256,14 @@ class DocumentoExtractor:
                         numero = match_radicado.group(1) + match_radicado.group(2) + "00"
                         self.logger.debug(f"Encontrado número con patrón radicado con label: {numero}")
                         return numero
+                    
+                                        # Nuevo patrón para capturar el formato "RADICADO : XXXXXXXXXXXXXXXXXXXXXXX"
+                    patron_radicado_con_labelv2 = r'(?i)RADICADO\s*:\s*(\d{16})-(\d{5})'
+                    match_radicadov2 = re.search(patron_radicado_con_labelv2, linea)
+                    if match_radicadov2:
+                        numero = match_radicadov2.group(1) + match_radicadov2.group(2) + "00"
+                        self.logger.debug(f"Encontrado número con patrón radicado con labelv2: {numero}")
+                        return numero
 
 
                         
