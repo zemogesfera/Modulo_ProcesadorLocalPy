@@ -437,6 +437,16 @@ class DocumentoExtractor:
         """
     Busca la fecha en el texto, la convierte al formato YYYY-MM-DD y concatena la hora.
     """
+        fecha_final_procesada = self.buscar_fchaTtla_procesar(0,800)
+        return fecha_final_procesada
+
+    def buscar_fchaTtla_procesar(self,inicial,final):
+    
+        texto_encabezado = self.texto[inicial:final]
+        self.logger.debug(texto_encabezado)    
+        """
+    Busca la fecha en el texto, la convierte al formato YYYY-MM-DD y concatena la hora.
+    """
         locale.setlocale(locale.LC_TIME, 'Spanish_Spain')
 
         meses = {
@@ -492,6 +502,7 @@ class DocumentoExtractor:
             patron_especifico = r'(?:.*,\s*)?([a-zA-Zé]+|\d+)\s*(?:\((\d+)\))?\s+de\s+([a-zA-Z]+)\s+(?:del\s+)?(?:año\s+)?(?:dos mil [a-zA-Zé]+)\s*\((\d{4})\)'
             match_especifico = re.search(patron_especifico, fecha, re.IGNORECASE)
             if match_especifico:
+                self.logger.debug(f"prueba akn 1:{ match_especifico.start()}")
                 dia = match_especifico.group(2) if match_especifico.group(2) else extraer_numero(match_especifico.group(1))
                 mes = match_especifico.group(3).lower()
                 anio = match_especifico.group(4)
@@ -512,6 +523,7 @@ class DocumentoExtractor:
             for patron in patrones_complejos:
                 match = re.search(patron, fecha, re.IGNORECASE)
                 if match:
+                    self.logger.debug(f"prueba akn 2:{  match.group(2)}")
                     if len(match.groups()) == 4:  # Para el nuevo patrón
                         dia = match.group(2)
                         mes = match.group(3).lower()
@@ -530,6 +542,7 @@ class DocumentoExtractor:
             return None
 
         def buscar_fechas_inicio(texto):
+            self.logger.debug("caso 0")
             patrones_inicio = [
                 r'^Santiago de Cali,\s*([a-zA-Z]+\s+\d{1,2}\s+de\s+[a-zA-Z]+\s+de\s+\d{4})',
                 r'^[A-Za-z\s]+,\s*([a-zA-Z]+\s+\d{1,2}\s+de\s+[a-zA-Z]+\s+de\s+\d{4})',
@@ -544,6 +557,7 @@ class DocumentoExtractor:
             for patron in patrones_inicio:
                 match = re.search(patron, texto_primeras_lineas, re.IGNORECASE)
                 if match:
+                    self.logger.debug(f"prueba akn 3:{match.start}")
                     if len(match.groups()) == 4:  # Para el nuevo patrón específico
                         fecha_encontrada = f"{match.group(1)}({match.group(2)}) de {match.group(3)} del año dos mil veinticinco ({match.group(4)})"
                     else:
@@ -571,7 +585,8 @@ class DocumentoExtractor:
                 "diecisiete": 17, "dieciocho": 18, "diecinueve": 19, "veinte": 20,
                 "veintiuno": 21, "veintidós": 22, "veintidos": 22, "veintitrés": 23,"veintitres": 23, "veinticuatro": 24,
                 "veinticinco": 25, "veintiséis": 26,"veintiseis": 26, "veintisiete": 27,
-                "veintiocho": 28, "veintinueve": 29, "treinta": 30, "treinta y uno": 31 , "Treintaiuno": 31 , "Treintauno": 31
+                "veintiocho": 28, "veintinueve": 29, "treinta": 30, "treinta y uno": 31 , "Treintaiuno": 31 , "Treintauno": 31,
+                "treintauno": 31
             }
             
             def convertir_a_ano(anio_texto):
@@ -593,8 +608,8 @@ class DocumentoExtractor:
             match_fecha = re.search(patron_fecha_inicial, texto_encabezado)
             
             if match_fecha:
-                print('caso1')
-            
+                self.logger.debug("caso 1")
+                
                 try:
                     print(match_fecha)
                     mes_texto = match_fecha.group(1).upper()  
@@ -664,9 +679,8 @@ class DocumentoExtractor:
                             )?
                         )\b                # Fin de la palabra completa
                         """         
-                patron_numeros = r"\b(uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|once|doce|trece|catorce|quince|dieciseis|dieciséis|diecisiete|dieciocho|diecinueve|veinte|veinti[uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve]|veint[once|dós|tres|cuatro|cinco|seis|siete|ocho|nueve]|[12]?\d{1,2})\b"
+                patron_numeros = r"\b(uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|once|doce|trece|catorce|quince|dieciseis|dieciséis|diecisiete|dieciocho|diecinueve|veinte|veintiuno|veintidós|veintidos|veintitres|veintitrés|veinticuatro|veinticinco|veintiseis|veintiséis|veintisiete|veintiocho|veintinueve|treinta|treintauno|treinta y uno|treinta y una|veint[once|dós|tres|cuatro|cinco|seis|siete|ocho|nueve]|[12]?\d{1,2})\b"
         
-                            
                 # Buscar la fecha
                 match = re.search(patron_fecha, texto_encabezado, re.IGNORECASE)
                 matche1 = re.finditer(patron_fecha1, texto_encabezado, re.IGNORECASE | re.VERBOSE)
@@ -677,7 +691,7 @@ class DocumentoExtractor:
                 validacionProceso = 0
                 try:
                     if match:
-                        print('caso2')
+                        print("caso 2")
                         fecha_texto = match.group()
                         print(f"Fecha encontrada: {fecha_texto}")
 
@@ -688,9 +702,8 @@ class DocumentoExtractor:
                         else:
                             return None
                     elif matche2:
-                        print('caso3')
-                        
-                                        
+                        print("caso 3")
+                                                                
                         for match in matche1:
                             fecha_texto = match.group()
                             print(f"Fecha encontrada: {fecha_texto}")
@@ -731,7 +744,7 @@ class DocumentoExtractor:
                     
                     mesEncontrado = None
                     if matchMeses and validacionProceso == 0:    
-                        print('caso especial')
+                        print("caso especial")
                         for match in matchMeses:
                             inicio = match.start()
                             # Extraer desde el inicio del mes hasta 40 caracteres después
@@ -790,29 +803,27 @@ class DocumentoExtractor:
                         
                         fecha_procesada = dateparser.parse(fecha_final_encontrada, languages=['es'])
                         if fecha_procesada:
+                           
                             print(f"fecha procesada final: {fecha_procesada}")
                             return fecha_procesada.strftime('%Y-%m-%d')                 
                 except Exception as e:
                         self.logger.error(f"Error al generar fecha tutela: {e}", exc_info=True)
                         return None    
                         
-                        
-                        
-
-
     # Primero buscar fecha al inicio del documento
-        fecha_inicio = buscar_fechas_inicio(self.texto)
+        texto_encabezado = self.texto[inicial:final]
+        fecha_inicio = buscar_fechas_inicio(texto_encabezado)
         if fecha_inicio:
             return self.concatenar_hora(fecha_inicio)
 
     # Intentar extraer del encabezado
-        texto_encabezado = self.texto[:500]
+        texto_encabezado = self.texto[inicial:final]
         fecha_convertida = convertir_fecha(texto_encabezado)
         if fecha_convertida:
             return self.concatenar_hora(fecha_convertida)
         
     # Intentar extraer del encabezado version akn
-        texto_encabezado = self.texto[:800]
+        texto_encabezado = self.texto[inicial:final]
         fecha_inicio = buscar_fechas_inicio_bloque2(texto_encabezado)
         if fecha_inicio:
             return self.concatenar_hora(fecha_inicio) 
@@ -838,31 +849,19 @@ class DocumentoExtractor:
     
     
     def eliminar_caracteres_especiales(self,texto):
-        """
-        Elimina caracteres especiales de un texto dejando solo letras, números y espacios.
-
-        Args:
-            texto (str): El texto original.
-
-        Returns:
-            str: El texto sin caracteres especiales.
-        """
         # Regex para eliminar cualquier carácter que no sea letra, número o espacio
         texto_limpio = re.sub(r'[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]', '', texto)
         return texto_limpio
     
     def concatenar_hora(self, fecha):
-        """
-        Concatena la hora de 'self.fechacorreo' a la fecha extraída.
-        """
         if self.fechacorreo == None:
           fechaCorreoFinal = '2025-01-17 10:05:00'
         else:
           fechaCorreoFinal =  self.fechacorreo  
         
         try:
-            self.logger.debug(f"Fecha extraída: {fecha}")
-            self.logger.debug(f"Fecha correo original: {fechaCorreoFinal}")
+            print(f"Fecha extraída: {fecha}")
+            print(f"Fecha correo original: {fechaCorreoFinal}")
  
             try:
                 fecha_correo = datetime.strptime(fechaCorreoFinal, "%Y-%m-%d %H:%M:%S.%f")
