@@ -1062,6 +1062,7 @@ class DocumentoExtractor:
                 r'(?i)Tr[áa]mite\s+Acci[óo]n\s+de\s+Tutela\.\s+Accionante\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\.\s+Accionados?|$)',
                  # Nuevo patrón específico para capturar nombre con C.C.
                 r'(?i)Accionante\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+C\.?C\.?\s+[\d\.,]+\b',
+                r'(?i)instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?),?\s*[Cc]\.?[Cc]\.?\s*[\d\.]+',
 
 
             ]
