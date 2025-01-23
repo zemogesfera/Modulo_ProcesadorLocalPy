@@ -1077,6 +1077,7 @@ class DocumentoExtractor:
                  # Nuevo patrón específico para capturar nombre con C.C.
                 r'(?i)Accionante\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+C\.?C\.?\s+[\d\.,]+\b',
                 r'(?i)instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?),?\s*[Cc]\.?[Cc]\.?\s*[\d\.]+',
+                
 
 
             ]
@@ -1086,7 +1087,7 @@ class DocumentoExtractor:
                                 'ciudadano', 'ciudadana', 'agente', 'oficioso', 'representante',
                                 'teniendo', 'cuenta', 'accion', 'tutela', 'formulada', 'por',
                                 'considerando', 'vista', 'presente', 'en', 'accionados','admitir','interpuesta','afectada',
-                                'usted','oficiosa','como','identificado','traves','apoderado', 'accionante'}
+                                'usted','oficiosa','como','identificado','traves','apoderado', 'accionante','parte'}
 
             def limpiar_nombre(nombre):
                 prefijos = ['senora','señor ', 'señora ', 'sr ', 'sra ', 'dr ', 'dra ', 'ciudadano ', 'ciudadana ','senor']
