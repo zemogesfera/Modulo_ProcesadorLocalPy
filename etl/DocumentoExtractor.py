@@ -265,6 +265,9 @@ class DocumentoExtractor:
                         numero = match_radicadov2.group(1) + match_radicadov2.group(2) + "00"
                         self.logger.debug(f"Encontrado número con patrón radicado con labelv2: {numero}")
                         return numero
+                    
+
+                        
 
 
                         
@@ -282,6 +285,7 @@ class DocumentoExtractor:
                         r'(?i)(?:acción\s+de\s+tutela\s+No\.?\s*)?(\d{2}-\d{3}-\d{2}-\d{2}-\d{3}-\d{4}-\d{5}-\d{2})\b',
                         r'\b(\d{9}-\d{3}-\d{4}-\d{5}-\d{2})\b',
                         r'\b(\d{5}\s\d{2}\s\d{2}\s\d{3}\s\d{4}\s\d{7})\b',
+                        
                         
                         
                     ]
@@ -926,6 +930,8 @@ class DocumentoExtractor:
                 r'\bDENTIFICACION\b',
                 r'\bIDENTIFICACION\b',
                 r'\bEMAIL\b',
+                r'\bNoviembre\b',
+
 
 
 
@@ -1037,9 +1043,12 @@ class DocumentoExtractor:
         try:
             patrones = [
             # ... (patrones existentes) ...
-            # Nuevo patrón específico para informes secretariales
+            
+            # Nuevo patrón específico para agente oficioso
+                r'(?i)instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+(?:como\s+)?agente\s+oficios[oa]\s+de\s+[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+',
                        # Nuevo patrón específico para agente oficioso
                 r'(?i)instaurada\s+por\s+(?:el|la)\s+(?:ciudadano|ciudadana|señor|señora)\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*,\s*quien\s+act[úu]a\s+como\s+agente\s+oficios[oa])',
+                # Nuevo patrón específico para informes secretariales
                 r'(?i)La\s+accionante\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+subsano\s+la\s+tutela)',
 
                 r'(?i)se\s+dispone\s+a\s+avocar,\s+estudiar\s+y\s+decidir\s+respecto\s+de\s+la\s+(?:acción|accion)\s+de\s+tutela\s+instaurada\s+por\s+([A-ZÁÉÍÓÚÑ]+(?:\s+[A-ZÁÉÍÓÚÑ]+){1,3})\s+en\s+contra\s+de',
@@ -1047,7 +1056,7 @@ class DocumentoExtractor:
 
 
                 r'(?i)acci[óo]n\s+de\s+tutela\s+(?:interpuesta|que\s+ha\s+sido\s+interpuesta)\s+por\s+(?:la\s+)?señora\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?),?\s*(?:-?CC\s*\d+\.\d+\.\d+)?(?=\s*,?\s*en\s+contra\s+de)',
-
+                r'(?i)ACCIONANTE\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)(?=\s+ACCIONADA|$)',
                 r'(?i)incoada\s+por\s+(?:el\s+|la\s+)?(?:ciudadano|ciudadana|señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,|\s+dirigida\s+en\s+contra)',
 
                 r'(?i)Como\s+quiera\s+que\s+la\s+Acci[óo]n\s+de\s+Tutela\s+presentada\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,\s*quien\s+act[úu]a)',
@@ -1081,6 +1090,7 @@ class DocumentoExtractor:
                  # Nuevo patrón específico para capturar nombre con C.C.
                 r'(?i)Accionante\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+C\.?C\.?\s+[\d\.,]+\b',
                 r'(?i)instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?),?\s*[Cc]\.?[Cc]\.?\s*[\d\.]+',
+                
                 
 
 
@@ -1255,7 +1265,7 @@ class DocumentoExtractor:
 
     # Patrones originales
         patrones = [
-            r'ACCIONANTE:.*?(C\.?C\.?|T\.?I\.?|RC|CE|P\.?P\.?)\b',
+            
             r'(?:accionante|paciente).*?identificad[oa] con (?:la |el )?(\w+(?:\s+\w+){0,4})\s+No\.',
             #este no es, este identifica el agente oficioso, debe identificar el en representacion
             r'agente oficios[oa] de .*?identificad[oa] con (?:la |el )?(\w+(?:\s+\w+){0,4})\s+No\.',
@@ -1265,12 +1275,17 @@ class DocumentoExtractor:
             r'portador[a]? de la\s+(C\.?C\.?|T\.?I\.?|RC|CE|P\.?P\.?)\s+No\.',
             r'cédula\s+de\s+ciudadan[ií]a\s+No\.\s*(\d{1,2}(\.\d{1,3}){2,3})',
             r'cédula\s+de\s+ciudadan[ií]a\s+No\.\s*([\d\.\-]+)',
+            r'ACCIONANTE:.*?\s(C\.?C\.?|T\.?I\.?|RC|CE|P\.?P\.?)\b'
+
+            
+            
         ]
 
     # Mapeo para normalizar y clasificar los tipos de documentos
         mapping_documentos = {
             'cédula de ciudadanía': 'CC',
             'cedula de ciudadania': 'CC',
+            'cedula de ciudadanía' : 'CC',
             'C.C.': 'CC',
             'CC': 'CC',
             'registro civil': 'RC',
@@ -1321,6 +1336,8 @@ class DocumentoExtractor:
 
                     # Patrón más flexible
                         fr'(?:{primer_palabra}\s+{segunda_palabra}).*?CC\.?',
+
+                        
                     ]
 
                 # Buscar con los nuevos patrones

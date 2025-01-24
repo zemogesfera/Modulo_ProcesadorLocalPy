@@ -235,7 +235,10 @@ def extract_data(ruta_archivos: str, cantidad: int = None, upscale=False, tpoDcm
     # Priorizar archivos por palabras clave en el nombre
     archivos_prioritarios_autoadmite = [
         f for f in archivos 
-        if any(keyword in f.lower() for keyword in ('admision','autoadmite', 'autoadmision', 'admite tutela', 'acciontutela', 'autoadmisorio', 'autorequiereincidente', 'auto','autoadmitir','autoadmite','admite','oficio','Oficiofallo','fallo','sentencia'))
+        if any(keyword in f.lower() for keyword in ('admision','autoadmite', 'autoadmision', 'admite tutela', 'acciontutela', 'autoadmisorio', 'autorequiereincidente', 'auto','autoadmitir','autoadmite','admite',
+                                                    'oficio','Oficiofallo','fallo','sentencia',
+                                                    'EscritoIncidente'
+                                                    ))
     ]
     archivos_prioritarios_autoavoca = [
         f for f in archivos 
