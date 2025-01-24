@@ -16,6 +16,7 @@ class DocumentoExtractor:
         self.previous_year = self.current_year - 1
         self.df_juzgados = None
         self.fechacorreo = "2024-11-25 16:30:00.000"  # Fecha fija para pruebas
+        self.es_empresa = False
  
         # Configurar la ruta del CSV relativa al directorio del script
         ruta_base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -1030,6 +1031,9 @@ class DocumentoExtractor:
     
 
     def buscar_nmbreCmpltoAccnnte(self):
+        if self.es_empresa:
+            return None
+
         try:
             patrones = [
             # ... (patrones existentes) ...
@@ -1125,10 +1129,12 @@ class DocumentoExtractor:
             # Verificar si es entidad después de encontrar el nombre
                 patron_entidad = r'\b[A-ZÁÉÍÓÚÑ]+(?:\s+[A-ZÁÉÍÓÚÑ]+)*\s+(?:S\.?A\.?|S\.?A\.?S\.?|LTDA\.?|S\.?L\.?|INC\.?|LLC\.?)\b(?=[\s.,;]|$)'
                 if re.search(patron_entidad, nombre_encontrado):
+                   self.es_empresa = True
                    return None
  
                 patron_empresa = r'(?i)\b(?:BANCO|FONDO|CORPORACI[OÓ]N|COOPERATIVA|CAJA|TELEMARK|COLPENSIONES|PORVENIR|PROTECCION|COLFONDOS|SKANDIA|ING|BBVA|BANCOLOMBIA|DAVIVIENDA|EPM|EMPRESA|COMPAÑ[IÍ]A|ASEGURADORA|POSITIVA|MAPFRE|LIBERTY|ALLIANZ|SEGUROS|FIDEICOMISO|PATRIMONIO|AFP)\b\s*(?:DE\s+COLOMBIA|S\.?A\.?|S\.?A\.?S\.?|LTDA\.?|E\.?S\.?P\.?|S\.?C\.?|S\.?C\.?A\.?)?'
                 if re.search(patron_empresa, nombre_encontrado):
+                   self.es_empresa = True
                    return None
            
             return nombre_encontrado
