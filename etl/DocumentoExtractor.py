@@ -265,7 +265,13 @@ class DocumentoExtractor:
                         numero = match_radicadov2.group(1) + match_radicadov2.group(2) + "00"
                         self.logger.debug(f"Encontrado número con patrón radicado con labelv2: {numero}")
                         return numero
-                    
+
+                    patron_rad_con_formato = r'(?i)RAD\.\s*(\d{7}\s\d{3}\s\d{3}\s\d{4}\s\d{5}\s\d{2})'
+                    match_rad_con_formato = re.search(patron_rad_con_formato, linea)
+                    if match_rad_con_formato:
+                        numero = match_rad_con_formato.group(1).replace(" ", "")
+                        self.logger.debug(f"Encontrado número con patrón RAD. con formato: {numero}")
+                        return numero
 
                         
 
