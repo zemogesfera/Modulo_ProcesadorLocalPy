@@ -1114,6 +1114,38 @@ class DocumentoExtractor:
                 palabras = nombre.split()
                 palabras_limpias = [palabra for palabra in palabras if palabra.lower() not in palabras_prohibidas]
                 return ' '.join(palabras_limpias).strip()
+            
+            def limpiar_representante(texto):
+                """
+                Busca en el texto utilizando una lista de patrones predefinidos y retorna
+                el texto después del primer patrón que coincida.
+                
+                Args:
+                    texto (str): El texto en el que se buscarán los patrones.
+                
+                Returns:
+                    str: El texto después del patrón encontrado, o None si no se encuentra ningún patrón.
+                """
+                # Lista de patrones predefinidos
+                patrones_representante = [
+                    r"quien\s+actua.*?representacion\s+del\s+menor",
+                    r"quien\s+actua.*?como\s+representante\s+legal\s+del\s+menor",
+                    r"quien\s+actua.*?en\s+nombre\s+del\s+menor",
+                    r"quien\s+actua.*?en\s+representacion\s+de",
+                    r"quien\s+actua.*?como\s+representante\s+legal\s+de",
+                    r"quien\s+actua.*?como\s+representante\s+de",
+                ]
+                
+                for patron_representante in patrones_representante:
+                    # Usamos una expresión regular para buscar el patrón y capturar el texto después de él
+                    regex = re.compile(f"{patron_representante}(.+)", re.IGNORECASE | re.DOTALL)
+                    match = regex.search(texto)
+                    if match:
+                        # Retornamos el texto después del patrón coincidente
+                        return match.group(1).strip()
+                    else:
+                        # Si no se encuentra el patrón, retornamos el texto completo
+                        return texto
 
             nombre_encontrado = None
             for patron in patrones:
@@ -1121,6 +1153,7 @@ class DocumentoExtractor:
                 if match:
                     nombre_temp = match.group(1).strip()
                     nombre_limpio = limpiar_nombre(nombre_temp)
+                    nombre_limpio = limpiar_representante(nombre_limpio)
 
                     self.logger.info(f"Nombre encontrado antes de validar: {nombre_limpio}")
 
