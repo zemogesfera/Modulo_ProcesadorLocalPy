@@ -460,10 +460,15 @@ class DocumentoExtractor:
 
 
     def buscar_fchaTtla(self):
-        """
-    Busca la fecha en el texto, la convierte al formato YYYY-MM-DD y concatena la hora.
-    """
-        fecha_final_procesada = self.buscar_fchaTtla_procesar(0,800)
+        patron = r"\bjuzgado\b"
+        # Buscar la primera aparición de "juzgado"
+        match = re.search(patron, self.texto, re.IGNORECASE)
+        inicioEncontrado = 0
+        if match:
+                inicioEncontrado = match.start()
+        else:
+                inicioEncontrado = 0
+        fecha_final_procesada = self.buscar_fchaTtla_procesar(inicioEncontrado,800)
         return fecha_final_procesada
 
     def buscar_fchaTtla_procesar(self,inicial,final):
@@ -797,16 +802,23 @@ class DocumentoExtractor:
                         
                         matchesNro = re.findall(patron_numeros, texto_prefinal, re.IGNORECASE)
                         diaEncontrado = None
+                        
                         if matchesNro:
                             # Mostrar los resultados
                             for matchNumero in matchesNro:
                                 diaEncontrado = matchNumero
-                                print(f"Número encontrado: {matchNumero}")
+                                print(f"Número encontrado1: {matchNumero}")
                         else:
                             matchesNro = re.findall(patron_numeros, fragmento2, re.IGNORECASE)
                             for matchNumero in matchesNro:
                                 diaEncontrado = matchNumero
-                                print(f"Número encontrado: {matchNumero}")
+                                print(f"Número encontrado2: {matchNumero}")
+                                
+                        if int(diaEncontrado) > 31:     
+                            matchesNro = re.findall(patron_numeros, fragmento2, re.IGNORECASE)
+                            for matchNumero in matchesNro:
+                                diaEncontrado = matchNumero
+                                print(f"Número encontrado3: {matchNumero}")                  
                 
                         if not diaEncontrado and not anioEncontrado and not mesEncontrado: # si no se encuentra los valores se devuelve vacio el valor
                             return None    
@@ -848,7 +860,7 @@ class DocumentoExtractor:
         if fecha_convertida:
             return self.concatenar_hora(fecha_convertida)
         
-    # Intentar extraer del encabezado version akn
+    # Intentar extraer del encabezado con las formatos mas atipícos
         texto_encabezado = self.texto[inicial:final]
         fecha_inicio = buscar_fechas_inicio_bloque2(texto_encabezado)
         if fecha_inicio:
