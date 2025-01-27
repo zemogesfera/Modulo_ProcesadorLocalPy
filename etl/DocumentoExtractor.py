@@ -937,19 +937,9 @@ class DocumentoExtractor:
                 r'\bIDENTIFICACION\b',
                 r'\bEMAIL\b',
                 r'\bNoviembre\b',
-
-
-
-
-                
-
-
-                
-                
-
-
-
-
+                r'\bSENTENCIA\b',
+                r'\bAsunto\b',
+                r'\bRAD\b',
             ]
 
             palabra_irrelevante = r'\bCARRERA\b'
@@ -959,6 +949,7 @@ class DocumentoExtractor:
                 
             ]
             patron_correo = r'\S+@\S+\.\S+'
+            patron_telefono = r'(?i)\bTelefono\b.*'
         
             for i, linea in enumerate(self.lines):
                 if "Juzgado" in linea or "JUZGADO" in linea:
@@ -977,8 +968,11 @@ class DocumentoExtractor:
                             not re.search(patron_juzgado, siguiente_linea, re.IGNORECASE):  # Nueva verificación
                                 nombre_temp += f" {siguiente_linea}"
 
-                    # Eliminar correos electrónicos
+                        # Eliminar correos electrónicos
                         nombre_temp = re.sub(patron_correo, '', nombre_temp).strip()
+
+                        # Eliminar todo lo que esté después de la palabra "Telefono"
+                        nombre_temp = re.sub(patron_telefono, '', nombre_temp).strip()
 
                     # Aplicar todos los delimitadores
                         for delim in delimitadores_fin:
@@ -999,8 +993,16 @@ class DocumentoExtractor:
                                 palabras_unicas.append(palabra)
                         nombre_temp = " ".join(palabras_unicas)
 
-                    # Eliminar "Santiago de Cali" si "DE CALI" aparece antes
-                        if "DE CALI" in nombre_temp.upper() and "SANTIAGO DE CALI" in nombre_temp.upper():
+                        # Verificar y eliminar "Santiago de Cali" si aparece más de una vez
+                        ocurrencias = nombre_temp.upper().count("SANTIAGO DE CALI")
+
+                        if ocurrencias > 1:
+                            primera_pos = nombre_temp.upper().find("SANTIAGO DE CALI")
+                            nombre_temp = nombre_temp[:primera_pos + len("SANTIAGO DE CALI")].strip()
+
+                        # Eliminar "Santiago de Cali" si "DE CALI" aparece antes
+                        ocurrencias = nombre_temp.upper().count("DE CALI")
+                        if ocurrencias > 1 and "DE CALI" in nombre_temp.upper() and "SANTIAGO DE CALI" in nombre_temp.upper():
                             nombre_temp = nombre_temp.upper().replace("SANTIAGO DE CALI", "").strip()
 
                     # Eliminar "Jamundi" duplicados
@@ -1098,7 +1100,13 @@ class DocumentoExtractor:
                 r'(?i)instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?),?\s*[Cc]\.?[Cc]\.?\s*[\d\.]+',
                 
                 
+                # Patrón para "en calidad de agente oficiosa de su hija"
+                r'(?i)en\s+calidad\s+de\s+agente\s+oficios[oa]\s+de\s+su\s+(?:hija|hijo)\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,|\.|$)',
 
+                # Patrón para "de su agenciada"
+                r'(?i)de\s+su\s+agenciada\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,|\.|$)',
+
+                r'(?i)interpuesta\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|ciudadano|ciudadana)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+CC\.\s+\d+',
 
             ]
 
@@ -1107,7 +1115,7 @@ class DocumentoExtractor:
                                 'ciudadano', 'ciudadana', 'agente', 'oficioso', 'representante',
                                 'teniendo', 'cuenta', 'accion', 'tutela', 'formulada', 'por',
                                 'considerando', 'vista', 'presente', 'en', 'accionados','admitir','interpuesta','afectada',
-                                'usted','oficiosa','como','identificado','traves','apoderado', 'accionante','parte'}
+                                'usted','oficiosa','como','identificado','traves','apoderado', 'accionante','parte', 'accionada'}
 
             def limpiar_nombre(nombre):
                 prefijos = ['senora','señor ', 'señora ', 'sr ', 'sra ', 'dr ', 'dra ', 'ciudadano ', 'ciudadana ','senor']
@@ -1120,6 +1128,38 @@ class DocumentoExtractor:
                 palabras = nombre.split()
                 palabras_limpias = [palabra for palabra in palabras if palabra.lower() not in palabras_prohibidas]
                 return ' '.join(palabras_limpias).strip()
+            
+            def limpiar_representante(texto):
+                """
+                Busca en el texto utilizando una lista de patrones predefinidos y retorna
+                el texto después del primer patrón que coincida.
+                
+                Args:
+                    texto (str): El texto en el que se buscarán los patrones.
+                
+                Returns:
+                    str: El texto después del patrón encontrado, o None si no se encuentra ningún patrón.
+                """
+                # Lista de patrones predefinidos
+                patrones_representante = [
+                    r"quien\s+actua.*?representacion\s+del\s+menor",
+                    r"quien\s+actua.*?como\s+representante\s+legal\s+del\s+menor",
+                    r"quien\s+actua.*?en\s+nombre\s+del\s+menor",
+                    r"quien\s+actua.*?en\s+representacion\s+de",
+                    r"quien\s+actua.*?como\s+representante\s+legal\s+de",
+                    r"quien\s+actua.*?como\s+representante\s+de",
+                ]
+                
+                for patron_representante in patrones_representante:
+                    # Usamos una expresión regular para buscar el patrón y capturar el texto después de él
+                    regex = re.compile(f"{patron_representante}(.+)", re.IGNORECASE | re.DOTALL)
+                    match = regex.search(texto)
+                    if match:
+                        # Retornamos el texto después del patrón coincidente
+                        return match.group(1).strip()
+                    else:
+                        # Si no se encuentra el patrón, retornamos el texto completo
+                        return texto
 
             nombre_encontrado = None
             for patron in patrones:
@@ -1127,6 +1167,7 @@ class DocumentoExtractor:
                 if match:
                     nombre_temp = match.group(1).strip()
                     nombre_limpio = limpiar_nombre(nombre_temp)
+                    nombre_limpio = limpiar_representante(nombre_limpio)
 
                     self.logger.info(f"Nombre encontrado antes de validar: {nombre_limpio}")
 
