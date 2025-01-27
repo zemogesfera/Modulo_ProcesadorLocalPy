@@ -147,6 +147,12 @@ class DocumentoExtractor:
                     #self.logger.debug(f"Analizando línea con 'radicado': {linea}")
                
 
+                    patron_nuevo_cali = r'\b(\d{5})-(\d{4})-(\d{3})-(\d{4})-(\d{5})-(\d{2})\b'
+                    match_cali = re.search(patron_nuevo_cali, linea)
+                    if match_cali:
+                        numero = ''.join(match_cali.groups())
+                        self.logger.debug(f"Encontrado número con patrón Cali: {numero}")
+                        return numero
 
 
                                                 # Patrón para capturar números con espacios (como en el ejemplo: 190014009006 2024 00 346)
@@ -157,6 +163,14 @@ class DocumentoExtractor:
                         if len(numero) == 21:
                             numero += "00"
                         self.logger.debug(f"Encontrado número con patrón espaciado 21: {numero}")
+                        return numero
+                    
+                    # Patrón para capturar 20 digitos                    
+                    patron_espaciado_20 = r'\b(\d{15})-(\d{5})\b'
+                    match_espaciado_20 = re.search(patron_espaciado_20, linea)
+                    if match_espaciado_20:
+                        numero = f"{match_espaciado_20.group(1)}{match_espaciado_20.group(2)}00"
+                        self.logger.debug(f"Encontrado número con patrón espaciado 20: {numero}")
                         return numero
                 
                 # Nuevo patrón específico para el formato 76-111-3187-004-2024-00041-00
@@ -272,6 +286,7 @@ class DocumentoExtractor:
                         numero = match_rad_con_formato.group(1).replace(" ", "")
                         self.logger.debug(f"Encontrado número con patrón RAD. con formato: {numero}")
                         return numero
+                    
 
                         
 
@@ -1056,6 +1071,7 @@ class DocumentoExtractor:
                 r'(?i)instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+(?:como\s+)?agente\s+oficios[oa]\s+de\s+[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+',
                        # Nuevo patrón específico para agente oficioso
                 r'(?i)instaurada\s+por\s+(?:el|la)\s+(?:ciudadano|ciudadana|señor|señora)\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*,\s*quien\s+act[úu]a\s+como\s+agente\s+oficios[oa])',
+                
                 # Nuevo patrón específico para informes secretariales
                 r'(?i)La\s+accionante\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+subsano\s+la\s+tutela)',
 
@@ -1107,6 +1123,7 @@ class DocumentoExtractor:
                 r'(?i)de\s+su\s+agenciada\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,|\.|$)',
 
                 r'(?i)interpuesta\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|ciudadano|ciudadana)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+CC\.\s+\d+',
+            
 
             ]
 
@@ -1115,7 +1132,9 @@ class DocumentoExtractor:
                                 'ciudadano', 'ciudadana', 'agente', 'oficioso', 'representante',
                                 'teniendo', 'cuenta', 'accion', 'tutela', 'formulada', 'por',
                                 'considerando', 'vista', 'presente', 'en', 'accionados','admitir','interpuesta','afectada',
-                                'usted','oficiosa','como','identificado','traves','apoderado', 'accionante','parte', 'accionada'}
+                                'usted','oficiosa','como','identificado','traves','apoderado', 'accionante','parte', 'accionada',
+                                'ha','recibido','respuesta','producto','conducta','informa','acudio','medico','particular',
+                                'posteriormente','ael'}
 
             def limpiar_nombre(nombre):
                 prefijos = ['senora','señor ', 'señora ', 'sr ', 'sra ', 'dr ', 'dra ', 'ciudadano ', 'ciudadana ','senor']
@@ -1148,6 +1167,7 @@ class DocumentoExtractor:
                     r"quien\s+actua.*?en\s+representacion\s+de",
                     r"quien\s+actua.*?como\s+representante\s+legal\s+de",
                     r"quien\s+actua.*?como\s+representante\s+de",
+                    
                 ]
                 
                 for patron_representante in patrones_representante:
