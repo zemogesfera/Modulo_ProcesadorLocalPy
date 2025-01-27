@@ -933,6 +933,7 @@ class DocumentoExtractor:
                 r'\bNoviembre\b',
                 r'\bSENTENCIA\b',
                 r'\bAsunto\b',
+                r'\bRAD\b',
             ]
 
             palabra_irrelevante = r'\bCARRERA\b'
@@ -1098,8 +1099,8 @@ class DocumentoExtractor:
 
                 # Patrón para "de su agenciada"
                 r'(?i)de\s+su\s+agenciada\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,|\.|$)',
-                
 
+                r'(?i)interpuesta\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|ciudadano|ciudadana)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+CC\.\s+\d+',
 
             ]
 
