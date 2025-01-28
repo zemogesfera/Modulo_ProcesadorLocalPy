@@ -1145,8 +1145,8 @@ class DocumentoExtractor:
                                 'teniendo', 'cuenta', 'accion', 'tutela', 'formulada', 'por',
                                 'considerando', 'vista', 'presente', 'en', 'accionados','admitir','interpuesta','afectada',
                                 'usted','oficiosa','como','identificado','traves','apoderado', 'accionante','parte', 'accionada',
-                                'ha','recibido','respuesta','producto','conducta','informa','acudio','medico','particular',
-                                'posteriormente','ael'}
+                                'ha','recibido','respuesta','producto','conducta','informa','acudio', 'ante','medico','particular',
+                                'posteriormente','ael', 'eps'}
 
             def limpiar_nombre(nombre):
                 prefijos = ['senora','señor ', 'señora ', 'sr ', 'sra ', 'dr ', 'dra ', 'ciudadano ', 'ciudadana ','senor']
@@ -1600,7 +1600,9 @@ class DocumentoExtractor:
         # Patrones para identificar explícitamente al accionado o términos equivalentes
             patrones_accionado_equivalentes = [
                 r"(?i)\bACCIONAD[AO]S?:?\s*([^\n,]+)",
-                r"(?i)\bINCIDENTAD[AO]S?:?\s*([^\n,]+)"  # Nuevo patrón para "incidentado"
+                r"(?i)\bINCIDENTAD[AO]S?:?\s*([^\n,]+)",  # Nuevo patrón para "incidentado"
+                r"(?i)vulnerados\s+por\s+([^\n,]+)",  # Detecta entidades vulneradoras
+                r"(?i)ordenar\s+a\s+([^\n,]+)",      # Detecta órdenes directas a entidades
             ]
 
         # Patrón para identificar vinculados
