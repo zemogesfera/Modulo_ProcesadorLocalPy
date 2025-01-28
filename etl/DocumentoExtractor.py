@@ -249,6 +249,15 @@ class DocumentoExtractor:
                     if match_continuo:
                         return match_continuo.group(1)
                     
+                                    # Nuevo patrón para capturar XXXXXXXXXXXXXX XXXXX XX
+
+                    patron_espaciado_nuevo = r'\b(\d{16})\s+(\d{5})\s+(\d{2})\b'
+                    match_espaciado_nuevo = re.search(patron_espaciado_nuevo, linea)
+                    if match_espaciado_nuevo:
+                        numero = f"{match_espaciado_nuevo.group(1)}{match_espaciado_nuevo.group(2)}{match_espaciado_nuevo.group(3)}"
+                        self.logger.debug(f"Encontrado número con patrón espaciado nuevo: {numero}")
+                        return numero
+                
                                     # Formato de 20 dígitos continuos
                     patron_continuo = r'\b(\d{20})\b'
                     match_continuo = re.search(patron_continuo, linea)
@@ -704,7 +713,7 @@ class DocumentoExtractor:
                             dos\s+mil(?:     # La parte inicial 'dos mil'
                                 \s+(uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|
                                 once|doce|trece|catorce|quince|dieciséis|diecisiete|dieciocho|
-                                diecinueve|veinte|veintiuno|veintidós|veintitrés|veinticuatro|
+                                diecinueve|veinte|veintiuno|veintidos|veintidós|veintitres|veintitrés|veinticuatro|
                                 veinticinco|veintiséis|veintisiete|veintiocho|veintinueve|
                                 treinta)
                             )?
@@ -780,7 +789,7 @@ class DocumentoExtractor:
                             inicio = match.start()
                             # Extraer desde el inicio del mes hasta 40 caracteres después
                             fragmento = texto_encabezado[inicio:inicio+90]
-                            fragmentoAntes= inicio-10
+                            fragmentoAntes= inicio-15
                             fragmento2 = texto_encabezado[fragmentoAntes:inicio+10]
                             print("texto:" + fragmento)
                             print("texto2:" + fragmento2)
@@ -814,7 +823,7 @@ class DocumentoExtractor:
                                 diaEncontrado = matchNumero
                                 print(f"Número encontrado2: {matchNumero}")
                                 
-                        if int(diaEncontrado) > 31:     
+                        if diaEncontrado.isdigit() and int(diaEncontrado) > 31:     
                             matchesNro = re.findall(patron_numeros, fragmento2, re.IGNORECASE)
                             for matchNumero in matchesNro:
                                 diaEncontrado = matchNumero
@@ -890,6 +899,7 @@ class DocumentoExtractor:
         # Regex para eliminar cualquier carácter que no sea letra, número o espacio
         texto_limpio = re.sub(r'[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]', '', texto)
         return texto_limpio
+    
     
     def concatenar_hora(self, fecha):
         if self.fechacorreo == None:
@@ -1135,7 +1145,9 @@ class DocumentoExtractor:
                 r'(?i)de\s+su\s+agenciada\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,|\.|$)',
 
                 r'(?i)interpuesta\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|ciudadano|ciudadana)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+CC\.\s+\d+',
-            
+                r'(?i)AGENCIADA\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+AGENTE\s+OFICIOSO)',
+                r'(?i)se\s+concedi[oó]\s+el\s+amparo\s+constitucional\s+invocado\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|ciudadano|ciudadana)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,|\.|\s+en\s+garantía)',
+
 
             ]
 
@@ -1146,7 +1158,7 @@ class DocumentoExtractor:
                                 'considerando', 'vista', 'presente', 'en', 'accionados','admitir','interpuesta','afectada',
                                 'usted','oficiosa','como','identificado','traves','apoderado', 'accionante','parte', 'accionada',
                                 'ha','recibido','respuesta','producto','conducta','informa','acudio', 'ante','medico','particular',
-                                'posteriormente','ael', 'eps'}
+                                'posteriormente','ael','para', 'eps'}
 
             def limpiar_nombre(nombre):
                 prefijos = ['senora','señor ', 'señora ', 'sr ', 'sra ', 'dr ', 'dra ', 'ciudadano ', 'ciudadana ','senor']
@@ -1425,7 +1437,9 @@ class DocumentoExtractor:
                         if match_nombre:
                             return 'CC'
 
-            return None
+        # Si no se encontró ningún tipo de documento pero hay número de identificación, retornar CC por defecto
+            return 'CC'
+        
         except Exception as e:
             self.logger.error(f"Error en buscar_cdgoTpoIdntfccn: {e}")
             return None
