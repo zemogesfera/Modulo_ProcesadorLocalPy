@@ -1147,6 +1147,8 @@ class DocumentoExtractor:
                 r'(?i)interpuesta\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|ciudadano|ciudadana)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+CC\.\s+\d+',
                 r'(?i)AGENCIADA\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+AGENTE\s+OFICIOSO)',
                 r'(?i)se\s+concedi[oó]\s+el\s+amparo\s+constitucional\s+invocado\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|ciudadano|ciudadana)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,|\.|\s+en\s+garantía)',
+                r'(?i)Agenciado\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+Accionado:)',
+
 
 
             ]
