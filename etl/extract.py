@@ -236,7 +236,7 @@ def extract_data(ruta_archivos: str, cantidad: int = None, upscale=False, tpoDcm
     archivos_prioritarios_autoadmite = [
         f for f in archivos 
         if any(keyword in f.lower() for keyword in ('admision','autoadmite', 'autoadmision', 'admite tutela', 'acciontutela', 'autoadmisorio', 'autorequiereincidente', 'auto','autoadmitir','autoadmite','admite',
-                                                    'sentencia','oficio','Oficiofallo','fallo','sentencia',
+                                                    'sentencia','oficio','Oficiofallo','fallo',
                                                     'EscritoIncidente','AutoApertura','PrimerRequerimiento'
                                                     ))
     ]

@@ -295,7 +295,7 @@ class DocumentoExtractor:
                         numero = match_rad_con_formato.group(1).replace(" ", "")
                         self.logger.debug(f"Encontrado número con patrón RAD. con formato: {numero}")
                         return numero
-                    
+
 
                         
 
@@ -315,6 +315,7 @@ class DocumentoExtractor:
                         r'(?i)(?:acción\s+de\s+tutela\s+No\.?\s*)?(\d{2}-\d{3}-\d{2}-\d{2}-\d{3}-\d{4}-\d{5}-\d{2})\b',
                         r'\b(\d{9}-\d{3}-\d{4}-\d{5}-\d{2})\b',
                         r'\b(\d{5}\s\d{2}\s\d{2}\s\d{3}\s\d{4}\s\d{7})\b',
+                        
                         
                         
                         
@@ -1148,6 +1149,7 @@ class DocumentoExtractor:
                 r'(?i)AGENCIADA\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+AGENTE\s+OFICIOSO)',
                 r'(?i)se\s+concedi[oó]\s+el\s+amparo\s+constitucional\s+invocado\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|ciudadano|ciudadana)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,|\.|\s+en\s+garantía)',
                 r'(?i)Agenciado\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+Accionado:)',
+                r'(?i)Incidentalista\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*Incidentado)',
 
 
 
@@ -1160,7 +1162,7 @@ class DocumentoExtractor:
                                 'considerando', 'vista', 'presente', 'en', 'accionados','admitir','interpuesta','afectada',
                                 'usted','oficiosa','como','identificado','traves','apoderado', 'accionante','parte', 'accionada',
                                 'ha','recibido','respuesta','producto','conducta','informa','acudio', 'ante','medico','particular',
-                                'posteriormente','ael','para', 'eps'}
+                                'posteriormente','ael','para', 'eps','calidad'}
 
             def limpiar_nombre(nombre):
                 prefijos = ['senora','señor ', 'señora ', 'sr ', 'sra ', 'dr ', 'dra ', 'ciudadano ', 'ciudadana ','senor']
