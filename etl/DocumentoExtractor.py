@@ -472,7 +472,7 @@ class DocumentoExtractor:
     def buscar_fchaTtla(self):
         patron = r"\bjuzgado\b"
         # Buscar la primera aparición de "juzgado"
-        match = re.search(patron, self.texto, re.IGNORECASE)
+        match = re.search(patron, self.texto[:800], re.IGNORECASE)
         inicioEncontrado = 0
         if match:
                 inicioEncontrado = match.start()
@@ -482,9 +482,10 @@ class DocumentoExtractor:
         return fecha_final_procesada
 
     def buscar_fchaTtla_procesar(self,inicial,final):
-    
+        print(f"p inicial: {inicial}")    
+        print(f"p final: {final}")   
         texto_encabezado = self.texto[inicial:final]
-        self.logger.debug(texto_encabezado)    
+        print(f"texto encabezado inicial: {texto_encabezado}")    
         """
     Busca la fecha en el texto, la convierte al formato YYYY-MM-DD y concatena la hora.
     """
@@ -730,8 +731,168 @@ class DocumentoExtractor:
                 
                 matchMeses = re.finditer(patronMeses,self.eliminar_caracteres_especiales(texto_encabezado), re.IGNORECASE)
                 validacionProceso = 0
+                mesEncontrado = None
+                def procesamientoFechas(fragmento,fragmento2,mesEncontrado):    
+                                    anioEncontrado = None
+                                    matchesYears = re.finditer(patronYears, fragmento, re.IGNORECASE | re.VERBOSE)
+                                    posicionAño = 0
+                                    posicionDia = 0
+                                    for match in matchesYears:
+                                        anioEncontrado = match.group()
+                                        posicionAño  = match.start()
+                                        print(posicionAño)
+                                        print(f"Año encontrado: {match.group()}")
+                                        fragmento = fragmento.replace(anioEncontrado, '')
+                                        break
+                                        
+                                    # Primero eliminamos el mes
+                                    texto_prefinal = fragmento.replace(mesEncontrado, '')
+                                    
+                                        
+                                    print("texto prefinal:" + texto_prefinal)
+                                    
+                                    matchesNro = re.findall(patron_numeros, texto_prefinal, re.IGNORECASE)
+                                    diaEncontrado = None
+                                    
+                                    
+                                    
+                                    validaNumeroSuperior = 0 
+                                    if matchesNro:
+                                        # Mostrar los resultados
+                                        
+                                        
+                                        for matchNumero in matchesNro:
+                                            diaEncontrado = matchNumero
+                                            print(f"Número encontrado1: {matchNumero}")
+                                            
+                                            matchesNroValida= re.finditer(diaEncontrado, fragmento)
+                                            for matchNumero1 in matchesNroValida:
+                                              print(f"pocision dia:{matchNumero1.start()}")
+                                              print(f"pocision anio:{posicionAño}") 
+                                              if matchNumero1.start() > posicionAño:
+                                                validaNumeroSuperior = 1
+                                            
+                                            break
+                                    else:
+                                        validaNumeroSuperior = 1
+                                            
+                                            
+                                    if  validaNumeroSuperior == 1:
+                                        matchesNro = re.findall(patron_numeros, fragmento2, re.IGNORECASE)
+                                        for matchNumero in matchesNro:
+                                            diaEncontrado = matchNumero
+                                            print(f"Número encontrado2: {matchNumero}")
+                                            
+                                    if diaEncontrado.isdigit() and int(diaEncontrado) > 31:     
+                                        matchesNro = re.findall(patron_numeros, fragmento2, re.IGNORECASE)
+                                        for matchNumero in matchesNro:
+                                            diaEncontrado = matchNumero
+                                            print(f"Número encontrado3: {matchNumero}")   
+                                                           
+                            
+                                    if not diaEncontrado and not anioEncontrado and not mesEncontrado: # si no se encuentra los valores se devuelve vacio el valor
+                                        return None    
+                                    else:
+                                        validacionProceso = 1 
+                                                
+                                        
+                                    # Convertir el año a número
+                                    ano_numero = convertir_a_ano(anioEncontrado.lower())  # Convertir el año escrito a numérico
+
+                                    # Convertir el día de texto a número
+                                    if not diaEncontrado.isdigit():
+                                        dia_numero = numeros_escritos[diaEncontrado.lower()]  # Convertir el día escrito a numérico
+                                    else:
+                                        dia_numero =  diaEncontrado  
+
+                                    # Crear la fecha en formato yyyy-mm-dd
+                                    print(dia_numero)
+                                    print(ano_numero)
+                                    fecha_final_encontrada = str(dia_numero) + ' ' + mesEncontrado + ' ' + str(ano_numero)
+                                    print(f"prueba: {fecha_final_encontrada}")
+                                    
+                                    fecha_procesada = dateparser.parse(fecha_final_encontrada, languages=['es'])
+                                    if fecha_procesada:
+                                    
+                                        print(f"fecha procesada final: {fecha_procesada}")
+                                        return fecha_procesada.strftime('%Y-%m-%d')  
+                            
+                def obtener_fecha_mas_reciente(fechas):
+                        # Convertir las fechas de string a objetos datetime
+                        fechas_dt = [fecha.strip() for fecha in fechas if len(fecha.strip()) == 10]
+                        print("Fechas atrapadas:", fechas_dt)
+                        
+                        # Ordenar las fechas en orden descendente
+                        fechas_dt.sort(reverse=True)
+                        
+                        # Obtener la fecha actual
+                        hoy = datetime.today().strftime('%Y-%m-%d')
+                        
+                        # Buscar la fecha más reciente que no sea superior a hoy
+                        for fecha in fechas_dt:
+                            if fecha <= hoy:
+                                return fecha
+                        
+                        # Si todas las fechas son mayores a hoy, devolver la siguiente más reciente
+                        return fechas_dt[-1] if fechas_dt else None           
                 try:
-                    if match:
+                    if matchMeses:    
+                        print("caso 3")
+                        fecha_lista = []
+                        for match in matchMeses:
+                            inicio = match.start()
+                            # Extraer desde el inicio del mes hasta 40 caracteres después
+                            print(inicio)
+                            fragmento = texto_encabezado[inicio+5:inicio+70]
+                            fragmentoAntes= inicio-15
+                            fragmento2 = texto_encabezado[fragmentoAntes:inicio+10]
+                            print("texto:" + fragmento)
+                            print("texto2:" + fragmento2)
+                            print(f"Mes encontrado: {match.group()}")
+                            mesEncontrado = match.group().strip().lower() 
+                            fecha_lista.append(procesamientoFechas(fragmento,fragmento2,mesEncontrado))
+                            print(f"fecha lista:{fecha_lista}")
+                            
+                        return obtener_fecha_mas_reciente(fecha_lista)
+                            
+                            
+                    elif matche2 and validacionProceso == 0:
+                                    print("caso 4")
+                                                                            
+                                    for match in matche1:
+                                        fecha_texto = match.group()
+                                        print(f"Fecha encontrada: {fecha_texto}")
+                                        texto_encabezado.logger.info(fecha_texto)
+                                        # Usar dateparser para analizar la fecha
+                                        fecha_procesada = dateparser.parse(fecha_texto, languages=['es'])
+                                        # fecha_procesada = parser.parse(fecha_texto, fuzzy=True) 
+                                        if fecha_procesada:
+                                            validacionProceso = 1
+                                            return fecha_procesada.strftime('%Y-%m-%d')
+                                        
+                                    for match in matche2:
+                                        fecha_texto = match.group()
+                                        print(f"Fecha encontrada: {fecha_texto}")
+                                        # Usar dateparser para analizar la fecha
+                                        fecha_procesada = dateparser.parse(fecha_texto, languages=['es'])
+                                        # fecha_procesada = parser.parse(fecha_texto, fuzzy=True) 
+                                        if fecha_procesada:
+                                            validacionProceso = 1
+                                            return fecha_procesada.strftime('%Y-%m-%d')
+                                        
+                                        
+                                    for match in matche3:
+                                        fecha_texto = match.group()
+                                        print(f"Fecha encontrada: {fecha_texto}")
+                                        texto_encabezado.logger.info(fecha_texto)
+                                        # Usar dateparser para analizar la fecha
+                                        fecha_procesada = dateparser.parse(fecha_texto, languages=['es'])
+                                        # fecha_procesada = parser.parse(fecha_texto, fuzzy=True) 
+                                        if fecha_procesada:
+                                            validacionProceso = 1
+                                            return fecha_procesada.strftime('%Y-%m-%d')            
+                        
+                    elif match:
                         print("caso 2")
                         fecha_texto = match.group()
                         print(f"Fecha encontrada: {fecha_texto}")
@@ -742,118 +903,12 @@ class DocumentoExtractor:
                             return fecha_procesada.strftime('%Y-%m-%d')
                         else:
                             return None
-                    elif matche2:
-                        print("caso 3")
-                                                                
-                        for match in matche1:
-                            fecha_texto = match.group()
-                            print(f"Fecha encontrada: {fecha_texto}")
-                            texto_encabezado.logger.info(fecha_texto)
-                            # Usar dateparser para analizar la fecha
-                            fecha_procesada = dateparser.parse(fecha_texto, languages=['es'])
-                            # fecha_procesada = parser.parse(fecha_texto, fuzzy=True) 
-                            if fecha_procesada:
-                                texto_encabezado.logger.info('caso31');
-                                validacionProceso = 1
-                                return fecha_procesada.strftime('%Y-%m-%d')
-                            
-                        for match in matche2:
-                            fecha_texto = match.group()
-                            print(f"Fecha encontrada: {fecha_texto}")
-                            # Usar dateparser para analizar la fecha
-                            fecha_procesada = dateparser.parse(fecha_texto, languages=['es'])
-                            # fecha_procesada = parser.parse(fecha_texto, fuzzy=True) 
-                            if fecha_procesada:
-                                texto_encabezado.logger.info('caso32')
-                                validacionProceso = 1
-                                return fecha_procesada.strftime('%Y-%m-%d')
-                            
-                            
-                        for match in matche3:
-                            fecha_texto = match.group()
-                            print(f"Fecha encontrada: {fecha_texto}")
-                            texto_encabezado.logger.info(fecha_texto)
-                            # Usar dateparser para analizar la fecha
-                            fecha_procesada = dateparser.parse(fecha_texto, languages=['es'])
-                            # fecha_procesada = parser.parse(fecha_texto, fuzzy=True) 
-                            if fecha_procesada:
-                                texto_encabezado.logger.info('caso32')
-                                validacionProceso = 1
-                                return fecha_procesada.strftime('%Y-%m-%d')
                     else:
                         return None
                     
-                    mesEncontrado = None
-                    if matchMeses and validacionProceso == 0:    
-                        print("caso especial")
-                        for match in matchMeses:
-                            inicio = match.start()
-                            # Extraer desde el inicio del mes hasta 40 caracteres después
-                            fragmento = texto_encabezado[inicio:inicio+90]
-                            fragmentoAntes= inicio-15
-                            fragmento2 = texto_encabezado[fragmentoAntes:inicio+10]
-                            print("texto:" + fragmento)
-                            print("texto2:" + fragmento2)
-                            print(f"Mes encontrado: {match.group()}")
-                            mesEncontrado = match.group().strip().lower() 
-        
-                        anioEncontrado = None
-                        matchesYears = re.finditer(patronYears, fragmento, re.IGNORECASE | re.VERBOSE)
-                        for match in matchesYears:
-                            anioEncontrado = match.group()
-                            print(f"Año encontrado: {match.group()}")
-                            fragmento = fragmento.replace(anioEncontrado, '')
-                            
-                        # Primero eliminamos el mes
-                        texto_prefinal = fragmento.replace(mesEncontrado, '')
-                        
-                            
-                        print("texto prefinal:" + texto_prefinal)
-                        
-                        matchesNro = re.findall(patron_numeros, texto_prefinal, re.IGNORECASE)
-                        diaEncontrado = None
-                        
-                        if matchesNro:
-                            # Mostrar los resultados
-                            for matchNumero in matchesNro:
-                                diaEncontrado = matchNumero
-                                print(f"Número encontrado1: {matchNumero}")
-                        else:
-                            matchesNro = re.findall(patron_numeros, fragmento2, re.IGNORECASE)
-                            for matchNumero in matchesNro:
-                                diaEncontrado = matchNumero
-                                print(f"Número encontrado2: {matchNumero}")
+                   
                                 
-                        if diaEncontrado.isdigit() and int(diaEncontrado) > 31:     
-                            matchesNro = re.findall(patron_numeros, fragmento2, re.IGNORECASE)
-                            for matchNumero in matchesNro:
-                                diaEncontrado = matchNumero
-                                print(f"Número encontrado3: {matchNumero}")                  
-                
-                        if not diaEncontrado and not anioEncontrado and not mesEncontrado: # si no se encuentra los valores se devuelve vacio el valor
-                            return None    
-                                    
-                            
-                        # Convertir el año a número
-                        ano_numero = convertir_a_ano(anioEncontrado.lower())  # Convertir el año escrito a numérico
-
-                        # Convertir el día de texto a número
-                        if not diaEncontrado.isdigit():
-                            dia_numero = numeros_escritos[diaEncontrado.lower()]  # Convertir el día escrito a numérico
-                        else:
-                            dia_numero =  diaEncontrado  
-
-                        # Crear la fecha en formato yyyy-mm-dd
-                        print(dia_numero)
-                        print(ano_numero)
-                        fecha_final_encontrada = str(dia_numero) + ' ' + mesEncontrado + ' ' + str(ano_numero)
-                        print(f"prueba: {fecha_final_encontrada}")
-                        
-                        fecha_procesada = dateparser.parse(fecha_final_encontrada, languages=['es'])
-                        if fecha_procesada:
-                           
-                            print(f"fecha procesada final: {fecha_procesada}")
-                            return fecha_procesada.strftime('%Y-%m-%d')                 
+                                   
                 except Exception as e:
                         self.logger.error(f"Error al generar fecha tutela: {e}", exc_info=True)
                         return None    
@@ -900,35 +955,6 @@ class DocumentoExtractor:
         # Regex para eliminar cualquier carácter que no sea letra, número o espacio
         texto_limpio = re.sub(r'[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]', '', texto)
         return texto_limpio
-    
-    
-    def concatenar_hora(self, fecha):
-        if self.fechacorreo == None:
-          fechaCorreoFinal = '2025-01-17 10:05:00'
-        else:
-          fechaCorreoFinal =  self.fechacorreo  
-        
-        try:
-            print(f"Fecha extraída: {fecha}")
-            print(f"Fecha correo original: {fechaCorreoFinal}")
- 
-            try:
-                fecha_correo = datetime.strptime(fechaCorreoFinal, "%Y-%m-%d %H:%M:%S.%f")
-            except ValueError:
-                fecha_correo = datetime.strptime(fechaCorreoFinal, "%Y-%m-%d %H:%M:%S")
- 
-            fecha_con_hora = datetime.strptime(fecha, "%Y-%m-%d").replace(
-                hour=fecha_correo.hour,
-                minute=fecha_correo.minute,
-                second=fecha_correo.second,
-                microsecond=0
-            )
- 
-            return fecha_con_hora.strftime("%Y-%m-%d %H:%M:%S") + ".000"
- 
-        except Exception as e:
-            self.logger.error(f"Error al concatenar hora: {e}", exc_info=True)
-            return None 
 
 
 
@@ -1151,7 +1177,8 @@ class DocumentoExtractor:
                 r'(?i)Agenciado\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+Accionado:)',
                 r'(?i)Incidentalista\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*Incidentado)',
 
-                r'(?i)acci[óo]n\s+de\s+tutela\s+promovida\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,?\s+contra)'
+                r'(?i)acci[óo]n\s+de\s+tutela\s+promovida\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,?\s+contra)',
+                r'(?i)INCIDENTISTA\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*INCIDENTADO)'
 
 
 
