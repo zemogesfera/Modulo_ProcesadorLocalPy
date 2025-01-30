@@ -1164,9 +1164,9 @@ class DocumentoExtractor:
                                 'considerando', 'vista', 'presente', 'en', 'accionados','admitir','interpuesta','afectada',
                                 'usted','oficiosa','como','identificado','traves','apoderado', 'accionante','parte', 'accionada',
                                 'ha','recibido','respuesta','producto','conducta','informa','acudio', 'ante','medico','particular',
-                                'posteriormente','ael','para', 'eps','calidad', 'tutelar', 'derecho', 'fundamental', 'seguridad', 'social'
-                                'del', 'cual', 'es', 'titular', 'social', 'del'}
-
+                                'posteriormente','ael','para', 'eps','calidad', 'tutelar', 'derecho', 'fundamental', 'seguridad', 'social',
+                                'acuerdo','al','informe','secretarial', 'donde','indico','haber','llamada', 'del', 'cual', 'es', 'titular',
+                                'social', 'del'}
             def limpiar_nombre(nombre):
                 prefijos = ['senora','señor ', 'señora ', 'sr ', 'sra ', 'dr ', 'dra ', 'ciudadano ', 'ciudadana ','senor']
                 nombre_lower = nombre.lower()
