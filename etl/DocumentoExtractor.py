@@ -288,6 +288,9 @@ class DocumentoExtractor:
                         numero = match_radicadov2.group(1) + match_radicadov2.group(2) + "00"
                         self.logger.debug(f"Encontrado número con patrón radicado con labelv2: {numero}")
                         return numero
+                    
+
+
 
                     patron_rad_con_formato = r'(?i)RAD\.\s*(\d{7}\s\d{3}\s\d{3}\s\d{4}\s\d{5}\s\d{2})'
                     match_rad_con_formato = re.search(patron_rad_con_formato, linea)
@@ -1162,7 +1165,8 @@ class DocumentoExtractor:
                                 'considerando', 'vista', 'presente', 'en', 'accionados','admitir','interpuesta','afectada',
                                 'usted','oficiosa','como','identificado','traves','apoderado', 'accionante','parte', 'accionada',
                                 'ha','recibido','respuesta','producto','conducta','informa','acudio', 'ante','medico','particular',
-                                'posteriormente','ael','para', 'eps','calidad'}
+                                'posteriormente','ael','para', 'eps','calidad','acuerdo','al','informe','secretarial',
+                                'donde','indico','haber','llamada'}
 
             def limpiar_nombre(nombre):
                 prefijos = ['senora','señor ', 'señora ', 'sr ', 'sra ', 'dr ', 'dra ', 'ciudadano ', 'ciudadana ','senor']
