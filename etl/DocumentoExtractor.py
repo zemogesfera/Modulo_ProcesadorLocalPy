@@ -1162,7 +1162,8 @@ class DocumentoExtractor:
                                 'considerando', 'vista', 'presente', 'en', 'accionados','admitir','interpuesta','afectada',
                                 'usted','oficiosa','como','identificado','traves','apoderado', 'accionante','parte', 'accionada',
                                 'ha','recibido','respuesta','producto','conducta','informa','acudio', 'ante','medico','particular',
-                                'posteriormente','ael','para', 'eps','calidad'}
+                                'posteriormente','ael','para', 'eps','calidad', 'tutelar', 'derecho', 'fundamental', 'seguridad', 'social'
+                                'del', 'cual', 'es', 'titular', 'social', 'del'}
 
             def limpiar_nombre(nombre):
                 prefijos = ['senora','señor ', 'señora ', 'sr ', 'sra ', 'dr ', 'dra ', 'ciudadano ', 'ciudadana ','senor']
@@ -1317,13 +1318,26 @@ class DocumentoExtractor:
             contexto_relevante = self.texto[pos:pos + 500]
         
         # Intenta cada patrón en el contexto relevante
+            coincidencias = []
             for patron in patrones:
                 match = re.search(patron, contexto_relevante, re.IGNORECASE)
                 if match:
                     numero = match.group(1).strip()
                     numero_limpio = limpiar_y_validar_numero(numero)
                     if numero_limpio:
-                        return numero_limpio
+                        coincidencias.append((match.start(), numero_limpio))
+                    
+            if coincidencias:
+                # Ordenamos por la posición mas cercana al nombre
+                coincidencias.sort(key=lambda x: x[0])
+
+                # Excluir identiciaciones que vienen despues de palabras como "Aporedado", "Abogado", etc.
+                palabras_excluir = ["apoderado", "abogado", "representante", "doctor"]
+                for pos_id, numero in coincidencias:
+                    texto_hasta_numero = contexto_relevante[:pos_id].lower()
+                    if not any(palabra in texto_hasta_numero for palabra in palabras_excluir):
+                        return numero
+
 
     # Si no se encuentra el número en el contexto cercano, procede a buscar en todo el texto
         patrones_globales = [
@@ -1333,13 +1347,24 @@ class DocumentoExtractor:
             
         ]
     
+        palabras_excluir_contexto = [
+            "gerente", "representante", "legal", "abogado", "apoderado", "doctor", "encargado"
+        ]
+
         for patron in patrones_globales:
             match_global = re.search(patron, self.texto, re.IGNORECASE)
             if match_global:
                 numero = match_global.group(1).strip()
                 numero_limpio = limpiar_y_validar_numero(numero)
+
                 if numero_limpio:
-                    return numero_limpio
+                    # Verificar el contexto antes del número
+                    inicio = max(0, match_global.start() - 120)  # Capturar hasta 120 caracteres antes
+                    contexto_cercano = self.texto[inicio:match_global.start()].lower()
+
+                    # Excluir si alguna palabra clave está cerca del número
+                    if not any(palabra in contexto_cercano for palabra in palabras_excluir_contexto):
+                        return numero_limpio
     
         return None
 
