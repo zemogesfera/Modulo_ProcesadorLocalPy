@@ -6,6 +6,8 @@ import pandas as pd
 import os
 from dateutil import parser
 import dateparser
+from palabras_prohibidas import palabras_prohibidas
+
 
 
 class DocumentoExtractor:
@@ -141,6 +143,7 @@ class DocumentoExtractor:
     Si no puede construir el número completo, retorna la información parcial encontrada.
     """
         try:
+            
         # Primero intentar con los patrones originales
             for linea in self.lines:
                 if "radicado" in linea.lower() or "radicación" in linea.lower() or "rad" in linea.lower():
@@ -956,6 +959,33 @@ class DocumentoExtractor:
         texto_limpio = re.sub(r'[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]', '', texto)
         return texto_limpio
 
+    def concatenar_hora(self, fecha):
+        if self.fechacorreo == None:
+          fechaCorreoFinal = '2025-01-17 10:05:00'
+        else:
+          fechaCorreoFinal =  self.fechacorreo  
+        
+        try:
+            print(f"Fecha extraída: {fecha}")
+            print(f"Fecha correo original: {fechaCorreoFinal}")
+ 
+            try:
+                fecha_correo = datetime.strptime(fechaCorreoFinal, "%Y-%m-%d %H:%M:%S.%f")
+            except ValueError:
+                fecha_correo = datetime.strptime(fechaCorreoFinal, "%Y-%m-%d %H:%M:%S")
+ 
+            fecha_con_hora = datetime.strptime(fecha, "%Y-%m-%d").replace(
+                hour=fecha_correo.hour,
+                minute=fecha_correo.minute,
+                second=fecha_correo.second,
+                microsecond=0
+            )
+ 
+            return fecha_con_hora.strftime("%Y-%m-%d %H:%M:%S") + ".000"
+ 
+        except Exception as e:
+            self.logger.error(f"Error al concatenar hora: {e}", exc_info=True)
+            return None 
 
 
 
@@ -1117,6 +1147,9 @@ class DocumentoExtractor:
             # ... (patrones existentes) ...
             
             # Nuevo patrón específico para agente oficioso
+
+                r'(?i)tutela\s+instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+quien\s+act[úu]a\s+(?:a\s+trav[ée]s\s+de\s+)?agente\s+oficios[oa])',
+
                 r'(?i)instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+(?:como\s+)?agente\s+oficios[oa]\s+de\s+[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+',
                        # Nuevo patrón específico para agente oficioso
                 r'(?i)instaurada\s+por\s+(?:el|la)\s+(?:ciudadano|ciudadana|señor|señora)\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*,\s*quien\s+act[úu]a\s+como\s+agente\s+oficios[oa])',
@@ -1184,16 +1217,8 @@ class DocumentoExtractor:
 
             ]
 
-            palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no', 
-                                'señor', 'señora', 'sr', 'sra', 'sres', 'sras','senor','senora', 
-                                'ciudadano', 'ciudadana', 'agente', 'oficioso', 'representante',
-                                'teniendo', 'cuenta', 'accion', 'tutela', 'formulada', 'por',
-                                'considerando', 'vista', 'presente', 'en', 'accionados','admitir','interpuesta','afectada',
-                                'usted','oficiosa','como','identificado','traves','apoderado', 'accionante','parte', 'accionada',
-                                'ha','recibido','respuesta','producto','conducta','informa','acudio', 'ante','medico','particular',
-                                'posteriormente','ael','para', 'eps','calidad', 'tutelar', 'derecho', 'fundamental', 'seguridad', 'social',
-                                'acuerdo','al','informe','secretarial', 'donde','indico','haber','llamada', 'del', 'cual', 'es', 'titular',
-                                'social', 'del'}
+
+            
             def limpiar_nombre(nombre):
                 prefijos = ['senora','señor ', 'señora ', 'sr ', 'sra ', 'dr ', 'dra ', 'ciudadano ', 'ciudadana ','senor']
                 nombre_lower = nombre.lower()
