@@ -1147,6 +1147,7 @@ class DocumentoExtractor:
             # ... (patrones existentes) ...
             
             # Nuevo patrón específico para agente oficioso
+            
 
                 r'(?i)tutela\s+instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+quien\s+act[úu]a\s+(?:a\s+trav[ée]s\s+de\s+)?agente\s+oficios[oa])',
 
