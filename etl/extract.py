@@ -336,7 +336,8 @@ def extract_data(ruta_archivos: str, cantidad: int = None, upscale=False, tpoDcm
     for resultado in resultado_procesamiento:
         for campo, valor in campos_encontrados.items():
             if campo == 'nmroRdcdoJdcl':
-                if len(valor) < 23:
+                
+                if valor and len(valor) < 23:
                     for nmro_rdcdo_jdcl in extractor.nmrs_rdcds_jdcls_list:
                         if len(nmro_rdcdo_jdcl) > len(valor):
                             valor = nmro_rdcdo_jdcl
