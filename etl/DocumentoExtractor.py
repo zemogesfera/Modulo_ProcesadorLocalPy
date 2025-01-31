@@ -175,13 +175,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón espaciado 21: {numero}")
                         return numero
                     
-                    # Patrón para capturar 20 digitos                    
-                    patron_espaciado_20 = r'\b(\d{15})-(\d{5})\b'
-                    match_espaciado_20 = re.search(patron_espaciado_20, linea)
-                    if match_espaciado_20:
-                        numero = f"{match_espaciado_20.group(1)}{match_espaciado_20.group(2)}00"
-                        self.logger.debug(f"Encontrado número con patrón espaciado 20: {numero}")
-                        return numero
+
                 
                 # Nuevo patrón específico para el formato 76-111-3187-004-2024-00041-00
                     patron_completo_nuevo = r'\b(\d{2})-(\d{3})-(\d{4})-(\d{3})-(\d{4})-(\d{5})-(\d{2})\b'
@@ -1067,6 +1061,8 @@ class DocumentoExtractor:
                 r'\bSENTENCIA\b',
                 r'\bAsunto\b',
                 r'\bRAD\b',
+                r'\bCorreo\b',
+
             ]
 
             palabra_irrelevante = r'\bCARRERA\b'
@@ -1163,14 +1159,6 @@ class DocumentoExtractor:
 
 
 
-
-
-
-
-
-
-    
-
     def buscar_nmbreCmpltoAccnnte(self):
         if self.es_empresa:
             return None
@@ -1181,6 +1169,15 @@ class DocumentoExtractor:
             
             # Nuevo patrón específico para agente oficioso
             
+            # Nuevalista final que toma al afectado independiente de quien sea el agente oficio
+                r'(?i)Agenciado\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*Accionada|$)',
+                r'(?i)de\s+su\s+menor\s+hijo\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*,|\s+identificad[oa]|$)',
+                r'(?i)acci[óo]n\s+de\s+tutela\s+instaurada\s+por\s+(?:el\s+)?(?:ciudadano|ciudadana|señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,?\s+en\s+contra\s+de)',
+                r'(?i)tutela\s+interpuesta\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+contra',
+    
+
+        
+            #Patrones existentes
 
                 r'(?i)tutela\s+instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+quien\s+act[úu]a\s+(?:a\s+trav[ée]s\s+de\s+)?agente\s+oficios[oa])',
 
@@ -1217,7 +1214,6 @@ class DocumentoExtractor:
                 r'(?i)(?:primero|primero\s*:\s*)?avocar\s+(?:el\s+)?conocimiento\s+de\s+la\s+acci[óo]n\s+de\s+tutela\s+por\s+el\s+(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+identificad[oa]\s+con\b',
                 r'(?i)accionante\s*:\s*([A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+identificado\b',
             # Nuevo patrón para capturar nombres en informes secretariales
-                r'(?i)acci[óo]n\s+de\s+tutela\s+instaurada\s+por\s+(?:el\s+)?(?:ciudadano|ciudadana|señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,?\s+en\s+contra\s+de)',
             # Patrón adicional más específico para el formato de informe secretarial
                 r'(?i)INFORME\s+SECRETARIAL:.*?tutela\s+instaurada\s+por\s+(?:el\s+)?(?:ciudadano|ciudadana|señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,?\s+en\s+contra)',
                 r'(?i)acci[óo]n\s+de\s+tutela\s+No\.\s+\d+-\d+\s+promovida\s+por\s+la\s+(?:señora|señor|ciudadana|ciudadano)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?),\s+identificada?\s+con\s+c[ée]dula\s+de\s+ciudadan[íi]a\s+No\.\s+\d+',
