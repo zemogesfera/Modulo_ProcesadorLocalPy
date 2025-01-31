@@ -40,7 +40,7 @@ class DocumentoExtractor:
             self.logger.warning("No se proporcionó ruta del CSV de juzgados. Algunas funcionalidades estarán limitadas.")
 
     def agregar_nmro_rdcdo_jdcl(self, nmro_rdcdo_jdcl):
-        if nmro_rdcdo_jdcl not in self.nmrs_rdcds_jdcls_list:
+        if nmro_rdcdo_jdcl and nmro_rdcdo_jdcl not in self.nmrs_rdcds_jdcls_list:
             self.nmrs_rdcds_jdcls_list.append(nmro_rdcdo_jdcl)
 
     def set_texto(self, texto):
@@ -162,7 +162,6 @@ class DocumentoExtractor:
                     if match_cali:
                         numero = ''.join(match_cali.groups())
                         self.logger.debug(f"Encontrado número con patrón Cali: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
 
 
@@ -174,7 +173,6 @@ class DocumentoExtractor:
                         if len(numero) == 21:
                             numero += "00"
                         self.logger.debug(f"Encontrado número con patrón espaciado 21: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
                     
                     # Patrón para capturar 20 digitos                    
@@ -183,7 +181,6 @@ class DocumentoExtractor:
                     if match_espaciado_20:
                         numero = f"{match_espaciado_20.group(1)}{match_espaciado_20.group(2)}00"
                         self.logger.debug(f"Encontrado número con patrón espaciado 20: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
                 
                 # Nuevo patrón específico para el formato 76-111-3187-004-2024-00041-00
@@ -192,7 +189,6 @@ class DocumentoExtractor:
                     if match_completo_nuevo:
                         numero = ''.join(match_completo_nuevo.groups())
                         self.logger.debug(f"Encontrado número con patrón completo nuevo: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
                     # Nuevo patrón para el formato específico 
                     patron_completo = r'\b(\d{2})-(\d{3})-(\d{4})-(\d{3})-(\d{4})-(\d{5})-\d{2}\b'
@@ -200,7 +196,6 @@ class DocumentoExtractor:
                     if match_completo:
                         numero = ''.join(match_completo.groups())
                         self.logger.debug(f"Encontrado número con patrón completo: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
                     
                                    # Nuevo patrón para capturar números de 21 dígitos sin guiones ni espacios
@@ -209,7 +204,6 @@ class DocumentoExtractor:
                     if match_21:
                         numero = match_21.group(1) + "00"  # Agregar 00 al final
                         self.logger.debug(f"Encontrado número de 21 dígitos: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
                     
 
@@ -220,7 +214,6 @@ class DocumentoExtractor:
                     if match_tulua:
                         numero = f"{match_tulua.group(1)}{match_tulua.group(2)}{match_tulua.group(3)}{match_tulua.group(4)}"
                         self.logger.debug(f"Encontrado número con patrón Tuluá: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
                 
                     patron_tulua = r'\b(\d{2})-\s*(\d{3})-(\d{2})-(\d{2})-(\d{3})-(\d{4})-(\d{5})-(\d{2})\b'
@@ -228,7 +221,6 @@ class DocumentoExtractor:
                     if match_tulua:
                         numero = ''.join(match_tulua.groups())
                         self.logger.debug(f"Encontrado número con patrón Tuluá: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
 
                 # Patrón alternativo que maneja espacios opcionales después de los guiones
@@ -237,7 +229,6 @@ class DocumentoExtractor:
                     if match_flexible:
                         numero = ''.join(match_flexible.groups())
                         self.logger.debug(f"Encontrado número con patrón flexible: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
                                 # Nuevo patrón para el formato específico encontrado
                     patron_espaciado = r'\b(\d{12})\s+(\d{4})\s+(\d{2})\s+(\d{3})\b'
@@ -245,7 +236,6 @@ class DocumentoExtractor:
                     if match_espaciado:
                         numero = f"{match_espaciado.group(1)}{match_espaciado.group(2)}{match_espaciado.group(3)}{match_espaciado.group(4)}"
                         self.logger.debug(f"Encontrado número con patrón espaciado: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
                 # Nuevo patrón para formato específico (12 dígitos - 4 dígitos - 5 dígitos)
                     patron_nuevo = r'\b(\d{12})-(\d{4})-(\d{5})\b'
@@ -253,7 +243,6 @@ class DocumentoExtractor:
                     if match_nuevo:
                         numero = f"{match_nuevo.group(1)}{match_nuevo.group(2)}{match_nuevo.group(3)}"
                         self.logger.debug(f"Encontrado número con nuevo patrón: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
                     
                                     # Patrón específico para el caso con espacios opcionales
@@ -262,14 +251,12 @@ class DocumentoExtractor:
                     if match_espacios:
                         numero = ''.join(match_espacios.groups())
                         self.logger.debug(f"Encontrado número con espacios opcionales: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
 
                 # Formato de 23 dígitos continuos
                     patron_continuo = r'\b(\d{23})\b'
                     match_continuo = re.search(patron_continuo, linea)
                     if match_continuo:
-                        self.agregar_nmro_rdcdo_jdcl(match_continuo.group(1))
                         return match_continuo.group(1)
                     
                                     # Nuevo patrón para capturar XXXXXXXXXXXXXX XXXXX XX
@@ -279,14 +266,12 @@ class DocumentoExtractor:
                     if match_espaciado_nuevo:
                         numero = f"{match_espaciado_nuevo.group(1)}{match_espaciado_nuevo.group(2)}{match_espaciado_nuevo.group(3)}"
                         self.logger.debug(f"Encontrado número con patrón espaciado nuevo: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
                 
                                     # Formato de 20 dígitos continuos
                     patron_continuo = r'\b(\d{20})\b'
                     match_continuo = re.search(patron_continuo, linea)
                     if match_continuo:
-                        self.agregar_nmro_rdcdo_jdcl(match_continuo.group(1))
                         return match_continuo.group(1)
                     
                                     # Nuevo patrón para el formato XXXXXXXXXX-YYYY-XXXXX-XX
@@ -295,7 +280,6 @@ class DocumentoExtractor:
                     if match_nuevo_formato:
                         numero = ''.join(match_nuevo_formato.groups())
                         self.logger.debug(f"Encontrado número con nuevo formato: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
 
                                                 # Nuevo patrón para capturar el formato "RADICADO : XXXXXXXXXXXXXXXXXXXXXXX"
@@ -305,7 +289,6 @@ class DocumentoExtractor:
                     if match_radicado:
                         numero = match_radicado.group(1) + match_radicado.group(2) + "00"
                         self.logger.debug(f"Encontrado número con patrón radicado con label: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
                     
                                         # Nuevo patrón para capturar el formato "RADICADO : XXXXXXXXXXXXXXXXXXXXXXX"
@@ -314,7 +297,6 @@ class DocumentoExtractor:
                     if match_radicadov2:
                         numero = match_radicadov2.group(1) + match_radicadov2.group(2) + "00"
                         self.logger.debug(f"Encontrado número con patrón radicado con labelv2: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
 
                     patron_rad_con_formato = r'(?i)RAD\.\s*(\d{7}\s\d{3}\s\d{3}\s\d{4}\s\d{5}\s\d{2})'
@@ -322,7 +304,6 @@ class DocumentoExtractor:
                     if match_rad_con_formato:
                         numero = match_rad_con_formato.group(1).replace(" ", "")
                         self.logger.debug(f"Encontrado número con patrón RAD. con formato: {numero}")
-                        self.agregar_nmro_rdcdo_jdcl(numero)
                         return numero
 
 
@@ -355,7 +336,6 @@ class DocumentoExtractor:
                         if match:
                             nmroRdcdoJdcl = match.group(1)
                             self.logger.debug(f"Encontrado número con patrón estándar: {nmroRdcdoJdcl}")
-                            self.agregar_nmro_rdcdo_jdcl(nmroRdcdoJdcl.replace(" ", "").replace("-", ""))
                             return nmroRdcdoJdcl.replace(" ", "").replace("-", "")
             
         # Si no se encontró directamente, construir el número de radicado
@@ -383,7 +363,6 @@ class DocumentoExtractor:
                     numero_completo += "00"
 
                 self.logger.info(f"Número de radicado construido: {numero_completo}")
-                self.agregar_nmro_rdcdo_jdcl(numero_completo)
                 return numero_completo
             
             elif self.codigo_juzgado_acumulado and self.numero_parcial_acumulado:
@@ -405,14 +384,12 @@ class DocumentoExtractor:
                     numero_completo += "00"
 
                 self.logger.info(f"Número de radicado construido: {numero_completo}")
-                self.agregar_nmro_rdcdo_jdcl(numero_completo)
                 return numero_completo
         
         # Si solo tenemos el número parcial, lo retornamos
             elif numero_parcial:
                 self.logger.info(f"Retornando número parcial encontrado: {numero_parcial}")
             # Si el número parcial tiene guiones, los removemos
-                self.agregar_nmro_rdcdo_jdcl(numero_parcial.replace('-', ''))
                 return numero_parcial.replace('-', '')            
 
             self.logger.warning("No se encontró ningún número de radicado")
@@ -1618,7 +1595,8 @@ class DocumentoExtractor:
         # 1. Intentar obtener los primeros 12 dígitos del número de radicado
             nmro_radicado = self.buscar_nmroRdcdoJdcl()  # Llamada a la función de búsqueda del número de radicado
             if nmro_radicado:
-            # Asegurar que tiene al menos 12 caracteres
+                self.agregar_nmro_rdcdo_jdcl(nmro_radicado)
+                # Asegurar que tiene al menos 12 caracteres
                 if len(nmro_radicado) >= 12:
                     codigo_radicado = nmro_radicado[:12]
                     self.logger.info(f"Número de radicado encontrado, primeros 12 dígitos: {codigo_radicado}")
