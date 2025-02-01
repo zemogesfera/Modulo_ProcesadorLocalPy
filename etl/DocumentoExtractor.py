@@ -1336,8 +1336,15 @@ class DocumentoExtractor:
 
     
         def limpiar_y_validar_numero(numero):
-            """Limpia puntos, espacios, guiones y comas, y valida la longitud del número."""
+            """
+            Limpia puntos, espacios, guiones, comas, y reemplaza cualquier letra 'i', 'í', 'I', 'Í' con '1'.
+            Valida la longitud del número.
+            """
+            # Reemplazar letras 'i', 'í', 'I', 'Í' por '1'
+            numero = re.sub(r'[iíIÍ]', '1', numero)
+            # Limpiar puntos, espacios, guiones y comas
             numero_limpio = re.sub(r'[.,\s-]', '', numero)
+            # Validar que el número tenga entre 7 y 11 dígitos
             if re.match(r'^\d{7,11}$', numero_limpio):
                 return numero_limpio
             return None
@@ -1381,6 +1388,7 @@ class DocumentoExtractor:
             r"C\.?C\.?\s*(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)\b",
             r"(?:N°|No\.?\s+)([\d.,\s]+)",
             r"[Cc]edula\s+de\s+[Cc]iudadan[ií]a\s+(?:Nro\.?|[Nn][úu]mero\.?)\s*([\d.,\s-]+)",
+            r"CC\s*([\d]+)",
 
                 
                 
@@ -1396,7 +1404,7 @@ class DocumentoExtractor:
             coincidencias = []
             for patron in patrones:
                 match = re.search(patron, contexto_relevante, re.IGNORECASE)
-                if match:
+                if match and len(match.group(1).strip()) >= 7:
                     numero = match.group(1).strip()
                     numero_limpio = limpiar_y_validar_numero(numero)
                     if numero_limpio:
@@ -1419,6 +1427,8 @@ class DocumentoExtractor:
             r"(?:C\.?C\.?|c[eé]dula\s+de\s+ciudadan[íi]a)\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)",
             r"identificado\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)(?:\s*[,\.]|$)",
             r"(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)(?:\s*[,\.]|$)",
+            r"CC\s*([\d]+)",
+            r"Dcdenthcon\s*CC\s*([\dI]+)",
             
         ]
     
@@ -1428,7 +1438,7 @@ class DocumentoExtractor:
 
         for patron in patrones_globales:
             match_global = re.search(patron, self.texto, re.IGNORECASE)
-            if match_global:
+            if match_global and len(match_global.group(1).strip()) >= 7:
                 numero = match_global.group(1).strip()
                 numero_limpio = limpiar_y_validar_numero(numero)
 
