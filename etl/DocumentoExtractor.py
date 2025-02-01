@@ -175,7 +175,14 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón espaciado 21: {numero}")
                         return numero
                     
-
+                # Nuevo patrón para formato con espacios (76001 41 05 004 2024 00613 00)
+                    patron_espacios = r'\b(\d{5})\s+(\d{2})\s+(\d{2})\s+(\d{3})\s+(\d{4})\s+(\d{5})\s+(\d{2})\b'
+                    match_espacios = re.search(patron_espacios, linea)
+                    if match_espacios:
+                        numero = ''.join(match_espacios.groups())
+                        self.logger.debug(f"Encontrado número con patrón espaciado: {numero}")
+                        return numero
+                
                 
                 # Nuevo patrón específico para el formato 76-111-3187-004-2024-00041-00
                     patron_completo_nuevo = r'\b(\d{2})-(\d{3})-(\d{4})-(\d{3})-(\d{4})-(\d{5})-(\d{2})\b'
@@ -500,8 +507,7 @@ class DocumentoExtractor:
 
 
     def buscar_fchaTtla(self):
-        patron = r"\bjuzgado\b"
-        # Buscar la primera aparición de "juzgado"
+        patron = r"\bjuzgado\b"        # Buscar la primera aparición de "juzgado"
         match = re.search(patron, self.texto[:800], re.IGNORECASE)
         inicioEncontrado = 0
         if match:
@@ -1045,6 +1051,8 @@ class DocumentoExtractor:
                 r'\bAsunto\b',
                 r'\bRAD\b',
                 r'\bCorreo\b',
+                r'\bOctubre\b',
+                
 
             ]
 
