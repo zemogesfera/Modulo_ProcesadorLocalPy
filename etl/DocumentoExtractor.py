@@ -862,7 +862,7 @@ class DocumentoExtractor:
                         inicio = match.start()
                         # Extraer desde el inicio del mes hasta 40 caracteres después
                         print(inicio)
-                        fragmento = texto_encabezado[inicio+5:inicio+70]
+                        fragmento = texto_encabezado[inicio+5:inicio+88]
                         fragmentoAntes= inicio-15
                         fragmento2 = texto_encabezado[fragmentoAntes:inicio+10]
                         print("texto:" + fragmento)
