@@ -1156,13 +1156,15 @@ class DocumentoExtractor:
 
         try:
             patrones = [
-            # ... (patrones existentes) ...
-            
-            # Nuevo patrón específico para agente oficioso
+
             
             # Nuevalista final que toma al afectado independiente de quien sea el agente oficio
                 r'(?i)Agenciado\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*Accionada|$)',
+                r'(?i)agente\s+oficios[oa]\s+de\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+en\s+contra|,|\s+contra|\s+identificad[oa]|$)',
                 r'(?i)de\s+su\s+menor\s+hijo\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*,|\s+identificad[oa]|$)',
+                
+                r'(?i)Afectada?\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s|$)',
+
                 r'(?i)acci[óo]n\s+de\s+tutela\s+instaurada\s+por\s+(?:el\s+)?(?:ciudadano|ciudadana|señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,?\s+en\s+contra\s+de)',
                 r'(?i)tutela\s+interpuesta\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+contra',
     
