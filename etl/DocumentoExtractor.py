@@ -1159,6 +1159,7 @@ class DocumentoExtractor:
 
             
             # Nuevalista final que toma al afectado independiente de quien sea el agente oficio
+                r'(?i)se\s+tutel[oó]\s+los\s+derechos\s+fundamentales\s+a\s+la\s+salud\s+y\s+a\s+la\s+vida\s+de\s+la\s+(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*,|\s+ordenando)',
                 r'(?i)Agenciado\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*Accionada|$)',
                 r'(?i)agente\s+oficios[oa]\s+de\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+en\s+contra|,|\s+contra|\s+identificad[oa]|$)',
                 r'(?i)de\s+su\s+menor\s+hijo\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*,|\s+identificad[oa]|$)',
@@ -1234,7 +1235,7 @@ class DocumentoExtractor:
                 r'(?i)Incidentalista\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*Incidentado)',
 
                 r'(?i)acci[óo]n\s+de\s+tutela\s+promovida\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,?\s+contra)',
-                r'(?i)INCIDENTISTA\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*INCIDENTADO)'
+                r'(?i)INCIDENTISTA\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*INCIDENTADO)',
 
 
 
