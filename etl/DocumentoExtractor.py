@@ -1331,12 +1331,15 @@ class DocumentoExtractor:
 
 
     def buscar_nmroIdntfccn(self):
-        """Busca el número de documento del accionante en el texto, manejando múltiples formatos."""
+        """
+        Busca el número de documento del accionante con mayor precisión.
+        Prioriza la autoidentificación directa del accionante.
+        """
+
         nmbreCmpltoAccnnte = self.buscar_nmbreCmpltoAccnnte()
         if not nmbreCmpltoAccnnte:
             return None
-
-
+        
     
         def limpiar_y_validar_numero(numero):
             """
@@ -1352,25 +1355,34 @@ class DocumentoExtractor:
                 return numero_limpio
             return None
 
-
-
-        
         # Patrones ordenados por especificidad
         patrones = [
 
                 
-                
+            #patrones de autoidentifación
+            rf"Yo,\s*{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)([\d.,\s-]+)(?=\s*,|\s*domiciliada|\s*$)",
+            rf"Yo,\s*{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)([\d.,\s-]+)",
+            rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)([\d.,\s-]+)",
+            rf"{re.escape(nmbreCmpltoAccnnte)}(?:\s+\w+)?\s+identificad[oa]\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:No\.?\s*)?(\d{7,11})\b",
+
+
+
             r"[Ii]dentificado\s+con\s+documento\s*:\s*([\d.,\s-]+)",
             r"[Ii]dentificado\s+con\s+documento\s+[Nn]o\.\s*:\s*([\d.,\s-]+)",
             r"[Ii]dentificada?\s+con\s+documento\s*:\s*([\d.,\s-]+)",
-            # Nuevo patrón para capturar el formato específico del caso mencionado
-            r"identificado\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)(?:\s*[,\.]|$)",
+
+            # Nuevo patrón para capturar el formato específico del caso mencionado, se comenta ya que captura cualquier número de cc y se asigna el nuevo
+            #r"identificado\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)(?:\s*[,\.]|$)",
+            rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:portador[oa]?\s+de\s+(?:c[eé]dula|C\.?C\.?)\s*(?:n[úu]mero|No\.?)?\s*)(\d{7,11})\b",
+
             
             # Patrón para el formato específico "C.C N.° 1.005.944.947 de [ciudad]"
             r"C\.?C\.?\s*N\.?°?\s*([\d.,\s]+)\s+de\b",
                 
-            # Patrón específico para capturar casos como "C.C No. 1.107.978.306"
-            r"(?:C\.?C\.?|c[eé]dula\s+de\s+ciudadan[íi]a)\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)",
+            # Patrón específico para capturar casos como "C.C No. 1.107.978.306" se comenta ya que es un proceso generalizado. y se agrega una nueva versión en pruebas 
+            #r"(?:C\.?C\.?|c[eé]dula\s+de\s+ciudadan[íi]a)\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)",
+            rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)(\d{7,11})\b",
+
             
             # Otros patrones
             r"identificada?\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero|No\.?\s+)?([\d.,\s]+)\b",
@@ -1387,11 +1399,14 @@ class DocumentoExtractor:
                             # Nuevo patrón para capturar "C.C. No. 16.278.340 y portador"
             r"C\.?C\.?\s*No\.?\s*([\d.,\s]+)\s+y\s+portador\b",
             
-            # Patrón general para "C.C No. 16.278.340"
-            r"C\.?C\.?\s*(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)\b",
+            # Patrón general para "C.C No. 16.278.340" se comenta ya que no incluye el accionante se incluye uno nuevo en pruebas
+            #r"C\.?C\.?\s*(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)\b",
+            rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificado\s+con\s+documento\s+(?:n[úu]mero|No\.?)?\s*)(\d{7,11})\b"
+
+
             r"(?:N°|No\.?\s+)([\d.,\s]+)",
             r"[Cc]edula\s+de\s+[Cc]iudadan[ií]a\s+(?:Nro\.?|[Nn][úu]mero\.?)\s*([\d.,\s-]+)",
-            r"CC\s*([\d]+)",
+            rf"{re.escape(nmbreCmpltoAccnnte)}\s+([\d.,\s-]+)\s+de\s+[A-Z][a-z]+",
 
                 
                 
@@ -1418,7 +1433,7 @@ class DocumentoExtractor:
                 coincidencias.sort(key=lambda x: x[0])
 
                 # Excluir identiciaciones que vienen despues de palabras como "Aporedado", "Abogado", etc.
-                palabras_excluir = ["apoderado", "abogado", "representante", "doctor"]
+                palabras_excluir = ["apoderado", "abogado", "representante", "doctor","tel"]
                 for pos_id, numero in coincidencias:
                     texto_hasta_numero = contexto_relevante[:pos_id].lower()
                     if not any(palabra in texto_hasta_numero for palabra in palabras_excluir):
@@ -1427,11 +1442,15 @@ class DocumentoExtractor:
 
     # Si no se encuentra el número en el contexto cercano, procede a buscar en todo el texto
         patrones_globales = [
-            r"(?:C\.?C\.?|c[eé]dula\s+de\s+ciudadan[íi]a)\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)",
-            r"identificado\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)(?:\s*[,\.]|$)",
+            
+
+            #se comenta ya que puede capturar cualquier cc y se agrega una nueva 
+            #r"identificado\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)(?:\s*[,\.]|$)",
             r"(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)(?:\s*[,\.]|$)",
             r"CC\s*([\d]+)",
             r"Dcdenthcon\s*CC\s*([\dI]+)",
+            r"C\.?C\.?\s*No\.?\s*([\d.,\s]+)\b",
+
             
         ]
     
@@ -1444,6 +1463,7 @@ class DocumentoExtractor:
             if match_global and len(match_global.group(1).strip()) >= 7:
                 numero = match_global.group(1).strip()
                 numero_limpio = limpiar_y_validar_numero(numero)
+                
 
                 if numero_limpio:
                     # Verificar el contexto antes del número

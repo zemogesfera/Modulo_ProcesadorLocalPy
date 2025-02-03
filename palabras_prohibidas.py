@@ -9,7 +9,9 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'acuerdo','al','informe','secretarial', 'donde','indico','haber','llamada', 'del', 'cual', 'es', 'titular',
 'social', 'del','quien','actua','informo','residente','esta','ciudad','deba','acudir','otras','acciones',
 'constitucionales','pro','su','salud','pueda','verse','afectado','las','trabas','administrativas',
-'admision','fallo','desacato','edad','anos',
+'admision','fallo','desacato','edad','anos','medida','provisional','solicito','ordene','despacho',
+'correspondio','referencia','dentro','termino','proferira','decision','fondo','le','comunicara',
+'oportunamente','cumplase','mi',
 
 #los de arriba son los encontrados en diferentes casos de analisis.
 
