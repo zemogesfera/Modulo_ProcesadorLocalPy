@@ -307,11 +307,32 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón RAD. con formato: {numero}")
                         return numero
 
+                    #RADICACIÓN No. 76-834-40-04-001-2025-00021
+                    patron_radicado_23 = r'\b(\d{2})-(\d{3})-(\d{2})-(\d{2})-(\d{3})-(\d{4})-(\d{5})\b'
+                    match_radicado_23 = re.search(patron_radicado_23, linea)
 
-                        
+                    if match_radicado_23:
+                        numero = ''.join(match_radicado_23.groups()) + "00"
+                        self.logger.debug(f"Encontrado número con patrón radicado 23: {numero}")
+                        return numero
+                    
+                    #patrón de 8 segmentos
+                    patron_radicado_25 = r'\b(\d{2})-(\d{3})-(\d{2})-(\d{2})-(\d{3})-(\d{4})-(\d{5})-(\d{2})\b'
+                    match_radicado_25 = re.search(patron_radicado_25, linea)
 
+                    if match_radicado_25:
+                        numero = ''.join(match_radicado_25.groups())
+                        self.logger.debug(f"Encontrado número con patrón radicado 25: {numero}")
+                        return numero
 
-                        
+                    patron_radicado_23 = r'\b(\d{6})(\d{3})(\d{2})(\d{4})(\d{6})\b'
+                    match_radicado_23 = re.search(patron_radicado_23, linea)
+
+                    if match_radicado_23:
+                        numero = ''.join(match_radicado_23.groups())
+                        self.logger.debug(f"Encontrado número con patrón radicado 23: {numero}")
+                        return numero
+                                  
 
                         
 
@@ -326,8 +347,7 @@ class DocumentoExtractor:
                         r'(?i)(?:acción\s+de\s+tutela\s+No\.?\s*)?(\d{2}-\d{3}-\d{2}-\d{2}-\d{3}-\d{4}-\d{5}-\d{2})\b',
                         r'\b(\d{9}-\d{3}-\d{4}-\d{5}-\d{2})\b',
                         r'\b(\d{5}\s\d{2}\s\d{2}\s\d{3}\s\d{4}\s\d{7})\b',
-                        
-                        
+
                         
                         
                     ]
@@ -1236,6 +1256,8 @@ class DocumentoExtractor:
 
                 r'(?i)acci[óo]n\s+de\s+tutela\s+promovida\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,?\s+contra)',
                 r'(?i)INCIDENTISTA\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*INCIDENTADO)',
+                #nuevo patrón más flexible:
+                r'(?i)acci[óo]n\s+de\s+tutela\s+promovida\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,|\s+por|\s+contra|\.|$)',
 
 
 
@@ -1364,12 +1386,15 @@ class DocumentoExtractor:
             rf"Yo,\s*{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)([\d.,\s-]+)",
             rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)([\d.,\s-]+)",
             rf"{re.escape(nmbreCmpltoAccnnte)}(?:\s+\w+)?\s+identificad[oa]\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:No\.?\s*)?(\d{7,11})\b",
+            rf"{re.escape(nmbreCmpltoAccnnte)}\s*C\.?C\.?\s*\.?\s*:?(\d{7,11})",
 
 
-
+#se comentan ya que son generales
             r"[Ii]dentificado\s+con\s+documento\s*:\s*([\d.,\s-]+)",
             r"[Ii]dentificado\s+con\s+documento\s+[Nn]o\.\s*:\s*([\d.,\s-]+)",
             r"[Ii]dentificada?\s+con\s+documento\s*:\s*([\d.,\s-]+)",
+#patrones de reformación de los 3 anteriores 
+#pendiente los 3 de reformación
 
             # Nuevo patrón para capturar el formato específico del caso mencionado, se comenta ya que captura cualquier número de cc y se asigna el nuevo
             #r"identificado\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)(?:\s*[,\.]|$)",
@@ -1408,15 +1433,28 @@ class DocumentoExtractor:
             r"[Cc]edula\s+de\s+[Cc]iudadan[ií]a\s+(?:Nro\.?|[Nn][úu]mero\.?)\s*([\d.,\s-]+)",
             rf"{re.escape(nmbreCmpltoAccnnte)}\s+([\d.,\s-]+)\s+de\s+[A-Z][a-z]+",
 
+    # Patrón directo con "Yo, {Nombre} identificado con..."
+            rf"Yo,\s*{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)(\d{7,11})\b",
+
+    #  Patrón general con el nombre antes de la identificación
+            rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)(\d{7,11})\b",
+
+    # Variación con "portador de cédula"
+            rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:portador[oa]?\s+de\s+(?:c[eé]dula|C\.?C\.?)\s*(?:n[úu]mero|No\.?)?\s*)(\d{7,11})\b",
                 
+
+                #nuevo contexto:EGIDIO QUINTERO VEGA  
+                #CC No. 16214057
+            rf"{re.escape(nmbreCmpltoAccnnte)}\s*CC\s*No\.?\s*([\d.,\s-]+)",
+
                 
         ]
          # Encuentra todas las posiciones del nombre del accionante en el texto
         posiciones_nombre = [m.start() for m in re.finditer(re.escape(nmbreCmpltoAccnnte), self.texto)]
             # Para cada aparición del nombre, busca el número de documento en el contexto siguiente
         for pos in posiciones_nombre:
-        # Toma el texto después de esta aparición del nombre (limitado a 500 caracteres)
-            contexto_relevante = self.texto[pos:pos + 500]
+        # Toma el texto después de esta aparición del nombre (limitado a 70 caracteres)
+            contexto_relevante = self.texto[pos:pos + 70]
         
         # Intenta cada patrón en el contexto relevante
             coincidencias = []
@@ -1427,13 +1465,15 @@ class DocumentoExtractor:
                     numero_limpio = limpiar_y_validar_numero(numero)
                     if numero_limpio:
                         coincidencias.append((match.start(), numero_limpio))
+                        self.logger.info(f"Patrón coincidente (contexto cercano): {patron} → Número: {numero_limpio}")
+
                     
             if coincidencias:
                 # Ordenamos por la posición mas cercana al nombre
                 coincidencias.sort(key=lambda x: x[0])
 
                 # Excluir identiciaciones que vienen despues de palabras como "Aporedado", "Abogado", etc.
-                palabras_excluir = ["apoderado", "abogado", "representante", "doctor","tel"]
+                palabras_excluir = ["apoderado", "abogado", "representante", "doctor","tel","doctora"]
                 for pos_id, numero in coincidencias:
                     texto_hasta_numero = contexto_relevante[:pos_id].lower()
                     if not any(palabra in texto_hasta_numero for palabra in palabras_excluir):
@@ -1446,10 +1486,10 @@ class DocumentoExtractor:
 
             #se comenta ya que puede capturar cualquier cc y se agrega una nueva 
             #r"identificado\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)(?:\s*[,\.]|$)",
-            r"(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)(?:\s*[,\.]|$)",
-            r"CC\s*([\d]+)",
+            #r"(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)(?:\s*[,\.]|$)",           Demasiado general
+            #r"CC\s*([\d]+)", no esta vinculado al nombre de accionante
             r"Dcdenthcon\s*CC\s*([\dI]+)",
-            r"C\.?C\.?\s*No\.?\s*([\d.,\s]+)\b",
+            #r"C\.?C\.?\s*No\.?\s*([\d.,\s]+)\b",      Captura números de cualquier persona
 
             
         ]
@@ -1472,6 +1512,8 @@ class DocumentoExtractor:
 
                     # Excluir si alguna palabra clave está cerca del número
                     if not any(palabra in contexto_cercano for palabra in palabras_excluir_contexto):
+                        self.logger.info(f"Patrón coincidente (global): {patron} → Número: {numero_limpio}")
+
                         return numero_limpio
     
         return None
