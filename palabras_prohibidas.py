@@ -11,7 +11,9 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'constitucionales','pro','su','salud','pueda','verse','afectado','las','trabas','administrativas',
 'admision','fallo','desacato','edad','anos','medida','provisional','solicito','ordene','despacho',
 'correspondio','referencia','dentro','termino','proferira','decision','fondo','le','comunicara',
-'oportunamente','cumplase','mi',
+'oportunamente','cumplase','mi','tia','tenga','relacion','subordinacion','indefension','frente','o',
+'esposa','suministro','medicamentos','prescritos','tratante','forma','oportuna','terapias','fundacion',
+'fin','preste','valle','lili',
 
 #los de arriba son los encontrados en diferentes casos de analisis.
 

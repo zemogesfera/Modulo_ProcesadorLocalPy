@@ -1188,7 +1188,12 @@ class DocumentoExtractor:
 
                 r'(?i)acci[óo]n\s+de\s+tutela\s+instaurada\s+por\s+(?:el\s+)?(?:ciudadano|ciudadana|señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,?\s+en\s+contra\s+de)',
                 r'(?i)tutela\s+interpuesta\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+contra',
-    
+                r'(?i)en\s+nombre\s+y\s+representaci[óo]n\s+de\s+la\s+menor\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s+RC\.|\s+eleva|\s*$)',
+                r'(?i)quien actúa como agente oficioso\s+de\s+su\s+hij[oa]\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=,|\s+en\s+contra\s+de|\s+\()',
+                r'(?i)Accionante:\s+[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?\s+como\s+agente\s+oficioso\s+de\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)',
+                r'(?i)Beneficiaria:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)',
+
+
 
         
             #Patrones existentes
@@ -1387,8 +1392,22 @@ class DocumentoExtractor:
             rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)([\d.,\s-]+)",
             rf"{re.escape(nmbreCmpltoAccnnte)}(?:\s+\w+)?\s+identificad[oa]\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:No\.?\s*)?(\d{7,11})\b",
             rf"{re.escape(nmbreCmpltoAccnnte)}\s*C\.?C\.?\s*\.?\s*:?(\d{7,11})",
+            rf"{re.escape(nmbreCmpltoAccnnte)},?\s*identificad[oa]\s+con\s*la?\s*c[eé]dula\s+de\s+ciudadan[ií]a\s*(?:No\.?)?\s*([\d\.,\s]+)",
 
 
+
+        # Patrones en pruenbas 
+            rf"{re.escape(nmbreCmpltoAccnnte.upper())}.*?(?:identificad[oa]\s+con\s+(?:la\s+)?c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero)?\s*)([\d.,\s-]+)",
+            rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:la\s+)?c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero)?\s*)([\d.,\s-]+)",
+        # Patrón para captura directa con C.C.
+            rf"{re.escape(nmbreCmpltoAccnnte.upper())}\s*C\.C\.\s*([\d.,\s-]+)",
+            rf"{re.escape(nmbreCmpltoAccnnte)}\s*C\.C\.\s*([\d.,\s-]+)",
+            rf"{re.escape(nmbreCmpltoAccnnte.upper())},\s*mayor\s+de\s+edad,\s*identificada\s+con\s+la\s+c[ée]dula\s+de\s+ciudadan[íi]a\s+n[úu]mero\s*([\d\.,\s]+)\s*expedida",
+            rf"{re.escape(nmbreCmpltoAccnnte.upper())}\s+C\.C\.\s*([\d\.,\s]+)\s+de\s+Bol[ií]var",
+            rf"{re.escape(nmbreCmpltoAccnnte.upper())},\s*mayor\s+de\s+edad,\s*identificada\s+con\s*la?\s*c[eé]dula\s+de\s+ciudadan[ií]a\s+n[uú]mero\s*([\d\.,\s]+)\s*expedida",
+
+
+            
 #se comentan ya que son generales
             r"[Ii]dentificado\s+con\s+documento\s*:\s*([\d.,\s-]+)",
             r"[Ii]dentificado\s+con\s+documento\s+[Nn]o\.\s*:\s*([\d.,\s-]+)",
@@ -1408,7 +1427,7 @@ class DocumentoExtractor:
             #r"(?:C\.?C\.?|c[eé]dula\s+de\s+ciudadan[íi]a)\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)",
             rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)(\d{7,11})\b",
 
-            
+            rf"{re.escape(nmbreCmpltoAccnnte)}.*?RC\.\s*([\d.,\s-]+)",
             # Otros patrones
             r"identificada?\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero|No\.?\s+)?([\d.,\s]+)\b",
             r"identificad[oa]\s+con\s+(?:c\.?c\.?|c[eé]dula)(?:\s+de\s+ciudadan[íi]a)?\s+(?:n[úu]mero|No\.?\s+)?([\d.,\s]+)\b",
@@ -1454,7 +1473,7 @@ class DocumentoExtractor:
             # Para cada aparición del nombre, busca el número de documento en el contexto siguiente
         for pos in posiciones_nombre:
         # Toma el texto después de esta aparición del nombre (limitado a 70 caracteres)
-            contexto_relevante = self.texto[pos:pos + 70]
+            contexto_relevante = self.texto[pos:pos + 500]
         
         # Intenta cada patrón en el contexto relevante
             coincidencias = []
@@ -1473,7 +1492,7 @@ class DocumentoExtractor:
                 coincidencias.sort(key=lambda x: x[0])
 
                 # Excluir identiciaciones que vienen despues de palabras como "Aporedado", "Abogado", etc.
-                palabras_excluir = ["apoderado", "abogado", "representante", "doctor","tel","doctora"]
+                palabras_excluir = ["apoderado", "abogado", "representante", "doctor","tel","doctora","ext"]
                 for pos_id, numero in coincidencias:
                     texto_hasta_numero = contexto_relevante[:pos_id].lower()
                     if not any(palabra in texto_hasta_numero for palabra in palabras_excluir):
@@ -1545,7 +1564,8 @@ class DocumentoExtractor:
             r'portador[a]? de la\s+(C\.?C\.?|T\.?I\.?|RC|CE|P\.?P\.?)\s+No\.',
             r'cédula\s+de\s+ciudadan[ií]a\s+No\.\s*(\d{1,2}(\.\d{1,3}){2,3})',
             r'cédula\s+de\s+ciudadan[ií]a\s+No\.\s*([\d\.\-]+)',
-            r'ACCIONANTE:.*?\s(C\.?C\.?|T\.?I\.?|RC|CE|P\.?P\.?)\b'
+            r'ACCIONANTE:.*?\s(C\.?C\.?|T\.?I\.?|RC|CE|P\.?P\.?)\b',
+            rf"{re.escape(nmbreCmpltoAccnnte)}.*?(RC|C\.?C\.?|T\.?I\.?)\.",
 
             
             
@@ -1560,6 +1580,8 @@ class DocumentoExtractor:
             'CC': 'CC',
             'registro civil': 'RC',
             'RC': 'RC',
+            'RC.': 'RC',
+
             'tarjeta de identidad': 'TI',
             'T.I.': 'TI',
             'TI': 'TI',
