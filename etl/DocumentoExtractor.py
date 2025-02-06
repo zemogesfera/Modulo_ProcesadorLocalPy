@@ -536,7 +536,7 @@ class DocumentoExtractor:
         else:
                 inicioEncontrado = 0
         fecha_final_procesada = self.buscar_fchaTtla_procesar(inicioEncontrado,800)
-        if fecha_final_procesada ==None:
+        if fecha_final_procesada == None:
             fecha_final_procesada = self.buscar_fchaTtla_procesar(0,1400)
 
             
