@@ -527,7 +527,8 @@ class DocumentoExtractor:
 
 
     def buscar_fchaTtla(self):
-        patron = r"\bjuzgado\b"        # Buscar la primera aparición de "juzgado"
+        patron = r"\bjuzgado\b"
+        # Buscar la primera aparición de "juzgado"
         match = re.search(patron, self.texto[:800], re.IGNORECASE)
         inicioEncontrado = 0
         if match:
@@ -535,8 +536,12 @@ class DocumentoExtractor:
         else:
                 inicioEncontrado = 0
         fecha_final_procesada = self.buscar_fchaTtla_procesar(inicioEncontrado,800)
-        return fecha_final_procesada
+        if fecha_final_procesada ==None:
+            fecha_final_procesada = self.buscar_fchaTtla_procesar(0,1400)
 
+            
+        return fecha_final_procesada
+    
     def buscar_fchaTtla_procesar(self,inicial,final):
         print(f"p inicial: {inicial}")    
         print(f"p final: {final}")   
