@@ -13,7 +13,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'correspondio','referencia','dentro','termino','proferira','decision','fondo','le','comunicara',
 'oportunamente','cumplase','mi','tia','tenga','relacion','subordinacion','indefension','frente','o',
 'esposa','suministro','medicamentos','prescritos','tratante','forma','oportuna','terapias','fundacion',
-'fin','preste','valle','lili',
+'fin','preste','valle','lili','nina','interpone',
 
 #los de arriba son los encontrados en diferentes casos de analisis.
 

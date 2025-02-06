@@ -1073,6 +1073,7 @@ class DocumentoExtractor:
                 r'\bCorreo\b',
                 r'\bOctubre\b',
                 
+                
 
             ]
 
@@ -1264,6 +1265,7 @@ class DocumentoExtractor:
                 #nuevo patrón más flexible:
                 r'(?i)acci[óo]n\s+de\s+tutela\s+promovida\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,|\s+por|\s+contra|\.|$)',
 
+                r'(?i)incidentante:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*\n|\s*incidentado:)',
 
 
             ]
