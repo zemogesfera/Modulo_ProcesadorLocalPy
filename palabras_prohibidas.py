@@ -3365,5 +3365,6 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'comunicación de derechos', 'abogacía de derechos',
 'promoción de derechos', 'educación en derechos',
 'concientización sobre derechos',
+'foc'
 }
 
