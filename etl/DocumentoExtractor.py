@@ -22,6 +22,7 @@ class DocumentoExtractor:
         self.codigo_juzgado_acumulado = None
         self.numero_parcial_acumulado = None
         self.nmrs_rdcds_jdcls_list = []
+        self.nmrs_idntfccn_accnnte = []
  
         # Configurar la ruta del CSV relativa al directorio del script
         ruta_base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -42,6 +43,18 @@ class DocumentoExtractor:
     def agregar_nmro_rdcdo_jdcl(self, nmro_rdcdo_jdcl):
         if nmro_rdcdo_jdcl and nmro_rdcdo_jdcl not in self.nmrs_rdcds_jdcls_list:
             self.nmrs_rdcds_jdcls_list.append(nmro_rdcdo_jdcl)
+
+    def agregar_nmro_idntfccn_accnnte(self, nmro_idntfccn_accnnte, distancia):
+        """
+        Agrega un número de identificación asegurando que, si se repite, se mantenga el que tiene menor distancia.
+        """
+        for item in self.nmrs_idntfccn_accnnte:
+            if item["numero"] == nmro_idntfccn_accnnte:
+                if distancia < item["distancia"]:  # Reemplaza si la nueva distancia es menor
+                    item["distancia"] = distancia
+                return
+
+        self.nmrs_idntfccn_accnnte.append({"numero": nmro_idntfccn_accnnte, "distancia": distancia})
 
     def set_texto(self, texto):
         """Establece el texto a procesar"""
@@ -1387,7 +1400,6 @@ class DocumentoExtractor:
             # Validar que el número tenga entre 7 y 11 dígitos
             if re.match(r'^\d{7,11}$', numero_limpio):
                 return numero_limpio
-            return None
 
         # Patrones ordenados por especificidad
         patrones = [
@@ -1403,10 +1415,10 @@ class DocumentoExtractor:
 
 
 
-        # Patrones en pruenbas 
+            # Patrones en pruenbas 
             rf"{re.escape(nmbreCmpltoAccnnte.upper())}.*?(?:identificad[oa]\s+con\s+(?:la\s+)?c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero)?\s*)([\d.,\s-]+)",
             rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:la\s+)?c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero)?\s*)([\d.,\s-]+)",
-        # Patrón para captura directa con C.C.
+            # Patrón para captura directa con C.C.
             rf"{re.escape(nmbreCmpltoAccnnte.upper())}\s*C\.C\.\s*([\d.,\s-]+)",
             rf"{re.escape(nmbreCmpltoAccnnte)}\s*C\.C\.\s*([\d.,\s-]+)",
             rf"{re.escape(nmbreCmpltoAccnnte.upper())},\s*mayor\s+de\s+edad,\s*identificada\s+con\s+la\s+c[ée]dula\s+de\s+ciudadan[íi]a\s+n[úu]mero\s*([\d\.,\s]+)\s*expedida",
@@ -1415,12 +1427,12 @@ class DocumentoExtractor:
 
 
             
-#se comentan ya que son generales
+            #se comentan ya que son generales
             r"[Ii]dentificado\s+con\s+documento\s*:\s*([\d.,\s-]+)",
             r"[Ii]dentificado\s+con\s+documento\s+[Nn]o\.\s*:\s*([\d.,\s-]+)",
             r"[Ii]dentificada?\s+con\s+documento\s*:\s*([\d.,\s-]+)",
-#patrones de reformación de los 3 anteriores 
-#pendiente los 3 de reformación
+            #patrones de reformación de los 3 anteriores 
+            #pendiente los 3 de reformación
 
             # Nuevo patrón para capturar el formato específico del caso mencionado, se comenta ya que captura cualquier número de cc y se asigna el nuevo
             #r"identificado\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)(?:\s*[,\.]|$)",
@@ -1459,90 +1471,45 @@ class DocumentoExtractor:
             r"[Cc]edula\s+de\s+[Cc]iudadan[ií]a\s+(?:Nro\.?|[Nn][úu]mero\.?)\s*([\d.,\s-]+)",
             rf"{re.escape(nmbreCmpltoAccnnte)}\s+([\d.,\s-]+)\s+de\s+[A-Z][a-z]+",
 
-    # Patrón directo con "Yo, {Nombre} identificado con..."
+            # Patrón directo con "Yo, {Nombre} identificado con..."
             rf"Yo,\s*{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)(\d{7,11})\b",
 
-    #  Patrón general con el nombre antes de la identificación
+            #  Patrón general con el nombre antes de la identificación
             rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)(\d{7,11})\b",
 
-    # Variación con "portador de cédula"
+            # Variación con "portador de cédula"
             rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:portador[oa]?\s+de\s+(?:c[eé]dula|C\.?C\.?)\s*(?:n[úu]mero|No\.?)?\s*)(\d{7,11})\b",
                 
 
-                #nuevo contexto:EGIDIO QUINTERO VEGA  
-                #CC No. 16214057
+            #nuevo contexto:EGIDIO QUINTERO VEGA  
+            #CC No. 16214057
             rf"{re.escape(nmbreCmpltoAccnnte)}\s*CC\s*No\.?\s*([\d.,\s-]+)",
 
                 
         ]
-         # Encuentra todas las posiciones del nombre del accionante en el texto
+        # Encuentra todas las posiciones del nombre del accionante en el texto
         posiciones_nombre = [m.start() for m in re.finditer(re.escape(nmbreCmpltoAccnnte), self.texto)]
-            # Para cada aparición del nombre, busca el número de documento en el contexto siguiente
+        # Para cada aparición del nombre, busca el número de documento en el contexto siguiente
         for pos in posiciones_nombre:
-        # Toma el texto después de esta aparición del nombre (limitado a 70 caracteres)
-            contexto_relevante = self.texto[pos:pos + 500]
-        
-        # Intenta cada patrón en el contexto relevante
-            coincidencias = []
+            # Toma el texto después de esta aparición del nombre (limitado a 70 caracteres)
+            contexto_relevante = self.texto[pos:pos + 500]        
+            # Intenta cada patrón en el contexto relevante
             for patron in patrones:
                 match = re.search(patron, contexto_relevante, re.IGNORECASE)
                 if match and len(match.group(1).strip()) >= 7:
                     numero = match.group(1).strip()
                     numero_limpio = limpiar_y_validar_numero(numero)
                     if numero_limpio:
-                        coincidencias.append((match.start(), numero_limpio))
-                        self.logger.info(f"Patrón coincidente (contexto cercano): {patron} → Número: {numero_limpio}")
-
-                    
-            if coincidencias:
-                # Ordenamos por la posición mas cercana al nombre
-                coincidencias.sort(key=lambda x: x[0])
-
-                # Excluir identiciaciones que vienen despues de palabras como "Aporedado", "Abogado", etc.
-                palabras_excluir = ["apoderado", "abogado", "representante", "doctor","tel","doctora","ext"]
-                for pos_id, numero in coincidencias:
-                    texto_hasta_numero = contexto_relevante[:pos_id].lower()
-                    if not any(palabra in texto_hasta_numero for palabra in palabras_excluir):
-                        return numero
-
-
-    # Si no se encuentra el número en el contexto cercano, procede a buscar en todo el texto
-        patrones_globales = [
-            
-
-            #se comenta ya que puede capturar cualquier cc y se agrega una nueva 
-            #r"identificado\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)(?:\s*[,\.]|$)",
-            #r"(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)(?:\s*[,\.]|$)",           Demasiado general
-            #r"CC\s*([\d]+)", no esta vinculado al nombre de accionante
-            r"Dcdenthcon\s*CC\s*([\dI]+)",
-            #r"C\.?C\.?\s*No\.?\s*([\d.,\s]+)\b",      Captura números de cualquier persona
-
-            
-        ]
+                        distancia = match.start() - contexto_relevante.find(nmbreCmpltoAccnnte)  # Calcula la distancia
+                        if distancia > 0:  # Asegurar que la distancia sea válida
+                            self.logger.debug(f"Encontrado número de identificación: {numero_limpio} con distancia: {distancia}")
+                            self.agregar_nmro_idntfccn_accnnte(numero_limpio, distancia)
     
-        palabras_excluir_contexto = [
-            "gerente", "representante", "legal", "abogado", "apoderado", "doctor", "encargado"
-        ]
+        if not self.nmrs_idntfccn_accnnte:
+            self.logger.error(f"No se encontraron números de identificación del accionante en el texto")
+            return None
 
-        for patron in patrones_globales:
-            match_global = re.search(patron, self.texto, re.IGNORECASE)
-            if match_global and len(match_global.group(1).strip()) >= 7:
-                numero = match_global.group(1).strip()
-                numero_limpio = limpiar_y_validar_numero(numero)
-                
-
-                if numero_limpio:
-                    # Verificar el contexto antes del número
-                    inicio = max(0, match_global.start() - 120)  # Capturar hasta 120 caracteres antes
-                    contexto_cercano = self.texto[inicio:match_global.start()].lower()
-
-                    # Excluir si alguna palabra clave está cerca del número
-                    if not any(palabra in contexto_cercano for palabra in palabras_excluir_contexto):
-                        self.logger.info(f"Patrón coincidente (global): {patron} → Número: {numero_limpio}")
-
-                        return numero_limpio
-    
-        return None
+        return min(self.nmrs_idntfccn_accnnte, key=lambda x: x["distancia"])["numero"] 
 
     def buscar_cdgoTpoIdntfccn(self):
         """

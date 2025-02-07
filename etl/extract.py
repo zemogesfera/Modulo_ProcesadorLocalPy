@@ -333,6 +333,7 @@ def extract_data(ruta_archivos: str, cantidad: int = None, upscale=False, tpoDcm
         except Exception as e:
             logger.error(f"Error procesando el archivo {archivo}: {e}", exc_info=True)
 
+    logger.info(f'Numeros de identificacion encontrados: {extractor.nmrs_idntfccn_accnnte}')
     for resultado in resultado_procesamiento:
         for campo, valor in campos_encontrados.items():
             if campo == 'nmroRdcdoJdcl':
@@ -344,6 +345,14 @@ def extract_data(ruta_archivos: str, cantidad: int = None, upscale=False, tpoDcm
                     
                     if resultado[campo]:
                         resultado[campo] = valor
+
+            if campo == 'nmroIdntfccn':
+                if extractor.nmrs_idntfccn_accnnte:
+                    valor = min(extractor.nmrs_idntfccn_accnnte, key=lambda x: x["distancia"])["numero"]
+
+                    if resultado[campo]:
+                        resultado[campo] = valor
+            
             resultado[campo] = valor if resultado.get(campo) is None else resultado[campo]
 
     return resultado_procesamiento
