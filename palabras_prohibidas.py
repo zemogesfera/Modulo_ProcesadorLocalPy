@@ -14,7 +14,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'oportunamente','cumplase','mi','tia','tenga','relacion','subordinacion','indefension','frente','o',
 'esposa','suministro','medicamentos','prescritos','tratante','forma','oportuna','terapias','fundacion',
 'fin','preste','valle','lili','nina','interpone','siendo','incumplida','ya','puede','procede',
-'tramite',
+'tramite','acdo',
 
 
 #los de arriba son los encontrados en diferentes casos de analisis.
