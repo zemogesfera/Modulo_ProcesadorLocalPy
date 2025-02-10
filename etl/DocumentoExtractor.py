@@ -1223,13 +1223,14 @@ class DocumentoExtractor:
 
             
             # Nuevalista final que toma al afectado independiente de quien sea el agente oficio
+
                 r'(?i)se\s+tutel[oó]\s+los\s+derechos\s+fundamentales\s+a\s+la\s+salud\s+y\s+a\s+la\s+vida\s+de\s+la\s+(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*,|\s+ordenando)',
                 r'(?i)Agenciado\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*Accionada|$)',
                 r'(?i)agente\s+oficios[oa]\s+de\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+en\s+contra|,|\s+contra|\s+identificad[oa]|$)',
                 r'(?i)de\s+su\s+menor\s+hijo\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*,|\s+identificad[oa]|$)',
                 
                 r'(?i)Afectada?\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s|$)',
-
+                r'(?i)ACCI[OÓ]N\s+DE\s+TUTELA\s+A[CCS]IONANTE:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*\.|\s+ACCIONADO)',
                 r'(?i)acci[óo]n\s+de\s+tutela\s+instaurada\s+por\s+(?:el\s+)?(?:ciudadano|ciudadana|señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,?\s+en\s+contra\s+de)',
                 r'(?i)tutela\s+interpuesta\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+contra',
                 r'(?i)en\s+nombre\s+y\s+representaci[óo]n\s+de\s+la\s+menor\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s+RC\.|\s+eleva|\s*$)',
@@ -1304,7 +1305,6 @@ class DocumentoExtractor:
                 r'(?i)Incidentalista\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*Incidentado)',
 
                 r'(?i)acci[óo]n\s+de\s+tutela\s+promovida\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,?\s+contra)',
-                r'(?i)INCIDENTISTA\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*INCIDENTADO)',
                 #nuevo patrón más flexible:
                 r'(?i)acci[óo]n\s+de\s+tutela\s+promovida\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,|\s+por|\s+contra|\.|$)',
 
