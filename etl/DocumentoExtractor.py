@@ -1517,7 +1517,8 @@ class DocumentoExtractor:
  
             #nuevo contexto:EGIDIO QUINTERO VEGA  
             #CC No. 16214057
-            r"(?:C\.?C\.?|c[eé]dula\s+de\s+ciudadan[íi]a)\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)"
+            r"(?:C\.?C\.?|c[eé]dula\s+de\s+ciudadan[íi]a)\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)",
+            r"identificad[oa]\s+con\s+numero\s+de\s+C\.?C\.?\s*[:.]?\s*([\d.,-]+)"
 
             
         ])
