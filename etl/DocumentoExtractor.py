@@ -345,6 +345,33 @@ class DocumentoExtractor:
                         numero = ''.join(match_radicado_23.groups())
                         self.logger.debug(f"Encontrado número con patrón radicado 23: {numero}")
                         return numero
+                    
+
+                    patron_radicado_desacato1 = r'\b(\d{10})\s*-\s*(\d{2})\s*-\s*(\d{9})\s*-\s*(\d{2})\b'
+                    match_radicado_desacato1 = re.search(patron_radicado_desacato1, linea)
+
+                    if match_radicado_desacato1:
+                        numero = ''.join(match_radicado_desacato1.groups())
+                        self.logger.debug(f"Encontrado número con patrón radicado 23 desacato1: {numero}")
+                        return numero
+                    
+                    patron_radicado_desacato2 = r'\b(\d{10})-(\d{2})-(\d{4})-(\d{5})-(\d{2})\b'   
+                    match_radicado_desacato2 = re.search(patron_radicado_desacato2, linea)
+
+                    if match_radicado_desacato2:
+                        numero_radicado_desacato2 = ''.join(match_radicado_desacato2.groups())  
+                        self.logger.debug(f"Encontrado número de radicado desacato2: {numero_radicado_desacato2}")
+                        return numero_radicado_desacato2
+
+                    patron_radicado_fallo1 = r'Radicaci[óo]n:?\s*(\d{12})\s*(\d{11})'
+                    patron_radicado_fallo1 = re.search(patron_radicado_fallo1, linea)
+                    if patron_radicado_fallo1:
+                        numero_radicado = ''.join(patron_radicado_fallo1.groups())
+                        self.logger.debug(f"Encontrado número de radicado: {numero_radicado}")
+                        return numero_radicado
+
+                    
+
                                   
 
                         
@@ -360,8 +387,6 @@ class DocumentoExtractor:
                         r'(?i)(?:acción\s+de\s+tutela\s+No\.?\s*)?(\d{2}-\d{3}-\d{2}-\d{2}-\d{3}-\d{4}-\d{5}-\d{2})\b',
                         r'\b(\d{9}-\d{3}-\d{4}-\d{5}-\d{2})\b',
                         r'\b(\d{5}\s\d{2}\s\d{2}\s\d{3}\s\d{4}\s\d{7})\b',
-
-                        
                         
                     ]
                 
@@ -1431,7 +1456,8 @@ class DocumentoExtractor:
                 rf"{re.escape(nmbreCmpltoAccnnte)}\s*CC\s*No\.?\s*([\d.,\s-]+)",
                 rf"{re.escape(nmbreCmpltoAccnnte)}.*?ciudadan[íi]a\s+No\.?\s*(\d{6,11}(?:\.\d{3})*)",
                 rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificado\s+con\s+documento\s+(?:n[úu]mero|No\.?)?\s*)(\d{7,11})\b",
-                
+
+            
             ]
 
 
@@ -1493,6 +1519,7 @@ class DocumentoExtractor:
             #CC No. 16214057
             r"(?:C\.?C\.?|c[eé]dula\s+de\s+ciudadan[íi]a)\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)"
 
+            
         ])
 
 
@@ -1734,7 +1761,7 @@ class DocumentoExtractor:
                 r'(?i)denegar.*medida\s*provisional',
                 r'(?i)no\s*ha\s*lugar.*medida\s*provisional',
                 r'(?i)admite\s*tutela,?\s*niega\s*medida\s*provisional',
-
+                r'(?i)tercero:\s*abstenerse\s*de\s*decretar\s*la\s*medida\s*provisional',
             ]
 
         # Patrones que indican CONCESIÓN de medida provisional
