@@ -1556,7 +1556,7 @@ class DocumentoExtractor:
                     if numero_limpio:
                         for nombre in nombres_validar:
                             distancia = match.start() - contexto_relevante.find(nmbreCmpltoAccnnte)  # Calcula la distancia
-                            if distancia > 1 and distancia <= 250:  # Asegurar que la distancia sea válida
+                            if distancia > 1 and distancia <= 100:  # Asegurar que la distancia sea válida
                                 self.logger.debug(f"Encontrado número de identificación: {numero_limpio} con distancia: {distancia} al nombre '{nombre}'")
                                 self.agregar_nmro_idntfccn_accnnte(numero_limpio, distancia)
     
