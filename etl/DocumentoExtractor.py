@@ -147,6 +147,8 @@ class DocumentoExtractor:
                 numero = match.group(2).strip().zfill(5)
                 self.logger.debug(f"Encontrado número parcial con sufijo: {año}-{numero}")
                 return f"{año}-{numero}"
+            
+            
         
         # Mantener el patrón original como respaldo
             patron_parcial = f'\\b({self.current_year}|{self.previous_year})-\\d{{5}}\\b'
@@ -370,6 +372,14 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número de radicado: {numero_radicado}")
                         return numero_radicado
 
+                    patron_radicado_admision1 = r'(?i)radicaci[óo]n:?\s*(\d+)\s*(\d+)'
+                    patron_radicado_admision1 = re.search(patron_radicado_admision1, linea)
+                    if patron_radicado_admision1:
+                        numero_radicado = ''.join(patron_radicado_admision1.groups())
+                        self.logger.debug(f"Encontrado número de radicado: {numero_radicado}")
+                        return numero_radicado
+
+
                     
 
                                   
@@ -573,13 +583,14 @@ class DocumentoExtractor:
                 inicioEncontrado = match.start()
         else:
                 inicioEncontrado = 0
+                
         fecha_final_procesada = self.buscar_fchaTtla_procesar(inicioEncontrado,800)
         if fecha_final_procesada == None:
-            fecha_final_procesada = self.buscar_fchaTtla_procesar(0,1400)
-
-            
+           fecha_final_procesada = self.buscar_fchaTtla_procesar(0,1400)
+           
+           
         return fecha_final_procesada
-    
+
     def buscar_fchaTtla_procesar(self,inicial,final):
         print(f"p inicial: {inicial}")    
         print(f"p final: {final}")   
@@ -816,7 +827,7 @@ class DocumentoExtractor:
             mesEncontrado = None
             def procesamientoFechas(fragmento,fragmento2,mesEncontrado):    
                                 anioEncontrado = None
-                                matchesYears = re.finditer(patronYears, fragmento, re.IGNORECASE | re.VERBOSE)
+                                matchesYears = re.finditer(patronYears, self.eliminar_caracteres_especiales(fragmento), re.IGNORECASE | re.VERBOSE)
                                 posicionAño = 0
                                 posicionDia = 0
                                 for match in matchesYears:
@@ -925,7 +936,7 @@ class DocumentoExtractor:
                         inicio = match.start()
                         # Extraer desde el inicio del mes hasta 40 caracteres después
                         print(inicio)
-                        fragmento = texto_encabezado[inicio+5:inicio+88]
+                        fragmento = texto_encabezado[inicio+1:inicio+88]
                         fragmentoAntes= inicio-15
                         fragmento2 = texto_encabezado[fragmentoAntes:inicio+10]
                         print("texto:" + fragmento)
@@ -1037,7 +1048,7 @@ class DocumentoExtractor:
         # Regex para eliminar cualquier carácter que no sea letra, número o espacio
         texto_limpio = re.sub(r'[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]', '', texto)
         return texto_limpio
-
+    
     def concatenar_hora(self, fecha):
         if self.fechacorreo == None:
           fechaCorreoFinal = '2025-01-17 10:05:00'
@@ -1065,7 +1076,7 @@ class DocumentoExtractor:
         except Exception as e:
             self.logger.error(f"Error al concatenar hora: {e}", exc_info=True)
             return None 
-
+        
 
 
 
