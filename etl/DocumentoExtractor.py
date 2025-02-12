@@ -23,6 +23,7 @@ class DocumentoExtractor:
         self.numero_parcial_acumulado = None
         self.nmrs_rdcds_jdcls_list = []
         self.nmrs_idntfccn_accnnte = []
+        self.nmbre_cmplto_accnnte = None
  
         # Configurar la ruta del CSV relativa al directorio del script
         ruta_base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -1232,9 +1233,10 @@ class DocumentoExtractor:
         try:
             patrones = [
 
-            
-            # Nuevalista final que toma al afectado independiente de quien sea el agente oficio
+                # Nuevalista final que toma al afectado independiente de quien sea el agente oficio
 
+                r'(?i)agente\s+oficios[oa]\s+de(?:\s+mi\s+(madre|padre|herman[oa]))?\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+con\s+cedula|\s+identificad[oa]|$)',
+                r'(?i)agente\s+oficios[oa]\s+de\s+la\s+menor\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*,|\s+domiciliad[oa]|$)',
                 r'(?i)se\s+tutel[oó]\s+los\s+derechos\s+fundamentales\s+a\s+la\s+salud\s+y\s+a\s+la\s+vida\s+de\s+la\s+(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*,|\s+ordenando)',
                 r'(?i)Agenciado\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*Accionada|$)',
                 r'(?i)agente\s+oficios[oa]\s+de\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+en\s+contra|,|\s+contra|\s+identificad[oa]|$)',
@@ -1252,14 +1254,12 @@ class DocumentoExtractor:
                 r'(?i)Beneficiaria:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)',
 
 
-
-        
-            #Patrones existentes
+                #Patrones existentes
 
                 r'(?i)tutela\s+instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+quien\s+act[úu]a\s+(?:a\s+trav[ée]s\s+de\s+)?agente\s+oficios[oa])',
 
                 r'(?i)instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+(?:como\s+)?agente\s+oficios[oa]\s+de\s+[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+',
-                       # Nuevo patrón específico para agente oficioso
+                # Nuevo patrón específico para agente oficioso
                 r'(?i)instaurada\s+por\s+(?:el|la)\s+(?:ciudadano|ciudadana|señor|señora)\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*,\s*quien\s+act[úu]a\s+como\s+agente\s+oficios[oa])',
                 
                 # Nuevo patrón específico para informes secretariales
@@ -1290,8 +1290,9 @@ class DocumentoExtractor:
                 r'(?i)acci[óo]n\s+de\s+tutela\s+por\s+el\s+(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+identificad[oa]\s+con\b',
                 r'(?i)(?:primero|primero\s*:\s*)?avocar\s+(?:el\s+)?conocimiento\s+de\s+la\s+acci[óo]n\s+de\s+tutela\s+por\s+el\s+(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+identificad[oa]\s+con\b',
                 r'(?i)accionante\s*:\s*([A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+identificado\b',
-            # Nuevo patrón para capturar nombres en informes secretariales
-            # Patrón adicional más específico para el formato de informe secretarial
+                
+                # Nuevo patrón para capturar nombres en informes secretariales
+                # Patrón adicional más específico para el formato de informe secretarial
                 r'(?i)INFORME\s+SECRETARIAL:.*?tutela\s+instaurada\s+por\s+(?:el\s+)?(?:ciudadano|ciudadana|señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,?\s+en\s+contra)',
                 r'(?i)acci[óo]n\s+de\s+tutela\s+No\.\s+\d+-\d+\s+promovida\s+por\s+la\s+(?:señora|señor|ciudadana|ciudadano)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?),\s+identificada?\s+con\s+c[ée]dula\s+de\s+ciudadan[íi]a\s+No\.\s+\d+',
                 r'(?i)yo,\s+([A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+),\s+mayor\s+de\s+edad,\s*identificada?\s+con\b.*?presento\s+esta\s+acción\s+de\s+tutela',
@@ -1300,7 +1301,8 @@ class DocumentoExtractor:
                 r'(?i)acci[óo]n\s+de\s+tutela\s+instaurada\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+en\s+representaci[óo]n\s+de)',
                 r'(?i)donde\s+(?:el|la)\s+(?:ciudadano|ciudadana)\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?),\s+identificad[oa]\s+con\s+(?:la\s+)?[Cc]\.?[Cc]\.?\s+No\.',
                 r'(?i)Tr[áa]mite\s+Acci[óo]n\s+de\s+Tutela\.\s+Accionante\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\.\s+Accionados?|$)',
-                 # Nuevo patrón específico para capturar nombre con C.C.
+                 
+                # Nuevo patrón específico para capturar nombre con C.C.
                 r'(?i)Accionante\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+C\.?C\.?\s+[\d\.,]+\b',
                 r'(?i)instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?),?\s*[Cc]\.?[Cc]\.?\s*[\d\.]+',
                 
@@ -1318,6 +1320,7 @@ class DocumentoExtractor:
                 r'(?i)Incidentalista\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*Incidentado)',
 
                 r'(?i)acci[óo]n\s+de\s+tutela\s+promovida\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,?\s+contra)',
+                
                 #nuevo patrón más flexible:
                 r'(?i)acci[óo]n\s+de\s+tutela\s+promovida\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,|\s+por|\s+contra|\.|$)',
 
@@ -1325,7 +1328,8 @@ class DocumentoExtractor:
 
                 r'(?i)\bPac(?:iente|lonte|lente|iente)[:\s]*([A-ZÁÉÍÓÚÑ]+(?:\s+[A-ZÁÉÍÓÚÑ]+){1,3})\b',
                 r'(?i)INCIDENTANTE\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*\.\s*-?\s*C\.C\.|\s*$)',
-            # Versión más flexible que maneja variaciones en los separadores                
+                
+                # Versión más flexible que maneja variaciones en los separadores                
                 r'(?i)INCIDENTALISTA:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*[–-]\s*C\.C\.|\s+C\.C\.|\s*$)',
                 r'(?i)INCIDENTANTE:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+DE\s+[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*$|\n|ACCIONADO:)',
 
@@ -1429,6 +1433,8 @@ class DocumentoExtractor:
         if not nmbreCmpltoAccnnte:
             return None
         
+        if not self.nmbre_cmplto_accnnte:
+            self.nmbre_cmplto_accnnte = nmbreCmpltoAccnnte
     
         def limpiar_y_validar_numero(numero):
             """
@@ -1444,33 +1450,34 @@ class DocumentoExtractor:
                 return numero_limpio
             
         patrones = []
-        def crear_patrones(nmbreCmpltoAccnnte):
+        def crear_patrones(nombre_completo_accionante):
             return [
-                rf"Yo,\s*{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)([\d.,\s-]+)(?=\s*,|\s*domiciliada|\s*$)",
-                rf"Yo,\s*{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)([\d.,\s-]+)",
-                rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)([\d.,\s-]+)",
-                rf"{re.escape(nmbreCmpltoAccnnte)}(?:\s+\w+)?\s+identificad[oa]\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:No\.?\s*)?(\d{7,11})\b",
-                rf"{re.escape(nmbreCmpltoAccnnte)}\s*C\.?C\.?\s*\.?\s*:?(\d{7,11})",
-                rf"{re.escape(nmbreCmpltoAccnnte)},?\s*identificad[oa]\s+con\s*la?\s*c[eé]dula\s+de\s+ciudadan[ií]a\s*(?:No\.?)?\s*([\d\.,\s]+)",
-                rf"{re.escape(nmbreCmpltoAccnnte.upper())}.*?(?:identificad[oa]\s+con\s+(?:la\s+)?c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero)?\s*)([\d.,\s-]+)",
-                rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:la\s+)?c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero)?\s*)([\d.,\s-]+)",
-                rf"{re.escape(nmbreCmpltoAccnnte.upper())}\s*C\.C\.\s*([\d.,\s-]+)",
-                rf"{re.escape(nmbreCmpltoAccnnte)}\s*C\.C\.\s*([\d.,\s-]+)",
-                rf"{re.escape(nmbreCmpltoAccnnte.upper())},\s*mayor\s+de\s+edad,\s*identificada\s+con\s+la\s+c[ée]dula\s+de\s+ciudadan[íi]a\s+n[úu]mero\s*([\d\.,\s]+)\s*expedida",
-                rf"{re.escape(nmbreCmpltoAccnnte.upper())}\s+C\.C\.\s*([\d\.,\s]+)\s+de\s+Bol[ií]var",
-                rf"{re.escape(nmbreCmpltoAccnnte.upper())},\s*mayor\s+de\s+edad,\s*identificada\s+con\s*la?\s*c[eé]dula\s+de\s+ciudadan[ií]a\s+n[uú]mero\s*([\d\.,\s]+)\s*expedida",
-                rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:portador[oa]?\s+de\s+(?:c[eé]dula|C\.?C\.?)\s*(?:n[úu]mero|No\.?)?\s*)(\d{7,11})\b",
-                rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)(\d{7,11})\b",
-                rf"{re.escape(nmbreCmpltoAccnnte)}.*?RC\.\s*([\d.,\s-]+)",
-                rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificado\s+con\s+documento\s+(?:n[úu]mero|No\.?)?\s*)(\d{7,11})\b"
-                rf"{re.escape(nmbreCmpltoAccnnte)}\s+([\d.,\s-]+)\s+de\s+[A-Z][a-z]+",
-                rf"Yo,\s*{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)(\d{7,11})\b",
-                rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)(\d{7,11})\b",
-                rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:portador[oa]?\s+de\s+(?:c[eé]dula|C\.?C\.?)\s*(?:n[úu]mero|No\.?)?\s*)(\d{7,11})\b",
-                rf"{re.escape(nmbreCmpltoAccnnte)}\s*CC\s*No\.?\s*([\d.,\s-]+)",
-                rf"{re.escape(nmbreCmpltoAccnnte)}.*?ciudadan[íi]a\s+No\.?\s*(\d{6,11}(?:\.\d{3})*)",
-                rf"{re.escape(nmbreCmpltoAccnnte)}.*?(?:identificado\s+con\s+documento\s+(?:n[úu]mero|No\.?)?\s*)(\d{7,11})\b",
-
+                rf"Yo,\s*{re.escape(nombre_completo_accionante)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)([\d.,\s-]+)(?=\s*,|\s*domiciliada|\s*$)",
+                rf"Yo,\s*{re.escape(nombre_completo_accionante)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)([\d.,\s-]+)",
+                rf"{re.escape(nombre_completo_accionante)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)([\d.,\s-]+)",
+                rf"{re.escape(nombre_completo_accionante)}(?:\s+\w+)?\s+identificad[oa]\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:No\.?\s*)?(\d{7,11})\b",
+                rf"{re.escape(nombre_completo_accionante)}\s*C\.?C\.?\s*\.?\s*:?(\d{7,11})",
+                rf"{re.escape(nombre_completo_accionante)},?\s*identificad[oa]\s+con\s*la?\s*c[eé]dula\s+de\s+ciudadan[ií]a\s*(?:No\.?)?\s*([\d\.,\s]+)",
+                rf"{re.escape(nombre_completo_accionante.upper())}.*?(?:identificad[oa]\s+con\s+(?:la\s+)?c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero)?\s*)([\d.,\s-]+)",
+                rf"{re.escape(nombre_completo_accionante)}.*?(?:identificad[oa]\s+con\s+(?:la\s+)?c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero)?\s*)([\d.,\s-]+)",
+                rf"{re.escape(nombre_completo_accionante.upper())}\s*C\.C\.\s*([\d.,\s-]+)",
+                rf"{re.escape(nombre_completo_accionante)}\s*C\.C\.\s*([\d.,\s-]+)",
+                rf"{re.escape(nombre_completo_accionante.upper())},\s*mayor\s+de\s+edad,\s*identificada\s+con\s+la\s+c[ée]dula\s+de\s+ciudadan[íi]a\s+n[úu]mero\s*([\d\.,\s]+)\s*expedida",
+                rf"{re.escape(nombre_completo_accionante.upper())}\s+C\.C\.\s*([\d\.,\s]+)\s+de\s+Bol[ií]var",
+                rf"{re.escape(nombre_completo_accionante.upper())},\s*mayor\s+de\s+edad,\s*identificada\s+con\s*la?\s*c[eé]dula\s+de\s+ciudadan[ií]a\s+n[uú]mero\s*([\d\.,\s]+)\s*expedida",
+                rf"{re.escape(nombre_completo_accionante)}.*?(?:portador[oa]?\s+de\s+(?:c[eé]dula|C\.?C\.?)\s*(?:n[úu]mero|No\.?)?\s*)(\d{7,11})\b",
+                rf"{re.escape(nombre_completo_accionante)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)(\d{7,11})\b",
+                rf"{re.escape(nombre_completo_accionante)}.*?RC\.\s*([\d.,\s-]+)",
+                rf"{re.escape(nombre_completo_accionante)}.*?(?:identificado\s+con\s+documento\s+(?:n[úu]mero|No\.?)?\s*)(\d{7,11})\b"
+                rf"{re.escape(nombre_completo_accionante)}\s+([\d.,\s-]+)\s+de\s+[A-Z][a-z]+",
+                rf"Yo,\s*{re.escape(nombre_completo_accionante)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)(\d{7,11})\b",
+                rf"{re.escape(nombre_completo_accionante)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)(\d{7,11})\b",
+                rf"{re.escape(nombre_completo_accionante)}.*?(?:portador[oa]?\s+de\s+(?:c[eé]dula|C\.?C\.?)\s*(?:n[úu]mero|No\.?)?\s*)(\d{7,11})\b",
+                rf"{re.escape(nombre_completo_accionante)}\s*CC\s*No\.?\s*([\d.,\s-]+)",
+                rf"{re.escape(nombre_completo_accionante)}.*?ciudadan[íi]a\s+No\.?\s*(\d{6,11}(?:\.\d{3})*)",
+                rf"{re.escape(nombre_completo_accionante)}.*?(?:identificado\s+con\s+documento\s+(?:n[úu]mero|No\.?)?\s*)(\d{7,11})\b",
+                rf"{re.escape(nombre_completo_accionante)}, identificado con la CC Nro\. (\d+)",
+                rf"{re.escape(nombre_completo_accionante)}, identificada con cédula de ciudadanía Núm\. ([\d\.]+)",
             
             ]
 
@@ -1532,16 +1539,18 @@ class DocumentoExtractor:
             #nuevo contexto:EGIDIO QUINTERO VEGA  
             #CC No. 16214057
             r"(?:C\.?C\.?|c[eé]dula\s+de\s+ciudadan[íi]a)\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)",
-            r"identificad[oa]\s+con\s+numero\s+de\s+C\.?C\.?\s*[:.]?\s*([\d.,-]+)"
-
+            r"identificad[oa]\s+con\s+numero\s+de\s+C\.?C\.?\s*[:.]?\s*([\d.,-]+)",
+            r"identificad[oa]\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+No\.?\s*([\d.,\s-]+)",
+            r"identificad[oa]\s+con\s+C[eé]dula\s+de\s+Ciudadan[íi]a\s+n[úu]mero\.?\s*([\d.,\s-]+)",
+            r"identificado con la CC Nro\. (\d+)",
+            r"identificada con cédula de ciudadanía Núm\. ([\d\.]+)"
             
         ])
 
 
         nombres_validar = []
-        nombres_validar.append(nmbreCmpltoAccnnte)
-
-        partes_nombre = nmbreCmpltoAccnnte.split()
+        nombres_validar.append(self.nmbre_cmplto_accnnte)
+        partes_nombre = self.nmbre_cmplto_accnnte.split()
         primera_parte_nombre = " ".join(partes_nombre[:2])
         nombres_validar.append(primera_parte_nombre)
         
@@ -1567,7 +1576,7 @@ class DocumentoExtractor:
                     numero_limpio = limpiar_y_validar_numero(numero)
                     if numero_limpio:
                         for nombre in nombres_validar:
-                            distancia = match.start() - contexto_relevante.find(nmbreCmpltoAccnnte)  # Calcula la distancia
+                            distancia = match.start() - contexto_relevante.find(nombre)  # Calcula la distancia
                             if distancia > 1 and distancia <= 100:  # Asegurar que la distancia sea válida
                                 self.logger.debug(f"Encontrado número de identificación: {numero_limpio} con distancia: {distancia} al nombre '{nombre}'")
                                 self.agregar_nmro_idntfccn_accnnte(numero_limpio, distancia)
@@ -1605,12 +1614,13 @@ class DocumentoExtractor:
             r'portador[a]? de la\s+(C\.?C\.?|T\.?I\.?|RC|CE|P\.?P\.?)\s+No\.',
             r'cédula\s+de\s+ciudadan[ií]a\s+No\.\s*(\d{1,2}(\.\d{1,3}){2,3})',
             r'cédula\s+de\s+ciudadan[ií]a\s+No\.\s*([\d\.\-]+)',
-            r'ACCIONANTE:.*?\s(C\.?C\.?|T\.?I\.?|RC|CE|P\.?P\.?)\b',
-            rf"{re.escape(nmbreCmpltoAccnnte)}.*?(RC|C\.?C\.?|T\.?I\.?)\.",
-
-            
-            
+            r'ACCIONANTE:.*?\s(C\.?C\.?|T\.?I\.?|RC|CE|P\.?P\.?)\b'
         ]
+
+        if nmbreCmpltoAccnnte:
+            patrones.append(
+                rf"{re.escape(nmbreCmpltoAccnnte)}.*?(RC|C\.?C\.?|T\.?I\.?)\.",
+            )
 
     # Mapeo para normalizar y clasificar los tipos de documentos
         mapping_documentos = {

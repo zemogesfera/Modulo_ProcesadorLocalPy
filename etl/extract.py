@@ -334,6 +334,7 @@ def extract_data(ruta_archivos: str, cantidad: int = None, upscale=False, tpoDcm
             logger.error(f"Error procesando el archivo {archivo}: {e}", exc_info=True)
 
     logger.info(f'Numeros de identificacion encontrados: {extractor.nmrs_idntfccn_accnnte}')
+    logger.info(f'Nombre de accionante: {extractor.nmbre_cmplto_accnnte}')
     for resultado in resultado_procesamiento:
         for campo, valor in campos_encontrados.items():
             if campo == 'nmroRdcdoJdcl':
