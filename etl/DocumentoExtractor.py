@@ -1328,6 +1328,7 @@ class DocumentoExtractor:
             # Versión más flexible que maneja variaciones en los separadores                
                 r'(?i)INCIDENTALISTA:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*[–-]\s*C\.C\.|\s+C\.C\.|\s*$)',
 
+
             ]
 
             
