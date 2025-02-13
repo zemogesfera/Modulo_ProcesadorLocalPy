@@ -381,6 +381,14 @@ class DocumentoExtractor:
                         return numero_radicado
 
 
+                    patron_radicado_cuadro = r'\b(\d{12})\s+(\d{4})\s+(\d{5})\s+(\d{2})\b'
+                    match_radicado = re.search(patron_radicado_cuadro, linea)
+                    if match_radicado:
+                        numero_radicado = ''.join(match_radicado.groups())
+                        self.logger.debug(f"Encontrado número de radicado: {numero_radicado}")
+                        return numero_radicado
+
+
                     
 
                                   
@@ -1332,6 +1340,9 @@ class DocumentoExtractor:
                 # Versión más flexible que maneja variaciones en los separadores                
                 r'(?i)INCIDENTALISTA:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*[–-]\s*C\.C\.|\s+C\.C\.|\s*$)',
                 r'(?i)INCIDENTANTE:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+DE\s+[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*$|\n|ACCIONADO:)',
+                r'(?i)INCIDENTALISTA:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+ACCIONADO:)',
+                r'(?i)INCIDENTANTE\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*\n|\s*INCIDENTADOS?:)',
+                r'(?i)INCIDENT(?:ANTE|ALISTA|ISTA)[:\s]*([A-ZÁÉÍÓÚÑ]+(?:\s+[A-ZÁÉÍÓÚÑ]+){1,3})\b'
 
             ]
 
@@ -1478,6 +1489,7 @@ class DocumentoExtractor:
                 rf"{re.escape(nombre_completo_accionante)}.*?(?:identificado\s+con\s+documento\s+(?:n[úu]mero|No\.?)?\s*)(\d{7,11})\b",
                 rf"{re.escape(nombre_completo_accionante)}, identificado con la CC Nro\. (\d+)",
                 rf"{re.escape(nombre_completo_accionante)}, identificada con cédula de ciudadanía Núm\. ([\d\.]+)",
+            
             
             ]
 

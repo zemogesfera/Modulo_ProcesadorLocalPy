@@ -15,6 +15,8 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'esposa','suministro','medicamentos','prescritos','tratante','forma','oportuna','terapias','fundacion',
 'fin','preste','valle','lili','nina','interpone','siendo','incumplida','ya','puede','procede',
 'tramite','acdo','diagnosticada','cistitis','incidentista','te','ayeliido','nueva','sa',
+'negar','favor',
+
 
 
 #los de arriba son los encontrados en diferentes casos de analisis.
@@ -717,7 +719,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 
 # Términos administrativos
 'ha', 'recibido', 'respuesta', 'producto', 'conducta', 'informa', 
-'acudido', 'ante', 'médico', 'particular', 'posteriormente', 'ael',
+'acudido', 'médico', 'particular', 'posteriormente', 'ael',
 'eps', 'calidad', 'tutelar', 'derecho', 'fundamental', 
 'seguridad', 'social', 'acuerdo', 'informe', 'secretarial', 
 'documento', 'expediente', 'radicado', 'trámite', 'proceso',
@@ -1685,7 +1687,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'con dirección en', 'con contacto en',
 
 # Frases de intervención
-'comparece ante', 'se presenta', 'interviene', 'participa',
+'se presenta', 'interviene', 'participa',
 'ejerce', 'promueve', 'solicita', 'requiere',
 'manifiesta', 'expone', 'declara',
 
@@ -2496,7 +2498,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'acerca de', 'cerca de', 'dentro de', 'fuera de',
 
 # Preposiciones de relación
-'ante', 'contra', 'durante', 'mediante',
+'contra', 'durante', 'mediante',
 'salvo', 'según', 'so', 'tras', 'versus',
 
 # Preposiciones complejas
