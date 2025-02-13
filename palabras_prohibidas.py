@@ -15,7 +15,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'esposa','suministro','medicamentos','prescritos','tratante','forma','oportuna','terapias','fundacion',
 'fin','preste','valle','lili','nina','interpone','siendo','incumplida','ya','puede','procede',
 'tramite','acdo','diagnosticada','cistitis','incidentista','te','ayeliido','nueva','sa',
-'negar','favor',
+'negar','favor','cumplimiento','requerimientos','occidental','sos',
 
 
 
