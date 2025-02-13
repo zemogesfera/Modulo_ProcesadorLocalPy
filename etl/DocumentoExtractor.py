@@ -274,11 +274,12 @@ class DocumentoExtractor:
                         if len(numero) < 21:
                             continue
                         return numero
-                # Nuevo patrón para formato específico (12 dígitos - 4 dígitos - 5 dígitos)
+                    
+                # Nuevo patrón para formato específico (12 dígitos - 4 dígitos - 5 dígitos - 00 al final)
                     patron_nuevo = r'\b(\d{12})-(\d{4})-(\d{5})\b'
                     match_nuevo = re.search(patron_nuevo, linea)
                     if match_nuevo:
-                        numero = f"{match_nuevo.group(1)}{match_nuevo.group(2)}{match_nuevo.group(3)}"
+                        numero = f"{match_nuevo.group(1)}{match_nuevo.group(2)}{match_nuevo.group(3)}00"
                         self.logger.debug(f"Encontrado número con nuevo patrón: {numero}")
                         if len(numero) < 21:
                             continue
@@ -439,6 +440,26 @@ class DocumentoExtractor:
                         if len(numero_radicado) < 21:
                             continue
                         return numero_radicado
+                    
+                  # Patrón para capturar números de radicación con el formato XXXXXXXXXXXXXXXX-XXXXX-XX
+                    patron_radicacion_guion = r'(?i)RADICACI[ÓO]N:\s*(\d{14,16})-(\d{5})-(\d{2})\b'
+                    match_radicacion = re.search(patron_radicacion_guion, linea)
+                    if match_radicacion:
+                        numero = ''.join(match_radicacion.groups())
+                        self.logger.debug(f"Encontrado número con patrón radicación con guiones: {numero}")
+                        if len(numero) < 21:
+                            continue
+                        return numero  
+                    
+                    # patrón desacato 3 XXXXXXXXXXXX-XXXX-XXXXXX-XX
+                    patron_desacato_nuevo = r'(?i)RADICADO:\s*(\d{12})-(\d{4})-(\d{6})-(\d{2})\b'
+                    match_desacato_nuevo = re.search(patron_desacato_nuevo, linea)
+                    if match_desacato_nuevo:
+                        numero = ''.join(match_desacato_nuevo.groups())
+                        self.logger.debug(f"Encontrado número con patrón desacato nuevo: {numero}")
+                        if len(numero) < 21:
+                            continue
+                        return numero
                         
 
                 # Formatos con guiones
@@ -1539,7 +1560,7 @@ class DocumentoExtractor:
                 rf"{re.escape(nombre_completo_accionante)}, identificada con cédula de ciudadanía Núm\. ([\d\.]+)",
                 rf"{re.escape(nombre_completo_accionante)}\s*C\.C\.\s*([\d.]+)",
                 rf"{re.escape(nombre_completo_accionante)}\s*(?:,|\s+identificado\s+con\s+la?)?\s*(?:c\.?c\.?|cc|cédula\s+de\s+ciudadanía)\s*(?:nro\.?|n°|no\.?|num(?:ero|ro)?)?\s*[:.]?\s*([\d.]+)",
-            
+
             ]
 
 
