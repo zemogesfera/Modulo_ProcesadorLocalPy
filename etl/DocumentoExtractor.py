@@ -139,6 +139,7 @@ class DocumentoExtractor:
                 numero = match.group(2).strip().zfill(5)
                 self.logger.debug(f"Encontrado número parcial: {año}-{numero}")
                 return f"{año}-{numero}"
+            
         
         # Nuevo patrón para capturar formato YYYY-XXXXX-00
             patron_con_sufijo = r'\b(\d{4})\s*[-–—\s]+\s*(\d{1,5})\s*[-–—\s]+\s*\d{2}\b'
@@ -148,6 +149,7 @@ class DocumentoExtractor:
                 numero = match.group(2).strip().zfill(5)
                 self.logger.debug(f"Encontrado número parcial con sufijo: {año}-{numero}")
                 return f"{año}-{numero}"
+                
             
             
         
