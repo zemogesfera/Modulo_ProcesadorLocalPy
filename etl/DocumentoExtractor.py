@@ -121,6 +121,7 @@ class DocumentoExtractor:
     def buscar_numero_parcial(self):
         """Busca números parciales de radicado (YYYY-XXXXX)"""
         for linea in self.lines:
+            linea = linea.lower().strip()
             patron_completo = r'\b(\d{4})[-–—](\d{5})[-–—](\d{2})\b'
             match = re.search(patron_completo, linea)
             if match:
@@ -171,8 +172,9 @@ class DocumentoExtractor:
             
         # Primero intentar con los patrones originales
             for linea in self.lines:
-                if "radicado" in linea.lower() or "radicación" in linea.lower() or "rad" in linea.lower():
-                    #self.logger.debug(f"Analizando línea con 'radicado': {linea}")
+                linea = linea.lower().strip()
+                if "radicado" in linea or "radicación" in linea or "rad" in linea or "radicacion" in linea:
+                    self.logger.debug(f"Analizando línea con 'radicado': {linea}")
                
 
                     patron_nuevo_cali = r'\b(\d{5})-(\d{4})-(\d{3})-(\d{4})-(\d{5})-(\d{2})\b'
@@ -180,10 +182,11 @@ class DocumentoExtractor:
                     if match_cali:
                         numero = ''.join(match_cali.groups())
                         self.logger.debug(f"Encontrado número con patrón Cali: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
 
-
-                                                # Patrón para capturar números con espacios (como en el ejemplo: 190014009006 2024 00 346)
+                    # Patrón para capturar números con espacios (como en el ejemplo: 190014009006 2024 00 346)
                     patron_espaciado_21 = r'\b(\d{12})\s+(\d{4})\s+(\d{2})\s+(\d{3})\b'
                     match_espaciado_21 = re.search(patron_espaciado_21, linea)
                     if match_espaciado_21:
@@ -191,23 +194,28 @@ class DocumentoExtractor:
                         if len(numero) == 21:
                             numero += "00"
                         self.logger.debug(f"Encontrado número con patrón espaciado 21: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
                     
-                # Nuevo patrón para formato con espacios (76001 41 05 004 2024 00613 00)
+                    # Nuevo patrón para formato con espacios (76001 41 05 004 2024 00613 00)
                     patron_espacios = r'\b(\d{5})\s+(\d{2})\s+(\d{2})\s+(\d{3})\s+(\d{4})\s+(\d{5})\s+(\d{2})\b'
                     match_espacios = re.search(patron_espacios, linea)
                     if match_espacios:
                         numero = ''.join(match_espacios.groups())
                         self.logger.debug(f"Encontrado número con patrón espaciado: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
                 
-                
-                # Nuevo patrón específico para el formato 76-111-3187-004-2024-00041-00
+                    # Nuevo patrón específico para el formato 76-111-3187-004-2024-00041-00
                     patron_completo_nuevo = r'\b(\d{2})-(\d{3})-(\d{4})-(\d{3})-(\d{4})-(\d{5})-(\d{2})\b'
                     match_completo_nuevo = re.search(patron_completo_nuevo, linea)
                     if match_completo_nuevo:
                         numero = ''.join(match_completo_nuevo.groups())
                         self.logger.debug(f"Encontrado número con patrón completo nuevo: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
                     # Nuevo patrón para el formato específico 
                     patron_completo = r'\b(\d{2})-(\d{3})-(\d{4})-(\d{3})-(\d{4})-(\d{5})-\d{2}\b'
@@ -215,24 +223,28 @@ class DocumentoExtractor:
                     if match_completo:
                         numero = ''.join(match_completo.groups())
                         self.logger.debug(f"Encontrado número con patrón completo: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
                     
-                                   # Nuevo patrón para capturar números de 21 dígitos sin guiones ni espacios
+                    # Nuevo patrón para capturar números de 21 dígitos sin guiones ni espacios
                     patron_21_digitos = r'\b(\d{21})\b'
                     match_21 = re.search(patron_21_digitos, linea)
                     if match_21:
                         numero = match_21.group(1) + "00"  # Agregar 00 al final
                         self.logger.debug(f"Encontrado número de 21 dígitos: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
                     
-
-
-                # Nuevo patrón específico para Tuluá con el formato XXXXXX-XXXX-XXXXX-XX
+                    # Nuevo patrón específico para Tuluá con el formato XXXXXX-XXXX-XXXXX-XX
                     patron_tulua_nuevo = r'\b(\d{12})-(\d{4})-(\d{5})-(\d{2})\b'
                     match_tulua = re.search(patron_tulua_nuevo, linea)
                     if match_tulua:
                         numero = f"{match_tulua.group(1)}{match_tulua.group(2)}{match_tulua.group(3)}{match_tulua.group(4)}"
                         self.logger.debug(f"Encontrado número con patrón Tuluá: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
                 
                     patron_tulua = r'\b(\d{2})-\s*(\d{3})-(\d{2})-(\d{2})-(\d{3})-(\d{4})-(\d{5})-(\d{2})\b'
@@ -240,6 +252,8 @@ class DocumentoExtractor:
                     if match_tulua:
                         numero = ''.join(match_tulua.groups())
                         self.logger.debug(f"Encontrado número con patrón Tuluá: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
 
                 # Patrón alternativo que maneja espacios opcionales después de los guiones
@@ -248,6 +262,8 @@ class DocumentoExtractor:
                     if match_flexible:
                         numero = ''.join(match_flexible.groups())
                         self.logger.debug(f"Encontrado número con patrón flexible: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
                                 # Nuevo patrón para el formato específico encontrado
                     patron_espaciado = r'\b(\d{12})\s+(\d{4})\s+(\d{2})\s+(\d{3})\b'
@@ -255,6 +271,8 @@ class DocumentoExtractor:
                     if match_espaciado:
                         numero = f"{match_espaciado.group(1)}{match_espaciado.group(2)}{match_espaciado.group(3)}{match_espaciado.group(4)}"
                         self.logger.debug(f"Encontrado número con patrón espaciado: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
                 # Nuevo patrón para formato específico (12 dígitos - 4 dígitos - 5 dígitos)
                     patron_nuevo = r'\b(\d{12})-(\d{4})-(\d{5})\b'
@@ -262,6 +280,8 @@ class DocumentoExtractor:
                     if match_nuevo:
                         numero = f"{match_nuevo.group(1)}{match_nuevo.group(2)}{match_nuevo.group(3)}"
                         self.logger.debug(f"Encontrado número con nuevo patrón: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
                     
                                     # Patrón específico para el caso con espacios opcionales
@@ -270,52 +290,64 @@ class DocumentoExtractor:
                     if match_espacios:
                         numero = ''.join(match_espacios.groups())
                         self.logger.debug(f"Encontrado número con espacios opcionales: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
 
-                # Formato de 23 dígitos continuos
+                    # Formato de 23 dígitos continuos
                     patron_continuo = r'\b(\d{23})\b'
                     match_continuo = re.search(patron_continuo, linea)
                     if match_continuo:
+                        if len(match_continuo.group(1)) < 21:
+                            continue
                         return match_continuo.group(1)
                     
-                                    # Nuevo patrón para capturar XXXXXXXXXXXXXX XXXXX XX
-
+                    # Nuevo patrón para capturar XXXXXXXXXXXXXX XXXXX XX
                     patron_espaciado_nuevo = r'\b(\d{16})\s+(\d{5})\s+(\d{2})\b'
                     match_espaciado_nuevo = re.search(patron_espaciado_nuevo, linea)
                     if match_espaciado_nuevo:
                         numero = f"{match_espaciado_nuevo.group(1)}{match_espaciado_nuevo.group(2)}{match_espaciado_nuevo.group(3)}"
                         self.logger.debug(f"Encontrado número con patrón espaciado nuevo: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
                 
-                                    # Formato de 20 dígitos continuos
+                    # Formato de 20 dígitos continuos
                     patron_continuo = r'\b(\d{20})\b'
                     match_continuo = re.search(patron_continuo, linea)
                     if match_continuo:
+                        if len(match_continuo.group(1)) < 21:
+                            continue
                         return match_continuo.group(1)
                     
-                                    # Nuevo patrón para el formato XXXXXXXXXX-YYYY-XXXXX-XX
+                    # Nuevo patrón para el formato XXXXXXXXXX-YYYY-XXXXX-XX
                     patron_nuevo_formato = r'\b(\d{12})-\s*(\d{4})-\s*(\d{5})-\s*(\d{2})\b'
                     match_nuevo_formato = re.search(patron_nuevo_formato, linea)
                     if match_nuevo_formato:
                         numero = ''.join(match_nuevo_formato.groups())
                         self.logger.debug(f"Encontrado número con nuevo formato: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
 
-                                                # Nuevo patrón para capturar el formato "RADICADO : XXXXXXXXXXXXXXXXXXXXXXX"
-               
+                    # Nuevo patrón para capturar el formato "RADICADO : XXXXXXXXXXXXXXXXXXXXXXX"
                     patron_radicado_con_label = r'(?i)radicado\s*:\s*(\d{16})-(\d{5})'
                     match_radicado = re.search(patron_radicado_con_label, linea)
                     if match_radicado:
                         numero = match_radicado.group(1) + match_radicado.group(2) + "00"
                         self.logger.debug(f"Encontrado número con patrón radicado con label: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
                     
-                                        # Nuevo patrón para capturar el formato "RADICADO : XXXXXXXXXXXXXXXXXXXXXXX"
+                    # Nuevo patrón para capturar el formato "RADICADO : XXXXXXXXXXXXXXXXXXXXXXX"
                     patron_radicado_con_labelv2 = r'(?i)RADICADO\s*:\s*(\d{16})-(\d{5})'
                     match_radicadov2 = re.search(patron_radicado_con_labelv2, linea)
                     if match_radicadov2:
                         numero = match_radicadov2.group(1) + match_radicadov2.group(2) + "00"
                         self.logger.debug(f"Encontrado número con patrón radicado con labelv2: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
 
                     patron_rad_con_formato = r'(?i)RAD\.\s*(\d{7}\s\d{3}\s\d{3}\s\d{4}\s\d{5}\s\d{2})'
@@ -323,6 +355,8 @@ class DocumentoExtractor:
                     if match_rad_con_formato:
                         numero = match_rad_con_formato.group(1).replace(" ", "")
                         self.logger.debug(f"Encontrado número con patrón RAD. con formato: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
 
                     #RADICACIÓN No. 76-834-40-04-001-2025-00021
@@ -332,6 +366,8 @@ class DocumentoExtractor:
                     if match_radicado_23:
                         numero = ''.join(match_radicado_23.groups()) + "00"
                         self.logger.debug(f"Encontrado número con patrón radicado 23: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
                     
                     #patrón de 8 segmentos
@@ -341,6 +377,8 @@ class DocumentoExtractor:
                     if match_radicado_25:
                         numero = ''.join(match_radicado_25.groups())
                         self.logger.debug(f"Encontrado número con patrón radicado 25: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
 
                     patron_radicado_23 = r'\b(\d{6})(\d{3})(\d{2})(\d{4})(\d{6})\b'
@@ -349,6 +387,8 @@ class DocumentoExtractor:
                     if match_radicado_23:
                         numero = ''.join(match_radicado_23.groups())
                         self.logger.debug(f"Encontrado número con patrón radicado 23: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
                     
 
@@ -358,6 +398,8 @@ class DocumentoExtractor:
                     if match_radicado_desacato1:
                         numero = ''.join(match_radicado_desacato1.groups())
                         self.logger.debug(f"Encontrado número con patrón radicado 23 desacato1: {numero}")
+                        if len(numero) < 21:
+                            continue
                         return numero
                     
                     patron_radicado_desacato2 = r'\b(\d{10})-(\d{2})-(\d{4})-(\d{5})-(\d{2})\b'   
@@ -366,6 +408,8 @@ class DocumentoExtractor:
                     if match_radicado_desacato2:
                         numero_radicado_desacato2 = ''.join(match_radicado_desacato2.groups())  
                         self.logger.debug(f"Encontrado número de radicado desacato2: {numero_radicado_desacato2}")
+                        if len(numero_radicado_desacato2) < 21:
+                            continue
                         return numero_radicado_desacato2
 
                     patron_radicado_fallo1 = r'Radicaci[óo]n:?\s*(\d{12})\s*(\d{11})'
@@ -373,6 +417,8 @@ class DocumentoExtractor:
                     if patron_radicado_fallo1:
                         numero_radicado = ''.join(patron_radicado_fallo1.groups())
                         self.logger.debug(f"Encontrado número de radicado: {numero_radicado}")
+                        if len(numero_radicado) < 21:
+                            continue
                         return numero_radicado
 
                     patron_radicado_admision1 = r'(?i)radicaci[óo]n:?\s*(\d+)\s*(\d+)'
@@ -380,6 +426,8 @@ class DocumentoExtractor:
                     if patron_radicado_admision1:
                         numero_radicado = ''.join(patron_radicado_admision1.groups())
                         self.logger.debug(f"Encontrado número de radicado: {numero_radicado}")
+                        if len(numero_radicado) < 21:
+                            continue
                         return numero_radicado
 
 
@@ -388,13 +436,9 @@ class DocumentoExtractor:
                     if match_radicado:
                         numero_radicado = ''.join(match_radicado.groups())
                         self.logger.debug(f"Encontrado número de radicado: {numero_radicado}")
+                        if len(numero_radicado) < 21:
+                            continue
                         return numero_radicado
-
-
-                    
-
-                                  
-
                         
 
                 # Formatos con guiones
@@ -1344,7 +1388,9 @@ class DocumentoExtractor:
                 r'(?i)INCIDENTANTE:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+DE\s+[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*$|\n|ACCIONADO:)',
                 r'(?i)INCIDENTALISTA:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+ACCIONADO:)',
                 r'(?i)INCIDENTANTE\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*\n|\s*INCIDENTADOS?:)',
-                r'(?i)INCIDENT(?:ANTE|ALISTA|ISTA)[:\s]*([A-ZÁÉÍÓÚÑ]+(?:\s+[A-ZÁÉÍÓÚÑ]+){1,3})\b'
+                r'(?i)INCIDENT(?:ANTE|ALISTA|ISTA)[:\s]*([A-ZÁÉÍÓÚÑ]+(?:\s+[A-ZÁÉÍÓÚÑ]+){1,3})\b',
+                r"promovido por\s+.*?\s+([A-ZÁÉÍÓÚÑ]{2,}(?:\s+[A-ZÁÉÍÓÚÑ]{2,})+)\s+.*?\s+contra",
+
 
             ]
 
@@ -1471,13 +1517,13 @@ class DocumentoExtractor:
                 rf"{re.escape(nombre_completo_accionante)}(?:\s+\w+)?\s+identificad[oa]\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:No\.?\s*)?(\d{7,11})\b",
                 rf"{re.escape(nombre_completo_accionante)}\s*C\.?C\.?\s*\.?\s*:?(\d{7,11})",
                 rf"{re.escape(nombre_completo_accionante)},?\s*identificad[oa]\s+con\s*la?\s*c[eé]dula\s+de\s+ciudadan[ií]a\s*(?:No\.?)?\s*([\d\.,\s]+)",
-                rf"{re.escape(nombre_completo_accionante.upper())}.*?(?:identificad[oa]\s+con\s+(?:la\s+)?c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero)?\s*)([\d.,\s-]+)",
                 rf"{re.escape(nombre_completo_accionante)}.*?(?:identificad[oa]\s+con\s+(?:la\s+)?c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero)?\s*)([\d.,\s-]+)",
-                rf"{re.escape(nombre_completo_accionante.upper())}\s*C\.C\.\s*([\d.,\s-]+)",
+                rf"{re.escape(nombre_completo_accionante)}.*?(?:identificad[oa]\s+con\s+(?:la\s+)?c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero)?\s*)([\d.,\s-]+)",
                 rf"{re.escape(nombre_completo_accionante)}\s*C\.C\.\s*([\d.,\s-]+)",
-                rf"{re.escape(nombre_completo_accionante.upper())},\s*mayor\s+de\s+edad,\s*identificada\s+con\s+la\s+c[ée]dula\s+de\s+ciudadan[íi]a\s+n[úu]mero\s*([\d\.,\s]+)\s*expedida",
-                rf"{re.escape(nombre_completo_accionante.upper())}\s+C\.C\.\s*([\d\.,\s]+)\s+de\s+Bol[ií]var",
-                rf"{re.escape(nombre_completo_accionante.upper())},\s*mayor\s+de\s+edad,\s*identificada\s+con\s*la?\s*c[eé]dula\s+de\s+ciudadan[ií]a\s+n[uú]mero\s*([\d\.,\s]+)\s*expedida",
+                rf"{re.escape(nombre_completo_accionante)}\s*C\.C\.\s*([\d.,\s-]+)",
+                rf"{re.escape(nombre_completo_accionante)},\s*mayor\s+de\s+edad,\s*identificada\s+con\s+la\s+c[ée]dula\s+de\s+ciudadan[íi]a\s+n[úu]mero\s*([\d\.,\s]+)\s*expedida",
+                rf"{re.escape(nombre_completo_accionante)}\s+C\.C\.\s*([\d\.,\s]+)\s+de\s+Bol[ií]var",
+                rf"{re.escape(nombre_completo_accionante)},\s*mayor\s+de\s+edad,\s*identificada\s+con\s*la?\s*c[eé]dula\s+de\s+ciudadan[ií]a\s+n[uú]mero\s*([\d\.,\s]+)\s*expedida",
                 rf"{re.escape(nombre_completo_accionante)}.*?(?:portador[oa]?\s+de\s+(?:c[eé]dula|C\.?C\.?)\s*(?:n[úu]mero|No\.?)?\s*)(\d{7,11})\b",
                 rf"{re.escape(nombre_completo_accionante)}.*?(?:identificad[oa]\s+con\s+(?:c[eé]dula\s+de\s+ciudadan[íi]a|C\.?C\.?)\s*(?:No\.?)?\s*[:.]?\s*)(\d{7,11})\b",
                 rf"{re.escape(nombre_completo_accionante)}.*?RC\.\s*([\d.,\s-]+)",
@@ -1491,10 +1537,10 @@ class DocumentoExtractor:
                 rf"{re.escape(nombre_completo_accionante)}.*?(?:identificado\s+con\s+documento\s+(?:n[úu]mero|No\.?)?\s*)(\d{7,11})\b",
                 rf"{re.escape(nombre_completo_accionante)}, identificado con la CC Nro\. (\d+)",
                 rf"{re.escape(nombre_completo_accionante)}, identificada con cédula de ciudadanía Núm\. ([\d\.]+)",
-            
+                rf"{re.escape(nombre_completo_accionante)}\s*C\.C\.\s*([\d.]+)",
+                rf"{re.escape(nombre_completo_accionante)}\s*(?:,|\s+identificado\s+con\s+la?)?\s*(?:c\.?c\.?|cc|cédula\s+de\s+ciudadanía)\s*(?:nro\.?|n°|no\.?|num(?:ero|ro)?)?\s*[:.]?\s*([\d.]+)",
             
             ]
-
 
 
         # Patrones ordenados por especificidad
@@ -1561,10 +1607,14 @@ class DocumentoExtractor:
             
         ])
 
+        texto_original = self.texto
+        texto = texto_original.lower()
+        nombre_accionante_orginal = self.nmbre_cmplto_accnnte
+        nombre_accionante = nombre_accionante_orginal.lower()
 
         nombres_validar = []
-        nombres_validar.append(self.nmbre_cmplto_accnnte)
-        partes_nombre = self.nmbre_cmplto_accnnte.split()
+        nombres_validar.append(nombre_accionante)
+        partes_nombre = nombre_accionante.split()
         primera_parte_nombre = " ".join(partes_nombre[:2])
         nombres_validar.append(primera_parte_nombre)
         
@@ -1575,12 +1625,12 @@ class DocumentoExtractor:
                 patrones.extend(patrones_creados)
 
             # Encuentra todas las posiciones del nombre del accionante en el texto
-            posiciones_nombre.extend([m.start() for m in re.finditer(re.escape(nombre), self.texto)])
+            posiciones_nombre.extend([m.start() for m in re.finditer(re.escape(nombre), texto)])
 
         # Para cada aparición del nombre, busca el número de documento en el contexto siguiente
         for pos in posiciones_nombre:
             # Toma el texto después de esta aparición del nombre (limitado a 70 caracteres)
-            contexto_relevante = self.texto[pos:pos + 500]            
+            contexto_relevante = texto[pos:pos + 500]            
             # Intenta cada patrón en el contexto relevante
             for patron in patrones:
                 match = re.search(patron, contexto_relevante, re.IGNORECASE)
@@ -1590,7 +1640,7 @@ class DocumentoExtractor:
                     numero_limpio = limpiar_y_validar_numero(numero)
                     if numero_limpio:
                         for nombre in nombres_validar:
-                            distancia = match.start() - contexto_relevante.find(nombre)  # Calcula la distancia
+                            distancia = contexto_relevante.find(numero) - contexto_relevante.find(nombre)  # Calcula la distancia
                             if distancia > 1 and distancia <= 100:  # Asegurar que la distancia sea válida
                                 self.logger.debug(f"Encontrado número de identificación: {numero_limpio} con distancia: {distancia} al nombre '{nombre}'")
                                 self.agregar_nmro_idntfccn_accnnte(numero_limpio, distancia)
