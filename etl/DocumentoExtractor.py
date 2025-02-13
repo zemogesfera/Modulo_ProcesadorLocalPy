@@ -174,7 +174,7 @@ class DocumentoExtractor:
             for linea in self.lines:
                 linea = linea.lower().strip()
                 if "radicado" in linea or "radicación" in linea or "rad" in linea or "radicacion" in linea:
-                    self.logger.debug(f"Analizando línea con 'radicado': {linea}")
+                    #self.logger.debug(f"Analizando línea con 'radicado': {linea}")
                
 
                     patron_nuevo_cali = r'\b(\d{5})-(\d{4})-(\d{3})-(\d{4})-(\d{5})-(\d{2})\b'
