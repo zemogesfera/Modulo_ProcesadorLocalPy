@@ -1617,6 +1617,24 @@ class DocumentoExtractor:
         partes_nombre = nombre_accionante.split()
         primera_parte_nombre = " ".join(partes_nombre[:2])
         nombres_validar.append(primera_parte_nombre)
+
+        primer_nombre = partes_nombre[0]
+        segundo_nombre = partes_nombre[1] if len(partes_nombre) > 1 else ""
+        if segundo_nombre:
+            nombres_validar.append(f"{primer_nombre} de {segundo_nombre}")
+            nombres_validar.append(f"{primer_nombre} del {segundo_nombre}")
+
+        apellidos = partes_nombre[2:]
+        primer_apellido = apellidos[0] if apellidos else ""
+        segundo_apellido = apellidos[1] if len(apellidos) > 1 else ""
+
+        if primer_apellido:
+            nombres_validar.append(f"{primer_nombre} {segundo_nombre} de {primer_apellido}")
+            nombres_validar.append(f"{primer_nombre} {segundo_nombre} del {primer_apellido}")
+
+        if segundo_apellido:
+            nombres_validar.append(f"{primer_apellido} de {segundo_apellido}")
+            nombres_validar.append(f"{primer_apellido} del {segundo_apellido}")
         
         posiciones_nombre = []
         for nombre in nombres_validar:
