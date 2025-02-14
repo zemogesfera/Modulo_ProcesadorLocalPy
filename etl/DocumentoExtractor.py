@@ -1226,6 +1226,8 @@ class DocumentoExtractor:
                 r'\bRAD\b',
                 r'\bCorreo\b',
                 r'\bOctubre\b',
+                r'\bCelular\b',
+
                 
                 
 
@@ -1435,8 +1437,7 @@ class DocumentoExtractor:
                 r'(?i)INCIDENTANTE\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*\n|\s*INCIDENTADOS?:)',
                 r'(?i)INCIDENT(?:ANTE|ALISTA|ISTA)[:\s]*([A-ZÁÉÍÓÚÑ]+(?:\s+[A-ZÁÉÍÓÚÑ]+){1,3})\b',
                 r"promovido por\s+.*?\s+([A-ZÁÉÍÓÚÑ]{2,}(?:\s+[A-ZÁÉÍÓÚÑ]{2,})+)\s+.*?\s+contra",
-
-
+                r'(?i)accion de tutela instaurada por(?:\s+el)?(?:\s+menor)?\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?)(?:\s+a traves de|\s+a través de)',
             ]
 
             
