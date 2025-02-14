@@ -448,6 +448,14 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón auto_interlocutorio: {numero}")
                         if len(numero) >= 21:  # Para asegurar la longitud esperada
                             return numero
+                    #Patrón para RADICADO RAD
+                    patron_radicado_alternativo = r'(?i)RADICADO\s+RAD\.\s*No\.\s*(\d{5})\s+(\d{2})\s+(\d{2})\s+(\d{3})[- ](\d{4})[- ](\d{5})[- ](\d{2})'
+                    match_radicado_alternativo = re.search(patron_radicado_alternativo, linea)
+                    if match_radicado_alternativo:
+                        numero = ''.join(match_radicado_alternativo.groups())  # Une todos los grupos en una sola cadena
+                        self.logger.debug(f"Encontrado número con patrón radicado_alternativo: {numero}")
+                        if len(numero) >= 21:  # Para asegurar la longitud esperada
+                            return numero
 
                     # Formatos con guiones
                     patrones = [
@@ -1190,6 +1198,8 @@ class DocumentoExtractor:
                 r'\bCorreo\b',
                 r'\bOctubre\b',
                 r'\bCelular\b',
+                r'\bINCIDENTE\b',
+
 
                 
                 
@@ -1404,6 +1414,7 @@ class DocumentoExtractor:
                 r"(?i)\b(?:la|el)\s+(?:señor|senor|señora|senora|sr|sra)?\s*([A-ZÁÉÍÓÚÑ]+(?:\s+[A-ZÁÉÍÓÚÑ]+){1,4})\s+identificad[oa]?\s+con\s+cedula.*?\bpresent[oó]?\s+accion de tutela",
 
                 r'(?i)accion de tutela instaurada por(?:\s+el)?(?:\s+menor)?\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?)(?:\s+a traves de|\s+a través de)',
+                r'(?i)el incidente de desacato.*?propuesto por (?:el|la|los|las)?\s*(?:señor|señora|sr|sra)?\.?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+en contra',
             ]
 
             
@@ -1438,6 +1449,7 @@ class DocumentoExtractor:
                     r"quien\s+actua.*?en\s+representacion\s+de",
                     r"quien\s+actua.*?como\s+representante\s+legal\s+de",
                     r"quien\s+actua.*?como\s+representante\s+de",
+                    
                     
                 ]
                 
