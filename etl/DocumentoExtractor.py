@@ -460,6 +460,30 @@ class DocumentoExtractor:
                         if len(numero) < 21:
                             continue
                         return numero
+                    
+                    # Patrón para capturar radicación con puntos 76.845.40.89.001.2025.00031.00
+                    patron_fallopunto = r'(?i)Radicaci[oó]n\s*No\.\s*(\d{2})\.(\d{3})\.(\d{2})\.(\d{2})\.(\d{3})\.(\d{4})\.(\d{5})\.(\d{2})'
+                    match_fallopunto = re.search(patron_fallopunto, linea)
+                    if match_fallopunto:
+                        numero = ''.join(match_fallopunto.groups()) # Une todos los grupos en una sola cadena
+                        self.logger.debug(f"Encontrado número con patrón fallopunto: {numero}")
+                        if len(numero) < 21:  # Para asegurar la longitud esperada
+                            continue
+                        return numero
+                    
+                # Patrón para capturar radicación con guiones
+                    patron_auto_interlocutorio = r'(?i)Radicado\s*N[°º]?\s*[:.]?\s*(\d{5})[-\s](\d{2})[-\s](\d{2})[-\s](\d{3})[-\s](\d{4})[-\s](\d{4,6})[-\s](\d{2})'
+
+                    match_auto_interlocutorio = re.search(patron_auto_interlocutorio, linea)
+
+                    if match_auto_interlocutorio:
+                        numero = ''.join(match_auto_interlocutorio.groups())  # Une todos los grupos en una sola cadena
+                        self.logger.debug(f"Encontrado número con patrón auto_interlocutorio: {numero}")
+
+                        if len(numero) < 21:  # Para asegurar la longitud esperada
+                            continue
+
+                        return numero
                         
 
                 # Formatos con guiones

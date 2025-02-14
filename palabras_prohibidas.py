@@ -16,7 +16,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'fin','preste','valle','lili','nina','interpone','siendo','incumplida','ya','puede','procede',
 'tramite','acdo','diagnosticada','cistitis','incidentista','te','ayeliido','nueva','sa',
 'negar','favor','cumplimiento','requerimientos','occidental','sos','cedula','estado',
-'yo','impetrado',
+'yo','impetrado','amparen','derechos','fundamentales','vida',
 
 
 #los de arriba son los encontrados en diferentes casos de analisis.
