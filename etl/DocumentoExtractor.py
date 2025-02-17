@@ -457,6 +457,14 @@ class DocumentoExtractor:
                         if len(numero) >= 21:  # Para asegurar la longitud esperada
                             return numero
 
+                    patron_radicado_fallo2 = r'(?i)Ref\.:\s*Acci[óo]n\s+de\s+Tutela\s+(\d{2})\s+(\d{10})\s*[-]\s*(\d{4})\s+(\d{5})'
+                    match_radicado_fallo2 = re.search(patron_radicado_fallo2, linea)
+                    if match_radicado_fallo2:
+                        numero = ''.join(match_radicado_fallo2.groups())+ '00'
+                        self.logger.debug(f"Encontrado número con patrón radicado_fallo2: {numero}")
+                        if len(numero) >= 21:
+                            return numero
+
                     # Formatos con guiones
                     patrones = [
                         r'\b(\d{12})-(\d{4})-(\d{5})\b',  # Formato: 631303187002-2024-00096
@@ -468,7 +476,7 @@ class DocumentoExtractor:
                         r'(?i)(?:acción\s+de\s+tutela\s+No\.?\s*)?(\d{2}-\d{3}-\d{2}-\d{2}-\d{3}-\d{4}-\d{5}-\d{2})\b',
                         r'\b(\d{9}-\d{3}-\d{4}-\d{5}-\d{2})\b',
                         r'\b(\d{5}\s\d{2}\s\d{2}\s\d{3}\s\d{4}\s\d{7})\b',
-                        r"(?i)\b(rad(?:icacion|icación|icado|i)?)\s*[:\-]?\s*([\d\-\.\|\/]{21,25})",
+                        r"(?i)\b(?:rad(?:icacion|icación|icado|i)?)?\s*[:\-]?\s*([\d\-\.\|\/]{21,25})"
                     ]
                 
                     for patron in patrones:
@@ -603,7 +611,9 @@ class DocumentoExtractor:
         for linea in lineas:
             for patron in patrones:
                 match = re.search(patron, linea, re.IGNORECASE)
+
                 if match:
+ 
                 # Patrón específico para 48 horas
                     if "cuarenta y ocho" in linea.lower() or "48" in linea:
                         return "48 horas"
@@ -1199,6 +1209,8 @@ class DocumentoExtractor:
                 r'\bOctubre\b',
                 r'\bCelular\b',
                 r'\bINCIDENTE\b',
+                r'\bSEDE\b',
+
 
 
                 
@@ -1319,6 +1331,7 @@ class DocumentoExtractor:
 
 
                 r'(?i)Afectada?\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s|$)',
+                r'(?i)ACCIONANTE:\s*[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?\s+actuando\s+en\s+nombre\s+y\s+representaci[óo]n\s+del\s+menor\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+ACCIONADA?:|\s*$)',
                 r'(?i)ACCI[OÓ]N\s+DE\s+TUTELA\s+A[CCS]IONANTE:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*\.|\s+ACCIONADO)',
                 r'(?i)acci[óo]n\s+de\s+tutela\s+instaurada\s+por\s+(?:el\s+)?(?:ciudadano|ciudadana|señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,?\s+en\s+contra\s+de)',
                 r'(?i)tutela\s+interpuesta\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+contra',
@@ -1326,6 +1339,7 @@ class DocumentoExtractor:
                 r'(?i)quien actúa como agente oficioso\s+de\s+su\s+hij[oa]\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=,|\s+en\s+contra\s+de|\s+\()',
                 r'(?i)Accionante:\s+[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?\s+como\s+agente\s+oficioso\s+de\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)',
                 r'(?i)Beneficiaria:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)',
+                
 
 
                 #Patrones existentes
@@ -1415,6 +1429,9 @@ class DocumentoExtractor:
 
                 r'(?i)accion de tutela instaurada por(?:\s+el)?(?:\s+menor)?\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?)(?:\s+a traves de|\s+a través de)',
                 r'(?i)el incidente de desacato.*?propuesto por (?:el|la|los|las)?\s*(?:señor|señora|sr|sra)?\.?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+en contra',
+                r"(?i)incidente de desacato.*?interpuesto por (?:el|la|los|las)?\s*(?:señor|señora|sr|sra)?\.?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),\s+contra",
+                r"(?i)accion de tutela.*?iniciada por (?:el|la|los|las)?\s*(?:señor|señora|sr|sra)?\.?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?),\s+a trav[eé]s de",
+        
             ]
 
             

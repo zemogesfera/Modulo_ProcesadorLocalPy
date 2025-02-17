@@ -18,7 +18,10 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'negar','favor','cumplimiento','requerimientos','occidental','sos','cedula','estado',
 'yo','impetrado','amparen','derechos','fundamentales','vida','progenitora','tiene','recibir',
 'radicacion','abrigar','esperanzas','representada','agt','incidentado','presento','informando',
-'criterios','completos','promovida','torno',
+'criterios','completos','promovida','torno','articulo','cumpliendo','niegue','prestacion',
+'garantice','debida','atencion','equivocadamente','sido','interpretado','aguja','tutela','scanned','with',
+'misma','tutelada','hace','sos-','aporta','rechrso','impugnacion','presentado',
+'incidental','quiera',
 
 
 #los de arriba son los encontrados en diferentes casos de analisis.
