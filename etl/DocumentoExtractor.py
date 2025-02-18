@@ -464,6 +464,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón radicado_fallo2: {numero}")
                         if len(numero) >= 21:
                             return numero
+                        
 
                     # Formatos con guiones
                     patrones = [
@@ -1210,6 +1211,7 @@ class DocumentoExtractor:
                 r'\bCelular\b',
                 r'\bINCIDENTE\b',
                 r'\bSEDE\b',
+                r'\b19573\b',
 
 
 
@@ -1431,7 +1433,7 @@ class DocumentoExtractor:
                 r'(?i)el incidente de desacato.*?propuesto por (?:el|la|los|las)?\s*(?:señor|señora|sr|sra)?\.?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+en contra',
                 r"(?i)incidente de desacato.*?interpuesto por (?:el|la|los|las)?\s*(?:señor|señora|sr|sra)?\.?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),\s+contra",
                 r"(?i)accion de tutela.*?iniciada por (?:el|la|los|las)?\s*(?:señor|señora|sr|sra)?\.?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?),\s+a trav[eé]s de",
-        
+                r'(?i)ACCIONANTES?\s*(?::|=>)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?:\s*,?\s*(?:CC|C\.C\.)\s+[\d\.,]+|\s*$)',
             ]
 
             
