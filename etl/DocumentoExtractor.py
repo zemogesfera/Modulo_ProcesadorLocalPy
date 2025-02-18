@@ -465,29 +465,36 @@ class DocumentoExtractor:
                         if len(numero) >= 21:
                             return numero
                         
+                    patron_radicado_nuevo = r'\b(\d{16})-?(\d{7})\b'
+                    match_radicado_nuevo = re.search(patron_radicado_nuevo, linea)
+                    if match_radicado_nuevo:
+                        numero = ''.join(match_radicado_nuevo.groups())
+                        self.logger.debug(f"Encontrado número con patrón radicado nuevo: {numero}")
+                        if len(numero) >= 21:
+                            return numero
 
-                    # Formatos con guiones
-                    patrones = [
-                        r'\b(\d{12})-(\d{4})-(\d{5})\b',  # Formato: 631303187002-2024-00096
-                        r'\b(\d{5}-\d{4}-\d{3}-\d{4}-\d{5}-\d{2})\b',
-                        r'\b(\d{2}-\d{3}-\d{2}-\d{2}-\d{3}-\d{4}-\d{5}-\d{2})\b',
-                        r'\b(\d{5}-\d{2}-\d{2}-\d{3}-\d{4}-\d{5}-\d{2})\b',
-                        r'\b(\d{2}-\d{3}-\d{2}-\d{2}-\d{4}-\d{5}-\d{2})\b',
-                        r'\b(\d{12}-\d{4}-\d{5}-\d{2})\b',
-                        r'(?i)(?:acción\s+de\s+tutela\s+No\.?\s*)?(\d{2}-\d{3}-\d{2}-\d{2}-\d{3}-\d{4}-\d{5}-\d{2})\b',
-                        r'\b(\d{9}-\d{3}-\d{4}-\d{5}-\d{2})\b',
-                        r'\b(\d{5}\s\d{2}\s\d{2}\s\d{3}\s\d{4}\s\d{7})\b',
-                        r"(?i)\b(?:rad(?:icacion|icación|icado|i)?)?\s*[:\-]?\s*([\d\-\.\|\/]{21,25})"
-                    ]
+                    # # Formatos con guiones
+                    # Se comentan patrones generales ya que no estan funcionando correctamente
+                    # patrones = [
+                    #     r'\b(\d{12})-(\d{4})-(\d{5})\b',  # Formato: 631303187002-2024-00096
+                    #     r'\b(\d{5}-\d{4}-\d{3}-\d{4}-\d{5}-\d{2})\b',
+                    #     r'\b(\d{2}-\d{3}-\d{2}-\d{2}-\d{3}-\d{4}-\d{5}-\d{2})\b',
+                    #     r'\b(\d{5}-\d{2}-\d{2}-\d{3}-\d{4}-\d{5}-\d{2})\b',
+                    #     r'\b(\d{2}-\d{3}-\d{2}-\d{2}-\d{4}-\d{5}-\d{2})\b',
+                    #     r'\b(\d{12}-\d{4}-\d{5}-\d{2})\b',
+                    #     r'(?i)(?:acción\s+de\s+tutela\s+No\.?\s*)?(\d{2}-\d{3}-\d{2}-\d{2}-\d{3}-\d{4}-\d{5}-\d{2})\b',
+                    #     r'\b(\d{9}-\d{3}-\d{4}-\d{5}-\d{2})\b',
+                    #     r'\b(\d{5}\s\d{2}\s\d{2}\s\d{3}\s\d{4}\s\d{7})\b'
+                    # ]
                 
-                    for patron in patrones:
-                        match = re.search(patron, linea)
-                        if match:
-                            nmroRdcdoJdcl = match.group(1)
-                            self.logger.debug(f"Encontrado número con patrón estándar: {nmroRdcdoJdcl}")
-                            return nmroRdcdoJdcl.replace(" ", "").replace("-", "")
+                    # for patron in patrones:
+                    #     match = re.search(patron, linea)
+                    #     if match:
+                    #         nmroRdcdoJdcl = match.group(1)
+                    #         self.logger.debug(f"Encontrado número con patrón estándar: {nmroRdcdoJdcl}")
+                    #         return nmroRdcdoJdcl.replace(" ", "").replace("-", "")
             
-        # Si no se encontró directamente, construir el número de radicado
+            # Si no se encontró directamente, construir el número de radicado
             codigo_juzgado = self.buscar_CdgoJzgdo()
             numero_parcial = self.buscar_numero_parcial()
 
@@ -1323,6 +1330,9 @@ class DocumentoExtractor:
 
                 # Nuevalista final que toma al afectado independiente de quien sea el agente oficio
 
+                r'Desacato que propone (.+?), en representacion de su hija menor ([A-ZÁÉÍÓÚÑa-záéíóúñ ]+?) contra',
+                r'Accionante:\s*.+?,\s*en representacion de\s+(?:el sr|sra|señor|señora|senor|senora|su hija menor|su hijo menor)\s+([A-ZÁÉÍÓÚÑa-záéíóúñ ]+?)\s+Accionado',
+                r'Accionante:\s*.+?\s+en calidad de Representante Legal de\s+([A-ZÁÉÍÓÚÑa-záéíóúñ ]+?)\s+Accionado',
                 r'(?i)agente\s+oficios[oa]\s+de(?:\s+mi\s+(madre|padre|herman[oa]))?\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+con\s+cedula|\s+identificad[oa]|$)',
                 r'(?i)agente\s+oficios[oa]\s+de\s+la\s+menor\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*,|\s+domiciliad[oa]|$)',
                 r'(?i)se\s+tutel[oó]\s+los\s+derechos\s+fundamentales\s+a\s+la\s+salud\s+y\s+a\s+la\s+vida\s+de\s+la\s+(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*,|\s+ordenando)',
@@ -1342,7 +1352,7 @@ class DocumentoExtractor:
                 r'(?i)quien actúa como agente oficioso\s+de\s+su\s+hij[oa]\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=,|\s+en\s+contra\s+de|\s+\()',
                 r'(?i)Accionante:\s+[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?\s+como\s+agente\s+oficioso\s+de\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)',
                 r'(?i)Beneficiaria:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)',
-                
+                r'dignidad humana del\s+(?:sr|senor|sra|senora|señor|señora)\s+([A-ZÁÉÍÓÚÑa-záéíóúñ ]+?)\s+y\s+se\s+ordeno',
 
 
                 #Patrones existentes
