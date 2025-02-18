@@ -21,7 +21,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'criterios','completos','promovida','torno','articulo','cumpliendo','niegue','prestacion',
 'garantice','debida','atencion','equivocadamente','sido','interpretado','aguja','tutela','scanned','with',
 'misma','tutelada','hace','sos-','aporta','rechrso','impugnacion','presentado',
-'incidental','quiera','contusion','esposo','conceder',
+'incidental','quiera','contusion','esposo','conceder','insumo','documentos','anexos',
 
 
 #los de arriba son los encontrados en diferentes casos de analisis.

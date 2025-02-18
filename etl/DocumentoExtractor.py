@@ -1330,6 +1330,7 @@ class DocumentoExtractor:
                 r'(?i)agente\s+oficios[oa]\s+de\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+en\s+contra|,|\s+contra|\s+identificad[oa]|$)',
                 r'(?i)de\s+su\s+menor\s+hijo\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*,|\s+identificad[oa]|$)',
                 r'(?i)(?:ACTE\.?:\s*[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)\s+en\s+calidad\s+de\s+agente\s+oficios[oa]\s+de\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)',
+                
 
 
                 r'(?i)Afectada?\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s|$)',
@@ -1583,7 +1584,8 @@ class DocumentoExtractor:
                 rf"{re.escape(nombre_completo_accionante)}\s*C\.C\.\s*([\d.]+)",
                 rf"{re.escape(nombre_completo_accionante)}\s*(?:,|\s+identificado\s+con\s+la?)?\s*(?:c\.?c\.?|cc|cédula\s+de\s+ciudadanía)\s*(?:nro\.?|n°|no\.?|num(?:ero|ro)?)?\s*[:.]?\s*([\d.]+)",
                 rf"(?i){re.escape(nombre_completo_accionante)}\s+identificad[oa]?\s+con\s+(?:cedula\s+de\s+ciudadania|n[uú]mero|num|n°|c\.c\.|cc)\s*[:\-]?\s*([\d\.]+)",
-
+                rf"(?i){re.escape(nombre_completo_accionante)}\s*,\s*identificad[oa]\s+con\s+c[ée]dula\s+de\s+ciudadan[ií]a\s+N[úu]m\.?\s*([\d\.]+)",
+                rf"(?i){re.escape(nombre_completo_accionante)}\s+T\.?I\.?\s*([\d\.]+)",
             ]
 
 
@@ -1741,12 +1743,14 @@ class DocumentoExtractor:
             r'portador[a]? de la\s+(C\.?C\.?|T\.?I\.?|RC|CE|P\.?P\.?)\s+No\.',
             r'cédula\s+de\s+ciudadan[ií]a\s+No\.\s*(\d{1,2}(\.\d{1,3}){2,3})',
             r'cédula\s+de\s+ciudadan[ií]a\s+No\.\s*([\d\.\-]+)',
-            r'ACCIONANTE:.*?\s(C\.?C\.?|T\.?I\.?|RC|CE|P\.?P\.?)\b'
+            r'ACCIONANTE:.*?\s(C\.?C\.?|T\.?I\.?|RC|CE|P\.?P\.?)\b',
+            
         ]
 
         if nmbreCmpltoAccnnte:
             patrones.append(
                 rf"{re.escape(nmbreCmpltoAccnnte)}.*?(RC|C\.?C\.?|T\.?I\.?)\.",
+                
             )
 
     # Mapeo para normalizar y clasificar los tipos de documentos
