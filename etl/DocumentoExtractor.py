@@ -480,6 +480,15 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón radicado desacato 3 {numero}")
                         if len(numero) >= 21:
                             return numero
+                        
+                    patron_admision2radicac = r'(?i)RADICAC\.?\s*No\.?\s*(\d{12})\s*-\s*(\d{4})\s*-\s*(\d{5})\s*-\s*(\d{2})'
+                    match_admision2radicac = re.search(patron_admision2radicac, linea)
+                    if match_admision2radicac:
+                        numero = ''.join(match_admision2radicac.groups())
+                        self.logger.debug(f"Encontrado número con patrón radicado admision 2 radic {numero}")
+                        if len(numero) >= 21:
+                            return numero
+                        
 
                     # # Formatos con guiones
                     # Se comentan patrones generales ya que no estan funcionando correctamente
@@ -941,7 +950,7 @@ class DocumentoExtractor:
                                     
                                 print("texto prefinal:" + texto_prefinal)
                                 
-                                matchesNro = re.findall(patron_numeros, texto_prefinal, re.IGNORECASE)
+                                matchesNro = re.findall(patron_numeros,  self.eliminar_caracteres_especiales( texto_prefinal), re.IGNORECASE)
                                 diaEncontrado = None
                                 
                                 
@@ -1033,14 +1042,16 @@ class DocumentoExtractor:
                         inicio = match.start()
                         # Extraer desde el inicio del mes hasta 40 caracteres después
                         print(inicio)
-                        fragmento = texto_encabezado[inicio+1:inicio+88]
+                        fragmento = texto_encabezado[inicio+2:inicio+88]
                         fragmentoAntes= inicio-15
                         fragmento2 = texto_encabezado[fragmentoAntes:inicio+10]
                         print("texto:" + fragmento)
                         print("texto2:" + fragmento2)
                         print(f"Mes encontrado: {match.group()}")
                         mesEncontrado = match.group().strip().lower() 
-                        fecha_lista.append(procesamientoFechas(fragmento,fragmento2,mesEncontrado))
+                        resultado = procesamientoFechas(fragmento, fragmento2, mesEncontrado)
+                        if resultado is not None:
+                            fecha_lista.append(resultado)
                         print(f"fecha lista:{fecha_lista}")
                         
                     return obtener_fecha_mas_reciente(fecha_lista)
@@ -1352,8 +1363,16 @@ class DocumentoExtractor:
 
 
                 r'(?i)Afectada?\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s|$)',
+
+                r'(?i)ACCIONANTE:\s*[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?\s+C\.?C\.?\s*\d+[\d\.,]*\s+actuando\s+como\s+apoderado\s+judicial\s+de\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+C\.?C\.?)',
+
                 r'(?i)ACCIONANTE:\s*[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?\s+actuando\s+en\s+nombre\s+y\s+representaci[óo]n\s+del\s+menor\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+ACCIONADA?:|\s*$)',
                 r'(?i)ACCI[OÓ]N\s+DE\s+TUTELA\s+A[CCS]IONANTE:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*\.|\s+ACCIONADO)',
+
+
+                r'(?i)ACCI[ÓO]N\s+DE\s+TUTELA\s+instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+y\s+coadyuvada)',
+
+
                 r'(?i)acci[óo]n\s+de\s+tutela\s+instaurada\s+por\s+(?:el\s+)?(?:ciudadano|ciudadana|señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,?\s+en\s+contra\s+de)',
                 r'(?i)tutela\s+interpuesta\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+contra',
                 r'(?i)en\s+nombre\s+y\s+representaci[óo]n\s+de\s+la\s+menor\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s+RC\.|\s+eleva|\s*$)',
@@ -1455,8 +1474,9 @@ class DocumentoExtractor:
                 r"(?i)accion de tutela.*?iniciada por (?:el|la|los|las)?\s*(?:señor|señora|sr|sra)?\.?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?),\s+a trav[eé]s de",
                 r'(?i)ACCIONANTES?\s*(?::|=>)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?:\s*,?\s*(?:CC|C\.C\.)\s+[\d\.,]+|\s*$)',
                 r'(?i)escrito presentado por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)(?=,\s+por medio del cual|,)',
-                r'(?i)incidente de desacato propuesto por (?:el|la)?\s*ciudadano\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+contra'
-
+                r'(?i)incidente de desacato propuesto por (?:el|la)?\s*ciudadano\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+contra',
+                r'(?i)Accionante:\s*(?:Sra\.?|Sr\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\b',
+                r'(?i)ADMITASE\s+la\s+presente\s+ACCION\s+DE\s+TUTELA\s+presentada\s+por\s+la\s+se[ñn]ora\s+([A-Z\s]+)\s+identificada\s+con',
 
             ]
 
@@ -1622,6 +1642,9 @@ class DocumentoExtractor:
                 rf"(?i){re.escape(nombre_completo_accionante)}\s+T\.?I\.?\s*([\d\.]+)",
                 rf"(?i){re.escape(nombre_completo_accionante)}\.\s*[Cc]\.?[Cc]\.?\s*([\d\.]+)",
                 rf"{re.escape(nombre_completo_accionante)}\s+con\s+([\d\.]+)",
+                rf"(?i){re.escape(nmbreCmpltoAccnnte)}\s*,?\s*identificado\s+con\s+la\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+n[°º]?\s*([\d\.]+)",
+
+                
             ]
 
 
@@ -1776,8 +1799,10 @@ class DocumentoExtractor:
         if nmbreCmpltoAccnnte:
             patrones.extend(
                 [
+                    
                     rf"{re.escape(nmbreCmpltoAccnnte)}.*?(RC|C\.?C\.?|T\.?I\.?)\.",
                     rf"{re.escape(nmbreCmpltoAccnnte)}.*?(RC|C\.?C\.?|T\.?I\.?)\.?",
+
                 ]
             )
 

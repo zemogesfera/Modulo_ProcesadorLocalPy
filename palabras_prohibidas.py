@@ -23,8 +23,8 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'misma','tutelada','hace','sos-','aporta','rechrso','impugnacion','presentado',
 'incidental','quiera','contusion','esposo','conceder','insumo','documentos','anexos',
 'corrase','traslado','guardo','silencio','respecto','correspondiente','era','atendido',
-'comfandi',
-
+'comfandi','comunicacion','femenina','masculino','genero','mujer','hombre','inscrito',
+'inscrita','probado','aportados','informes','entidades','persistia',
 
 #los de arriba son los encontrados en diferentes casos de analisis.
 
