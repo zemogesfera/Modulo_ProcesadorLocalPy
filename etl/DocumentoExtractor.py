@@ -1353,6 +1353,7 @@ class DocumentoExtractor:
                 r'(?i)Accionante:\s+[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?\s+como\s+agente\s+oficioso\s+de\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)',
                 r'(?i)Beneficiaria:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)',
                 r'dignidad humana del\s+(?:sr|senor|sra|senora|señor|señora)\s+([A-ZÁÉÍÓÚÑa-záéíóúñ ]+?)\s+y\s+se\s+ordeno',
+                r"como agente oficiosa de ([A-Z\s]+?)\s+(?:por|para|en contra de|contra de|contra)",
 
 
                 #Patrones existentes
@@ -1399,7 +1400,7 @@ class DocumentoExtractor:
                 r'(?i)acci[óo]n\s+de\s+tutela\s+No\.\s+\d+-\d+\s+promovida\s+por\s+la\s+(?:señora|señor|ciudadana|ciudadano)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?),\s+identificada?\s+con\s+c[ée]dula\s+de\s+ciudadan[íi]a\s+No\.\s+\d+',
                 r'(?i)yo,\s+([A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+),\s+mayor\s+de\s+edad,\s*identificada?\s+con\b.*?presento\s+esta\s+acción\s+de\s+tutela',
                 r'(?i)(?:primero|primero\s*:\s*)?avocar\s+(?:el\s+)?conocimiento\s+de\s+la\s+acci[óo]n\s+de\s+tutela\s+por\s+el\s+(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+identificad[oa]\s+con\b',
-                r'(?i)(?:el\s+)?(?:señor|señora|sr\.?|sra\.?)?\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,\s*identificad[oa]?\s+con\s+c[ée]dula)',
+                # r'(?i)(?:el\s+)?(?:señor|señora|sr\.?|sra\.?)?\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=,\s*identificad[oa]?\s+con\s+c[ée]dula)',
                 r'(?i)acci[óo]n\s+de\s+tutela\s+instaurada\s+por\s+(?:el\s+|la\s+)?(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+en\s+representaci[óo]n\s+de)',
                 r'(?i)donde\s+(?:el|la)\s+(?:ciudadano|ciudadana)\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?),\s+identificad[oa]\s+con\s+(?:la\s+)?[Cc]\.?[Cc]\.?\s+No\.',
                 r'(?i)Tr[áa]mite\s+Acci[óo]n\s+de\s+Tutela\.\s+Accionante\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\.\s+Accionados?|$)',
@@ -1542,12 +1543,23 @@ class DocumentoExtractor:
         Prioriza la autoidentificación directa del accionante.
         """
 
-        nmbreCmpltoAccnnte = self.buscar_nmbreCmpltoAccnnte()
-        if not nmbreCmpltoAccnnte:
-            return None
+        # nmbreCmpltoAccnnte = self.buscar_nmbreCmpltoAccnnte()
+        # if not nmbreCmpltoAccnnte:
+        #     return None
         
+        # Si no tengo nada en self.nmbre_cmplto_accnnte busco con buscar_nmbreCmpltoAccnnte
+            # Si buscar_nmbreCmpltoAccnnte devuelve el nombre, se lo asigno a self.nmbre_cmplto_accnnte
+            # Si buscar_nmbreCmpltoAccnnte no devuelve el nombre, se retorna None
+        # Si tengo algo en self.nmbre_cmplto_accnnte, se lo asigno a nmbreCmpltoAccnnte
         if not self.nmbre_cmplto_accnnte:
-            self.nmbre_cmplto_accnnte = nmbreCmpltoAccnnte
+            nmbreCmpltoAccnnte = self.buscar_nmbreCmpltoAccnnte()
+            if nmbreCmpltoAccnnte:
+                self.nmbre_cmplto_accnnte = nmbreCmpltoAccnnte
+            else:
+                return None
+        else:
+            nmbreCmpltoAccnnte = self.nmbre_cmplto_accnnte
+        
     
         def limpiar_y_validar_numero(numero):
             """
@@ -1596,6 +1608,8 @@ class DocumentoExtractor:
                 rf"(?i){re.escape(nombre_completo_accionante)}\s+identificad[oa]?\s+con\s+(?:cedula\s+de\s+ciudadania|n[uú]mero|num|n°|c\.c\.|cc)\s*[:\-]?\s*([\d\.]+)",
                 rf"(?i){re.escape(nombre_completo_accionante)}\s*,\s*identificad[oa]\s+con\s+c[ée]dula\s+de\s+ciudadan[ií]a\s+N[úu]m\.?\s*([\d\.]+)",
                 rf"(?i){re.escape(nombre_completo_accionante)}\s+T\.?I\.?\s*([\d\.]+)",
+                rf"(?i){re.escape(nombre_completo_accionante)}\.\s*[Cc]\.?[Cc]\.?\s*([\d\.]+)",
+                rf"{re.escape(nombre_completo_accionante)}\s+con\s+([\d\.]+)",
             ]
 
 
@@ -1738,11 +1752,25 @@ class DocumentoExtractor:
 
             return None
     
-    # Obtener el nombre completo del accionante
-        nmbreCmpltoAccnnte = self.buscar_nmbreCmpltoAccnnte()
+        # Obtener el nombre completo del accionante
+        if not self.nmbre_cmplto_accnnte:
+            nmbreCmpltoAccnnte = self.buscar_nmbreCmpltoAccnnte()
+            if nmbreCmpltoAccnnte:
+                self.nmbre_cmplto_accnnte = nmbreCmpltoAccnnte
+        else:
+            nmbreCmpltoAccnnte = self.nmbre_cmplto_accnnte
 
-    # Patrones originales
-        patrones = [
+        patrones = []
+        if nmbreCmpltoAccnnte:
+            patrones.extend(
+                [
+                    rf"{re.escape(nmbreCmpltoAccnnte)}.*?(RC|C\.?C\.?|T\.?I\.?)\.",
+                    rf"{re.escape(nmbreCmpltoAccnnte)}.*?(RC|C\.?C\.?|T\.?I\.?)\.?",
+                ]
+            )
+
+        # Patrones originales
+        patrones.extend([
             
             r'(?:accionante|paciente).*?identificad[oa] con (?:la |el )?(\w+(?:\s+\w+){0,4})\s+No\.',
             #este no es, este identifica el agente oficioso, debe identificar el en representacion
@@ -1755,13 +1783,7 @@ class DocumentoExtractor:
             r'cédula\s+de\s+ciudadan[ií]a\s+No\.\s*([\d\.\-]+)',
             r'ACCIONANTE:.*?\s(C\.?C\.?|T\.?I\.?|RC|CE|P\.?P\.?)\b',
             
-        ]
-
-        if nmbreCmpltoAccnnte:
-            patrones.append(
-                rf"{re.escape(nmbreCmpltoAccnnte)}.*?(RC|C\.?C\.?|T\.?I\.?)\.",
-                
-            )
+        ])
 
     # Mapeo para normalizar y clasificar los tipos de documentos
         mapping_documentos = {
@@ -1775,24 +1797,25 @@ class DocumentoExtractor:
             'RC.': 'RC',
 
             'tarjeta de identidad': 'TI',
+            'T.I': 'TI',
             'T.I.': 'TI',
             'TI': 'TI',
         }
 
         try:
-        # Primero buscar con los patrones originales
+            # Primero buscar con los patrones originales
             for patron in patrones:
                 match = re.search(patron, self.texto, re.IGNORECASE | re.DOTALL)
                 if match:
-                # Obtener el tipo de documento y normalizarlo
+                    # Obtener el tipo de documento y normalizarlo
                     tipo_documento = match.group(1).strip()
 
-                # Verificar si está en el mapeo
+                    # Verificar si está en el mapeo
                     tipo_documento_normalizado = mapping_documentos.get(tipo_documento.upper(), None)
                     if tipo_documento_normalizado:
                         return tipo_documento_normalizado
 
-                # Normalización adicional basada en palabras clave
+                    # Normalización adicional basada en palabras clave
                     tipo_documento_lower = tipo_documento.lower()
                     if 'cédula' in tipo_documento_lower or 'cedula' in tipo_documento_lower:
                         return 'CC'
@@ -1801,16 +1824,16 @@ class DocumentoExtractor:
                     elif 'tarjeta' in tipo_documento_lower:
                         return 'TI'
 
-        # Si no se encuentra con los patrones originales y tenemos un nombre
+            # Si no se encuentra con los patrones originales y tenemos un nombre
             if nmbreCmpltoAccnnte:
             # Obtener las primeras dos palabras del nombre
                 palabras_nombre = nmbreCmpltoAccnnte.split()
                 if len(palabras_nombre) >= 2:
-                # Crear patrón de búsqueda basado en las primeras dos palabras del nombre
+                    # Crear patrón de búsqueda basado en las primeras dos palabras del nombre
                     primer_palabra = re.escape(palabras_nombre[0])
                     segunda_palabra = re.escape(palabras_nombre[1])
 
-                # Patrones de búsqueda específicos para el nombre
+                    # Patrones de búsqueda específicos para el nombre
                     patrones_nombre = [
                     # Patrón para CC. inmediatamente después o cerca del nombre
                         fr'{primer_palabra}\s+{segunda_palabra}.*?CC\.?\s*\d',
@@ -1824,13 +1847,13 @@ class DocumentoExtractor:
                         
                     ]
 
-                # Buscar con los nuevos patrones
+                    # Buscar con los nuevos patrones
                     for patron in patrones_nombre:
                         match_nombre = re.search(patron, self.texto, re.IGNORECASE | re.MULTILINE | re.DOTALL)
                         if match_nombre:
                             return 'CC'
 
-        # Si no se encontró ningún tipo de documento pero hay número de identificación, retornar CC por defecto
+            # Si no se encontró ningún tipo de documento pero hay número de identificación, retornar CC por defecto
             return 'CC'
         
         except Exception as e:
