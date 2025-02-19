@@ -472,6 +472,14 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón radicado nuevo: {numero}")
                         if len(numero) >= 21:
                             return numero
+                        
+                    patron_desacato3 = r'(?i)Rad\.?\s*(\d{16})-(\d{5})-(\d{2})'
+                    match_desacato3 = re.search(patron_desacato3, linea)
+                    if match_desacato3:
+                        numero = ''.join(match_desacato3.groups())
+                        self.logger.debug(f"Encontrado número con patrón radicado desacato 3 {numero}")
+                        if len(numero) >= 21:
+                            return numero
 
                     # # Formatos con guiones
                     # Se comentan patrones generales ya que no estan funcionando correctamente
@@ -1446,6 +1454,10 @@ class DocumentoExtractor:
                 r"(?i)incidente de desacato.*?interpuesto por (?:el|la|los|las)?\s*(?:señor|señora|sr|sra)?\.?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),\s+contra",
                 r"(?i)accion de tutela.*?iniciada por (?:el|la|los|las)?\s*(?:señor|señora|sr|sra)?\.?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?),\s+a trav[eé]s de",
                 r'(?i)ACCIONANTES?\s*(?::|=>)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?:\s*,?\s*(?:CC|C\.C\.)\s+[\d\.,]+|\s*$)',
+                r'(?i)escrito presentado por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)(?=,\s+por medio del cual|,)',
+                r'(?i)incidente de desacato propuesto por (?:el|la)?\s*ciudadano\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+contra'
+
+
             ]
 
             
