@@ -491,6 +491,15 @@ class DocumentoExtractor:
                             return numero
                         
 
+                    patron_radicacion23 = r'(?i)Radicaci[oó]n:?\s*(\d{5})-(\d{2})-(\d{2})-(\d{3})-(\d{4})-(\d{7})'
+                    match_radicacion23 = re.search(patron_radicacion23, linea)
+                    if match_radicacion23:
+                        numero = ''.join(match_radicacion23.groups())
+                        self.logger.debug(f"Encontrado número con patrón _radicacion23: {numero}")
+                        if len(numero) >= 21:
+                            return numero
+                        
+
                     # # Formatos con guiones
                     # Se comentan patrones generales ya que no estan funcionando correctamente
                     # patrones = [
@@ -1239,6 +1248,8 @@ class DocumentoExtractor:
                 r'\bINCIDENTE\b',
                 r'\bSEDE\b',
                 r'\b19573\b',
+                r'\bcodigo\b',
+
 
 
 

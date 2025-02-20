@@ -26,8 +26,8 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'comfandi','comunicacion','femenina','masculino','genero','mujer','hombre','inscrito',
 'inscrita','probado','aportados','informes','entidades','persistia','indicando','indicado',
 'indicaba','indica','pretenda','proteja','protejer','concalculados','pretende','conculcados',
-'diagnosticado','linfoma','hodgkin','basico',
-
+'diagnosticado','linfoma','hodgkin','basico','condiagnosticodeLinfomaHodgkinclasicoenfase',
+'avanzada','avanzando','actuando','dirigida',
 
 #pendiente incluir enfermades, quizas ciudades
 #los de arriba son los encontrados en diferentes casos de analisis.
@@ -3381,7 +3381,6 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'promoción de derechos', 'educación en derechos',
 'concientización sobre derechos',
 'foc', 'escrito', 'allegado', 'oncologica', 'requiera',
-'historia', 'clinica', 'encuentra', 'procura', 'adelantar',
-'entorno'
+'historia', 'clinica', 'encuentra', 'procura', 'adelantar'
 }
 
