@@ -3377,6 +3377,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'promoción de derechos', 'educación en derechos',
 'concientización sobre derechos',
 'foc', 'escrito', 'allegado', 'oncologica', 'requiera',
-'historia', 'clinica', 'encuentra', 'procura', 'adelantar'
+'historia', 'clinica', 'encuentra', 'procura', 'adelantar',
+'entorno'
 }
 

@@ -173,7 +173,8 @@ class DocumentoExtractor:
         # Primero intentar con los patrones originales
             for linea in self.lines:
                 linea = linea.lower().strip()
-                if "radicado" in linea or "radicación" in linea or "rad" in linea or "radicacion" in linea:
+                sinonimos_radicacion = ['radicado', 'radicación', 'rad', 'radicacion', 'ref']
+                if any(termino in linea for termino in sinonimos_radicacion):
                     #self.logger.debug(f"Analizando línea con 'radicado': {linea}")               
 
                     patron_nuevo_cali = r'\b(\d{5})-(\d{4})-(\d{3})-(\d{4})-(\d{5})-(\d{2})\b'
@@ -1352,6 +1353,7 @@ class DocumentoExtractor:
                 r'Desacato que propone (.+?), en representacion de su hija menor ([A-ZÁÉÍÓÚÑa-záéíóúñ ]+?) contra',
                 r'Accionante:\s*.+?,\s*en representacion de\s+(?:el sr|sra|señor|señora|senor|senora|su hija menor|su hijo menor)\s+([A-ZÁÉÍÓÚÑa-záéíóúñ ]+?)\s+Accionado',
                 r'Accionante:\s*.+?\s+en calidad de Representante Legal de\s+([A-ZÁÉÍÓÚÑa-záéíóúñ ]+?)\s+Accionado',
+                r"(?i)ACCIONANTE:?.*?\bAGENCIADA:?\s+([A-ZÁÉÍÓÚÑ]+(?:\s+[A-ZÁÉÍÓÚÑ]+)*)\s+INCIDENTADO:?",
                 r'(?i)agente\s+oficios[oa]\s+de(?:\s+mi\s+(madre|padre|herman[oa]))?\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+con\s+cedula|\s+identificad[oa]|$)',
                 r'(?i)agente\s+oficios[oa]\s+de\s+la\s+menor\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s*,|\s+domiciliad[oa]|$)',
                 r'(?i)se\s+tutel[oó]\s+los\s+derechos\s+fundamentales\s+a\s+la\s+salud\s+y\s+a\s+la\s+vida\s+de\s+la\s+(?:señor|señora|sr\.?|sra\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*,|\s+ordenando)',
@@ -1643,7 +1645,8 @@ class DocumentoExtractor:
                 rf"(?i){re.escape(nombre_completo_accionante)}\.\s*[Cc]\.?[Cc]\.?\s*([\d\.]+)",
                 rf"{re.escape(nombre_completo_accionante)}\s+con\s+([\d\.]+)",
                 rf"(?i){re.escape(nmbreCmpltoAccnnte)}\s*,?\s*identificado\s+con\s+la\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+n[°º]?\s*([\d\.]+)",
-
+                rf"{re.escape(nombre_completo_accionante)}\s{{1,20}}(?i)DOCUMENTO\s*:? *(\d+)",
+                rf"{re.escape(nombre_completo_accionante)}\s+Pagina\s+No\.\s+1\s+(?i)DOCUMENTO\s*:? *(\d+)",
                 
             ]
 
@@ -1801,8 +1804,6 @@ class DocumentoExtractor:
                 [
                     
                     rf"{re.escape(nmbreCmpltoAccnnte)}.*?(RC|C\.?C\.?|T\.?I\.?)\.",
-                    rf"{re.escape(nmbreCmpltoAccnnte)}.*?(RC|C\.?C\.?|T\.?I\.?)\.?",
-
                 ]
             )
 
