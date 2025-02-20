@@ -24,8 +24,12 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'incidental','quiera','contusion','esposo','conceder','insumo','documentos','anexos',
 'corrase','traslado','guardo','silencio','respecto','correspondiente','era','atendido',
 'comfandi','comunicacion','femenina','masculino','genero','mujer','hombre','inscrito',
-'inscrita','probado','aportados','informes','entidades','persistia',
+'inscrita','probado','aportados','informes','entidades','persistia','indicando','indicado',
+'indicaba','indica','pretenda','proteja','protejer','concalculados','pretende','conculcados',
+'diagnosticado','linfoma','hodgkin','basico',
 
+
+#pendiente incluir enfermades, quizas ciudades
 #los de arriba son los encontrados en diferentes casos de analisis.
 
 
