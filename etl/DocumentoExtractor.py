@@ -501,6 +501,15 @@ class DocumentoExtractor:
                         if len(numero) >= 21:
                             return numero
                         
+                    patron_desacato4 = r'(?i)Rad\.?\s*No\.?\s*(\d{2})\.(\d{3})\.(\d{2})\.(\d{2})\.(\d{3})\.(\d{4})-(\d{5})-(\d{2})'
+                    match_desacato4 = re.search(patron_desacato4, linea)
+                    if match_desacato4:
+                        numero = ''.join(match_desacato4.groups())  
+                        self.logger.debug(f"Encontrado número con patrón desacato 4: {numero}")
+                        if len(numero) >= 21:
+                            return numero
+
+                        
 
                     # # Formatos con guiones
                     # Se comentan patrones generales ya que no estan funcionando correctamente
@@ -1250,6 +1259,8 @@ class DocumentoExtractor:
                 r'\bSEDE\b',
                 r'\b19573\b',
                 r'\bcodigo\b',
+                r'\bCalle\b',
+
 
 
 
@@ -1491,6 +1502,7 @@ class DocumentoExtractor:
                 r'(?i)incidente de desacato propuesto por (?:el|la)?\s*ciudadano\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+contra',
                 r'(?i)Accionante:\s*(?:Sra\.?|Sr\.?)?\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\b',
                 r'(?i)ADMITASE\s+la\s+presente\s+ACCION\s+DE\s+TUTELA\s+presentada\s+por\s+la\s+se[ñn]ora\s+([A-Z\s]+)\s+identificada\s+con',
+                r'(?i)La\s+acci[óo]n\s+de\s+tutela\s+formulada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),\s+contra',
 
             ]
 
