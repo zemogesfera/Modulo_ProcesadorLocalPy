@@ -27,7 +27,8 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'inscrita','probado','aportados','informes','entidades','persistia','indicando','indicado',
 'indicaba','indica','pretenda','proteja','protejer','concalculados','pretende','conculcados',
 'diagnosticado','linfoma','hodgkin','basico','condiagnosticodeLinfomaHodgkinclasicoenfase',
-'avanzada','avanzando','actuando','dirigida',
+'avanzada','avanzando','actuando','dirigida','aparece','reportada','beneficiaria','regimen',
+'contributivo','afiliada','afiliado','aqui',
 
 #pendiente incluir enfermades, quizas ciudades
 #los de arriba son los encontrados en diferentes casos de analisis.

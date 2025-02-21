@@ -15,6 +15,7 @@ from etl.DocumentoExtractor import DocumentoExtractor
 import shutil
 from typing import Dict, List, Tuple
 
+
 # Configurar el registro
 logging.basicConfig(
     level=logging.DEBUG,
