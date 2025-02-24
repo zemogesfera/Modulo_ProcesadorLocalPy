@@ -30,7 +30,9 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'avanzada','avanzando','actuando','dirigida','aparece','reportada','beneficiaria','regimen',
 'contributivo','afiliada','afiliado','aqui','debe','debiendo','deber','debo',
 'rep','representando','representante','representacion','identidad','identificado',
-'medio','dia','noche','numero',
+'medio','dia','noche','numero','autorizacion','autorizo','autorizare','autorizara',
+'senores','senoras','autorizado','autorizada','red','redes','servicio','servicios',
+'vigente','prestador','prestadores','alto','alta','enano','enana','pequeño','grande',
 
 #pendiente incluir enfermades, quizas ciudades
 #los de arriba son los encontrados en diferentes casos de analisis.
