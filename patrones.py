@@ -1,5 +1,7 @@
 PATRONES_ACCIONANTE = [
     # Nuevalista final que toma al afectado independiente de quien sea el agente oficio
+    r'(?i)desacato solicitado por la agente oficiosa de\s+la\s+accionante\s+([A-Z]\.[A-Z]\.[A-Z])\s+identificada',
+
     r'Accionante:\s*.+?,\s*en representacion de\s+(?:el sr|sra|señor|señora|senor|senora|su hija menor|su hijo menor)\s+([A-ZÁÉÍÓÚÑa-záéíóúñ ]+?)\s+Accionado',
     r'Accionante:\s*.+?\s+en calidad de Representante Legal de\s+([A-ZÁÉÍÓÚÑa-záéíóúñ ]+?)\s+Accionado',
     r"(?i)ACCIONANTE:?.*?\bAGENCIADA:?\s+([A-ZÁÉÍÓÚÑ]+(?:\s+[A-ZÁÉÍÓÚÑ]+)*)\s+INCIDENTADO:?",
@@ -125,4 +127,13 @@ PATRONES_ACCIONANTE = [
     r'(?i)La\s+acci[óo]n\s+de\s+tutela\s+formulada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),\s+contra',
     r'(?i)(?:presente|promovida|instaurada)\s+acci[oó]n\s+de\s+tutela\s+(?:interpuesta|presentada)\s+por\s+(?:el|la)\s+s(?:e[ñn]or[a]?)?\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?)(?:,|\s+(?:identificad[oa]|en contra|contra|con ced))',
     r'(?i)TRAMITAR\s+como\s+Incidente\s+(?:la\s+solicitud\s+de\s+)?DESACATO\s+formulad[oa]\s+por\s+(?:el|la)\s+s(?:e[ñn]or[a]?)?\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?)(?:,|\s+(?:para|identificad[oa]|en contra|contra|con ced))',
+    r'(?i)Resolver\s+la\s+tutela\s+de\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?)(?=,\s+contra)',
+    r'(?i)Conceder\s+la\s+tutela\s+de\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?)(?=\s+contra)',
+    r'(?i)Afectado:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+Accionada?:',
+    r'(?i)Accionante\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+Apoderada',
+    r'(?i)presente\s+tr[aá]mite\s+incidental\s+presentado\s+por\s+el\(la\)\s+Sr\(a\)\.\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+quien\s+a\s+trav[eé]s\s+de',
+
+
+    r'(?i)se\s+dispuso\s+amparar\s+los\s+Derechos\s+Constitucionales\s+Fundamentales\s+de\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),\s+ordenando',
+
 ]

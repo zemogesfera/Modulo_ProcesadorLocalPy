@@ -33,6 +33,9 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'medio','dia','noche','numero','autorizacion','autorizo','autorizare','autorizara',
 'senores','senoras','autorizado','autorizada','red','redes','servicio','servicios',
 'vigente','prestador','prestadores','alto','alta','enano','enana','pequeño','grande',
+'infeccion','reaccion','suministrar','suministro','suministracion','suministrando',
+'requeridos','requeridas','previo','previa','finalidad','indique','exactitud','medicos',
+'pretendidos','incumplidos',
 
 #pendiente incluir enfermades, quizas ciudades
 #los de arriba son los encontrados en diferentes casos de analisis.
