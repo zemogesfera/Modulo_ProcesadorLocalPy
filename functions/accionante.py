@@ -173,6 +173,8 @@ def identificar_documento_identidad(objeto):
                 rf"{re.escape(nombre_completo_accionante)}\s{{1,20}}(?i)DOCUMENTO\s*:? *(\d+)",
                 rf"{re.escape(nombre_completo_accionante)}\s+Pagina\s+No\.\s+1\s+(?i)DOCUMENTO\s*:? *(\d+)",
                 rf"(?i){re.escape(nombre_completo_accionante)}\s*,?\s*portador\s+del\s+RC\s+(\d+)",
+                rf"(?i){re.escape(nombre_completo_accionante)}\s*,?\s*identificada\s+con\s+la\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+N[°º]?\s*([\d\.]+)",
+
             
                 
 
