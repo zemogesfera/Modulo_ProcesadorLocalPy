@@ -36,7 +36,8 @@ def determinar_medida(objeto):
                 r'(?i)conceder.*?la.*?medida.*?provisional',
                 r'(?i)(decretar|ordenar).*?medida.*?provisional',
             # Patrón específico para capturar casos donde hay varios párrafos entre "CONCEDER" y "MEDIDA PROVISIONAL"
-                r'(?i)(?:TERCERO|SEGUNDO|PRIMERO)?:?\s*CONCEDER\b(?:.*?\n)*?.*?\bMEDIDA\s+PROVISIONAL\b'
+                r'(?i)(?:TERCERO|SEGUNDO|PRIMERO)?:?\s*CONCEDER\b(?:.*?\n)*?.*?\bMEDIDA\s+PROVISIONAL\b',
+
             ]
 
         # Buscar contexto más amplio alrededor de "medida provisional"

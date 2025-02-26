@@ -135,5 +135,8 @@ PATRONES_ACCIONANTE = [
 
 
     r'(?i)se\s+dispuso\s+amparar\s+los\s+Derechos\s+Constitucionales\s+Fundamentales\s+de\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),\s+ordenando',
+    r'(?i)acci[oó]n\s+de\s+tutela\s+instaurada\s+por\s+el\s+se[ñn]or\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?)(?=,|\s+quien)',
+    r'(?i)av[oó]quese\s+la\s+acci[oó]n\s+tutelar.*?instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),\s+identificada',
+
 
 ]
