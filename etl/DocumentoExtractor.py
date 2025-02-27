@@ -1238,6 +1238,7 @@ class DocumentoExtractor:
                 r'\b19573\b',
                 r'\bcodigo\b',
                 r'\bCalle\b',
+                r'\btutelasincidentesj04pmpayan\b',
             ]
 
             palabra_irrelevante = r'\bCARRERA\b'
