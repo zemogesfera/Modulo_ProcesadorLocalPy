@@ -134,7 +134,7 @@ class DocumentoExtractor:
                 self.logger.debug(f"Encontrado número parcial completo: {completo}")
                 return completo
             
-        # Buscar después de "radicado" con cualquier tipo de guión o espacio
+            # Buscar después de "radicado" con cualquier tipo de guión o espacio
             patron_radicado = r'radicado\s+(?:No\.)?\s*(\d{4})\s*[-–—\s]+\s*(\d{1,5})(?:[-–—\s]+\d{2})?'
             match = re.search(patron_radicado, linea.lower())
             if match:
@@ -144,7 +144,7 @@ class DocumentoExtractor:
                 return f"{año}-{numero}"
             
         
-        # Nuevo patrón para capturar formato YYYY-XXXXX-00
+            # Nuevo patrón para capturar formato YYYY-XXXXX-00
             patron_con_sufijo = r'\b(\d{4})\s*[-–—\s]+\s*(\d{1,5})\s*[-–—\s]+\s*\d{2}\b'
             match = re.search(patron_con_sufijo, linea)
             if match:
@@ -153,14 +153,24 @@ class DocumentoExtractor:
                 self.logger.debug(f"Encontrado número parcial con sufijo: {año}-{numero}")
                 return f"{año}-{numero}"
                 
-            
-            
-        
-        # Mantener el patrón original como respaldo
+            # Mantener el patrón original como respaldo
             patron_parcial = f'\\b({self.current_year}|{self.previous_year})-\\d{{5}}\\b'
             match = re.search(patron_parcial, linea)
             if match:
                 return match.group(0)
+            
+            patron_parcial = r'radicacion\s+no\.\s+([\d\s-]+)'
+            match = re.search(patron_parcial, linea)
+            if match:
+                numero_radicacion = match.group(1)
+                numero_radicacion = re.sub(r'\s+', '', numero_radicacion)
+                return numero_radicacion
+            
+            patron_parcial = r"radicacion:\s*(\d{4}-\d{5})"
+            match = re.search(patron_parcial, linea)
+            if match:
+                numero_radicacion = match.group(1)
+                return numero_radicacion
         return None
 
     def buscar_nmroRdcdoJdcl(self):

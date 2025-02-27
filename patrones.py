@@ -1,5 +1,6 @@
 PATRONES_ACCIONANTE = [
     # Nuevalista final que toma al afectado independiente de quien sea el agente oficio
+    r"tutela\s+instaurada\s+por:\s+[^,]+,\s+agente\s+Oficiosa\s+de\s+su\s+senora\s+madre:\s+([^,]+)",
     r'(?i)desacato solicitado por la agente oficiosa de\s+la\s+accionante\s+([A-Z]\.[A-Z]\.[A-Z])\s+identificada',
 
     r'Accionante:\s*.+?,\s*en representacion de\s+(?:el sr|sra|señor|señora|senor|senora|su hija menor|su hijo menor)\s+([A-ZÁÉÍÓÚÑa-záéíóúñ ]+?)\s+Accionado',
