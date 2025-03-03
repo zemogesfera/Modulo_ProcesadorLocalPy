@@ -37,7 +37,10 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'requeridos','requeridas','previo','previa','finalidad','indique','exactitud','medicos',
 'pretendidos','incumplidos','otra','otro','otras','otros','pertenece','pertenecio',
 'pertenecera','cohorte','importante','aparte','resuelve','conducto','apodera',
-
+'recibire','notificaciones','notificacion','notifica','preferiblemente','preferible',
+'direccion','direcciones','directo','nucleo','diagnostico','diagnostica','tambien',
+'discapacidad','huerfana','rara','raro','exija','pronta','identificada','identificado',
+'identificandose',
 #pendiente incluir enfermades, quizas ciudades
 #los de arriba son los encontrados en diferentes casos de analisis.
 

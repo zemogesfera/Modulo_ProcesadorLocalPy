@@ -34,6 +34,8 @@ PATRONES_ACCIONANTE = [
     r"como agente oficiosa de ([A-Z\s]+?)\s+(?:por|para|en contra de|contra de|contra)",
 
     #Patrones existentes
+    r'ACCI[OÓ]N\s+DE\s+TUTELA\s+instaurada\s+en\s+favor\s+de\s+([A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),?\s+en\s+contra\s+de',
+
     r'(?i)tutela\s+instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+quien\s+act[úu]a\s+(?:a\s+trav[ée]s\s+de\s+)?agente\s+oficios[oa])',
 
     r'(?i)instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)\s+(?:como\s+)?agente\s+oficios[oa]\s+de\s+[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+',
@@ -113,7 +115,12 @@ PATRONES_ACCIONANTE = [
     r'(?i)INCIDENTANTE:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+DE\s+[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*$|\n|ACCIONADO:)',
     r'(?i)INCIDENTALISTA:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+?)(?=\s+ACCIONADO:)',
     r'(?i)INCIDENTANTE\s*:\s*([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s-]+)(?=\s*\n|\s*INCIDENTADOS?:)',
+
+    
+    r'(?i)Incidentista:.*?como representante legal de\s+([A-Za-záéíóúñÁÉÍÓÚÑ]+(?:\s+[A-Za-záéíóúñÁÉÍÓÚÑ]+){1,3})',
     r'(?i)INCIDENT(?:ANTE|ALISTA|ISTA)[:\s]*([A-ZÁÉÍÓÚÑ]+(?:\s+[A-ZÁÉÍÓÚÑ]+){1,3})\b',
+
+
     r"promovido por\s+.*?\s+([A-ZÁÉÍÓÚÑ]{2,}(?:\s+[A-ZÁÉÍÓÚÑ]{2,})+)\s+.*?\s+contra",
     r"(?i)\b(?:la|el)\s+(?:señor|senor|señora|senora|sr|sra)?\s*([A-ZÁÉÍÓÚÑ]+(?:\s+[A-ZÁÉÍÓÚÑ]+){1,4})\s+identificad[oa]?\s+con\s+cedula.*?\bpresent[oó]?\s+accion de tutela",
 
@@ -140,6 +147,9 @@ PATRONES_ACCIONANTE = [
     r'(?i)acci[oó]n\s+de\s+tutela\s+instaurada\s+por\s+el\s+se[ñn]or\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?)(?=,|\s+quien)',
     r'(?i)av[oó]quese\s+la\s+acci[oó]n\s+tutelar.*?instaurada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),\s+identificada',
     r'(?i)Interpone\s+Acci[oó]n\s+de\s+Tutela\s+[ael][l]?\s+se[ñn]or[a]?\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s.,]+?)(?:,|\s+identificad|\s+contra|\s+quien|\s+con\s+c[eé]dula)',
-
+    r'(?i)([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+con\s+C\.?C\.?\s+\d{1,3}(\.\d{3})*',
+    r'(?i)La\s+se[ñn]ora\s+([A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+ha\s+presentado\s+acci[oó]n\s+de\s+tutela\s+en\s+contra',
+    r'(?i)([A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+present[oó]\s+acci[oó]n\s+de\s+tutela\s+en\s+contra',
+    r'(?i)La\s+se[ñn]ora\s+([A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),\s+quien\s+act[úu]a\s+en\s+nombre\s+propio,\s+solicit[óo]\s+incidente\s+de\s+desacato',
 
 ]
