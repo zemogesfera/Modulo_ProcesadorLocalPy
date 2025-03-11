@@ -712,7 +712,7 @@ class DocumentoExtractor:
     def buscar_fchaTtla_procesar(self,inicial,final):
         print(f"p inicial: {inicial}")    
         print(f"p final: {final}")   
-        texto_encabezado = self.texto[inicial:final]
+        texto_encabezado = self.eliminar_caracteres_especiales(self.texto[inicial:final])
         print(f"texto encabezado inicial: {texto_encabezado}")    
         """
     Busca la fecha en el texto, la convierte al formato YYYY-MM-DD y concatena la hora.
@@ -869,9 +869,6 @@ class DocumentoExtractor:
                 else:
                     return int(anio_texto)
     
-            print('fecha:');  
-            
-            print(texto_encabezado)
            
         # match_fecha = re.search(r"(?:Fecha:|fecha|FECHA:|Fecha :)\s*(.*)", texto_encabezado)
             patron_fecha_inicial = r"(?i)(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+(\d{1,2})\s+de\s+(\d{4})"
@@ -1054,9 +1051,9 @@ class DocumentoExtractor:
                         inicio = match.start()
                         # Extraer desde el inicio del mes hasta 40 caracteres después
                         print(inicio)
-                        fragmento = texto_encabezado[inicio+2:inicio+88]
-                        fragmentoAntes= inicio-15
-                        fragmento2 = texto_encabezado[fragmentoAntes:inicio+10]
+                        fragmento = self.eliminar_caracteres_especiales(texto_encabezado[inicio+2:inicio+88])
+                        fragmentoAntes= inicio-17
+                        fragmento2 = self.eliminar_caracteres_especiales(texto_encabezado[fragmentoAntes:inicio+7])
                         print("texto:" + fragmento)
                         print("texto2:" + fragmento2)
                         print(f"Mes encontrado: {match.group()}")
@@ -1128,7 +1125,7 @@ class DocumentoExtractor:
                         
     # Intentar extraer del encabezado con las formatos mas atipícos y estandarizados
         texto_encabezado = self.texto[inicial:final]
-        fecha_inicio = buscar_fechas_inicio_bloque2(texto_encabezado)
+        fecha_inicio = buscar_fechas_inicio_bloque2(self.eliminar_caracteres_especiales(texto_encabezado))
         if fecha_inicio:
             return self.concatenar_hora(fecha_inicio) 
         
@@ -1164,6 +1161,7 @@ class DocumentoExtractor:
     
     def eliminar_caracteres_especiales(self,texto):
         return utils.eliminar_caracteres_especiales(texto)
+
 
     def concatenar_hora(self, fecha):
         if self.fechacorreo == None:
@@ -1239,6 +1237,8 @@ class DocumentoExtractor:
                 r'\bcodigo\b',
                 r'\bCalle\b',
                 r'\btutelasincidentesj04pmpayan\b',
+                r'\bFALLO\b',
+
             ]
 
             palabra_irrelevante = r'\bCARRERA\b'

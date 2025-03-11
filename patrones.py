@@ -151,5 +151,6 @@ PATRONES_ACCIONANTE = [
     r'(?i)La\s+se[ñn]ora\s+([A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+ha\s+presentado\s+acci[oó]n\s+de\s+tutela\s+en\s+contra',
     r'(?i)([A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+present[oó]\s+acci[oó]n\s+de\s+tutela\s+en\s+contra',
     r'(?i)La\s+se[ñn]ora\s+([A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),\s+quien\s+act[úu]a\s+en\s+nombre\s+propio,\s+solicit[óo]\s+incidente\s+de\s+desacato',
+    r'(?i)INCIDENTE\s+DE\s+DESACATO\s+La\s+se[ñn]ora\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),\s+actuando\s+en\s+nombre\s+propio',
 
 ]

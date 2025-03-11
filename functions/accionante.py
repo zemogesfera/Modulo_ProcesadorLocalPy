@@ -176,6 +176,8 @@ def identificar_documento_identidad(objeto):
                 rf"(?i){re.escape(nombre_completo_accionante)}\s*,?\s*identificada\s+con\s+la\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+N[°º]?\s*([\d\.]+)",
                 rf"{re.escape(nombre_completo_accionante)},\s+mayor\s+de\s+edad,\s+identificado\s+con\s+cedula\s+ciudadana\s+numero\s+([\d\.\,]+)",
                 rf"{re.escape(nombre_completo_accionante)},\s+identificado\s+con\s+la\s+tarjeta\s+de\s+identidad\s+no\.\s*([\d\.\,]+)",
+                rf"{re.escape(nombre_completo_accionante)},?\s+con\s+NUIP\s+([\d\.]+)",
+
             ]
 
 
@@ -411,7 +413,6 @@ def identificar_tipo_documento(objeto):
 
                 # Patrón más flexible
                     fr'(?:{primer_palabra}\s+{segunda_palabra}).*?CC\.?',
-
                     
                 ]
 
