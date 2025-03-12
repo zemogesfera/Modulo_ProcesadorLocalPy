@@ -178,6 +178,7 @@ def identificar_documento_identidad(objeto):
                 rf"{re.escape(nombre_completo_accionante)},\s+identificado\s+con\s+la\s+tarjeta\s+de\s+identidad\s+no\.\s*([\d\.\,]+)",
                 rf"{re.escape(nombre_completo_accionante)},?\s+con\s+NUIP\s+([\d\.]+)",
 
+
             ]
 
 

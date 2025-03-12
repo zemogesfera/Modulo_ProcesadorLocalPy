@@ -48,6 +48,14 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'cama','habitacion','acompanante','ninguna','ningun','acredite','incidentalista',
 'allegaron','inaplicacion','razon','cumplido','aluminio','senalo','haya','solicitud',
 'solicitado','agendamiento','defecto','brindando','confirmando','afirmacion',
+'tendiente','orden','ordenarle','pacientes','pudiendo','obtener','ingresos',
+'a','b','c','d','e','f','g','h','i','l','m','n','k','z','j','w','s','q','x','r','t',
+'u','p','allego','origen','solicitando','declare','mediante','sufrio','sufre',
+'accidente','accidentalmente','transito','conmine','argumento','argumentando',
+'comparte','valoro','pruebas','trata','pago','luego','trabajo','tampoco','tuvo',
+'vulnerable','vulnerabilidad','pues','tres','hijos','les','alimentos','ademas',
+'usuaria','cateter','jj','remitido',
+
 #pendiente incluir enfermades, quizas ciudades
 #los de arriba son los encontrados en diferentes casos de analisis.
 

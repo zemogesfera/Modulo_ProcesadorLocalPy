@@ -171,6 +171,10 @@ class DocumentoExtractor:
             if match:
                 numero_radicacion = match.group(1)
                 return numero_radicacion
+
+
+
+
         return None
 
     def buscar_nmroRdcdoJdcl(self):
@@ -518,6 +522,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón desacato 4: {numero}")
                         if len(numero) >= 21:
                             return numero
+
 
                         
 
