@@ -177,8 +177,11 @@ def identificar_documento_identidad(objeto):
                 rf"{re.escape(nombre_completo_accionante)},\s+mayor\s+de\s+edad,\s+identificado\s+con\s+cedula\s+ciudadana\s+numero\s+([\d\.\,]+)",
                 rf"{re.escape(nombre_completo_accionante)},\s+identificado\s+con\s+la\s+tarjeta\s+de\s+identidad\s+no\.\s*([\d\.\,]+)",
                 rf"{re.escape(nombre_completo_accionante)},?\s+con\s+NUIP\s+([\d\.]+)",
-
-
+                rf"(?i){re.escape(nombre_completo_accionante)},?\s+mayor\s+de\s+edad,\s+identificado\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+N[°º]?\s*([\d\.]+)",
+                rf"(?i){re.escape(nombre_completo_accionante)},?\s+menor\s+de\s+edad\s+identificado\s+con\s+tarjeta\s+de\s+identidad\s+(?:número|n[úu]mero)?\s*([\d\.]+)",
+                rf"(?i){re.escape(nombre_completo_accionante)}\s+identificado\s+con\s+tarjeta\s+de\s+identidad\s+N[°º]?\s*([\d\.]+)",
+                rf"(?i){re.escape(nombre_completo_accionante)},?\s+identificado\s+con\s+(?:el\s+)?[Rr]egistro\s+[Cc]ivil\s+de\s+[Nn]acimiento\s+(\d+)",
+                
             ]
 
 

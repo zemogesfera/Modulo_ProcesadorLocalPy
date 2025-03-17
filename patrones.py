@@ -152,5 +152,7 @@ PATRONES_ACCIONANTE = [
     r'(?i)([A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+present[oó]\s+acci[oó]n\s+de\s+tutela\s+en\s+contra',
     r'(?i)La\s+se[ñn]ora\s+([A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),\s+quien\s+act[úu]a\s+en\s+nombre\s+propio,\s+solicit[óo]\s+incidente\s+de\s+desacato',
     r'(?i)INCIDENTE\s+DE\s+DESACATO\s+La\s+se[ñn]ora\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),\s+actuando\s+en\s+nombre\s+propio',
+    r'(?i)La senora\s+([A-ZÁÉÍÓÚÑ]+(?:\s+[A-ZÁÉÍÓÚÑ]+)*),\s+formula accion de tutela',
+    r'(?i)Incidente\s+de\s+desacato\s+Teniendo\s+en\s+cuenta\s+que\s+dentro\s+del\s+presente\s+incidente\s+de\s+desacato\s+interpuesto\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?)\s+contra',
 
 ]

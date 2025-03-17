@@ -522,6 +522,22 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón desacato 4: {numero}")
                         if len(numero) >= 21:
                             return numero
+                        
+                    patron_radicado = r'(?i)radicado:\s*(\d{2})\s*(\d{3})\s*(\d{2})\s*(\d{2})\s*(\d{3})\s*(\d{4})\s*(\d{5})\s*(\d{2})'
+                    match_radicado = re.search(patron_radicado, linea)
+                    if match_radicado:
+                        numero = ''.join(match_radicado.groups())
+                        self.logger.debug(f"Encontrado número con patrón radicado: {numero}")
+                        if len(numero) >= 21:
+                            return numero    
+
+                    patron_radicadodesacato3 = r'(?i)radicacion:\s*(\d{12})\s*(\d{4})\s*(\d{5})'
+                    match_radicadodesacato3 = re.search(patron_radicadodesacato3, linea)
+                    if match_radicadodesacato3:
+                        numero = ''.join(match_radicadodesacato3.groups())
+                        self.logger.debug(f"Encontrado número con patrón radicado desacato 3: {numero}")
+                        if len(numero) >= 21:
+                            return numero        
 
 
                         
@@ -1243,6 +1259,9 @@ class DocumentoExtractor:
                 r'\bCalle\b',
                 r'\btutelasincidentesj04pmpayan\b',
                 r'\bFALLO\b',
+                r'\bPagina\b',
+
+                
 
             ]
 
