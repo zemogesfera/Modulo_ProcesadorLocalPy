@@ -181,6 +181,8 @@ def identificar_documento_identidad(objeto):
                 rf"(?i){re.escape(nombre_completo_accionante)},?\s+menor\s+de\s+edad\s+identificado\s+con\s+tarjeta\s+de\s+identidad\s+(?:número|n[úu]mero)?\s*([\d\.]+)",
                 rf"(?i){re.escape(nombre_completo_accionante)}\s+identificado\s+con\s+tarjeta\s+de\s+identidad\s+N[°º]?\s*([\d\.]+)",
                 rf"(?i){re.escape(nombre_completo_accionante)},?\s+identificado\s+con\s+(?:el\s+)?[Rr]egistro\s+[Cc]ivil\s+de\s+[Nn]acimiento\s+(\d+)",
+                rf"(?i){re.escape(nombre_completo_accionante)},?\s+identificado\s+con\s+tarjeta\s+de\s+identidad\s+(?:Nro\.?|No\.?|N[°º])?\s*([\d\.]+)",
+
                 
             ]
 

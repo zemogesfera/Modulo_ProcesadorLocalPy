@@ -61,7 +61,11 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'activa','activo','legitima','legitimada','presunta','actuacion',
 'diabetica','diabeticos','insulina','dependiente','independiente','judicial',
 'lleva','mucho','tiempo','espera','ante','ente','vulnera','consecuencia',
-'emitida','sefior',
+'emitida','sefior','momento','descorrio','expreso','concreta','situacion',
+'constituya','actual','tratamientos','incidentada','que','identifica',
+'manifesto','remodelacion','menisco','roto','falla','cardiaca','legitimado',
+'presunto','nieto','complementarios','tales','elevo','inicie','prevalecen',
+'cualquier','obstaculo',
 #pendiente incluir enfermades, quizas ciudades
 #los de arriba son los encontrados en diferentes casos de analisis.
 

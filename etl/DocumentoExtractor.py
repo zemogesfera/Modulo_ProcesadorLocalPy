@@ -537,7 +537,16 @@ class DocumentoExtractor:
                         numero = ''.join(match_radicadodesacato3.groups())
                         self.logger.debug(f"Encontrado número con patrón radicado desacato 3: {numero}")
                         if len(numero) >= 21:
-                            return numero        
+                            return numero       
+
+                    patron_fallo3 = r'(?i)RADICADO:?\s*(\d{2})-(\d{3})-(\d{2})-(\d{2})\s*-\s*(\d{3})-(\d{4})-(\d{5})-(\d{2})'
+                    match_fallo3 = re.search(patron_fallo3, linea)
+                    if match_fallo3:
+                        numero = ''.join(match_fallo3.groups())
+                        self.logger.debug(f"Encontrado número con patrón radicado fallo 3: {numero}")
+                        if len(numero) >= 21:
+                            return numero
+ 
 
 
                         
