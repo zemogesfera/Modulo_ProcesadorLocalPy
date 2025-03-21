@@ -65,7 +65,10 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'constituya','actual','tratamientos','incidentada','que','identifica',
 'manifesto','remodelacion','menisco','roto','falla','cardiaca','legitimado',
 'presunto','nieto','complementarios','tales','elevo','inicie','prevalecen',
-'cualquier','obstaculo',
+'cualquier','obstaculo','evite','tramites','apertura','cauca','ultima','vez',
+'recae','lesion','trauma','conyuge','allega','correo','electronico',
+'formulacion','arguye','han','vulnerados','primera','ttngadeepagopmsuj',
+
 #pendiente incluir enfermades, quizas ciudades
 #los de arriba son los encontrados en diferentes casos de analisis.
 
@@ -135,7 +138,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 
 # Títulos en el ámbito político
 'presidente', 'presidenta', 'senador', 'senadora', 'diputado', 'diputada',
-'alcalde', 'alcaldesa', 'gobernador', 'gobernadora', 'ministro', 'ministra',
+' alcaldesa', 'gobernador', 'gobernadora', 'ministro', 'ministra',
 
 # Títulos en el ámbito social
 'voluntario', 'voluntaria', 'activista', 'líder', 'lideresa',

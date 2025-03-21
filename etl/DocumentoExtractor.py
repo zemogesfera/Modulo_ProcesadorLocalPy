@@ -546,7 +546,8 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón radicado fallo 3: {numero}")
                         if len(numero) >= 21:
                             return numero
- 
+
+
 
 
                         
@@ -1269,6 +1270,8 @@ class DocumentoExtractor:
                 r'\btutelasincidentesj04pmpayan\b',
                 r'\bFALLO\b',
                 r'\bPagina\b',
+                r'\bj09fccali\b',
+
 
                 
 

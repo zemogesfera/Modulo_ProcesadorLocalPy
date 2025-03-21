@@ -154,5 +154,7 @@ PATRONES_ACCIONANTE = [
     r'(?i)INCIDENTE\s+DE\s+DESACATO\s+La\s+se[ñn]ora\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),\s+actuando\s+en\s+nombre\s+propio',
     r'(?i)La senora\s+([A-ZÁÉÍÓÚÑ]+(?:\s+[A-ZÁÉÍÓÚÑ]+)*),\s+formula accion de tutela',
     r'(?i)Incidente\s+de\s+desacato\s+Teniendo\s+en\s+cuenta\s+que\s+dentro\s+del\s+presente\s+incidente\s+de\s+desacato\s+interpuesto\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?)\s+contra',
-
+    r'(?i)solicitud\s+de\s+tutela\s+impetrada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+identificada\s+con\s+C\.?C\.?:\s*[\d.,\s]+,\s+en\s+contra',
+    r'(?i)acci[oó]n\s+de\s+tutela\s+instaurada\s+por\s+la\s+se[ñn]ora\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+con\s+c[eé]dula',
+    r'(?i)acci[oó]n\s+de\s+tutela,\s+instaurada\s+por\s+la\s+se[ñn]ora\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),',
 ]
