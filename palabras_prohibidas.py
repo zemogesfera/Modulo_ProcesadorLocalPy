@@ -68,6 +68,12 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'cualquier','obstaculo','evite','tramites','apertura','cauca','ultima','vez',
 'recae','lesion','trauma','conyuge','allega','correo','electronico',
 'formulacion','arguye','han','vulnerados','primera','ttngadeepagopmsuj',
+'cordial','saludo','trece','municipal','funciones','garantias','razonables',
+'tutelen','complemento','nutricional','menciona','servi','express','interno',
+'intento','patologias','oncologicas','suscribio','adicionales','solicitadas',
+'presenta','dolor','digna','ordenar','ordenara','recibe','oncologico','perece',
+'tomo','dialisis','concedio','solicitada','ordeno','mismo','ii','tipo','cambio',
+'inconforme','anterior','aduciendo','brindados',
 
 #pendiente incluir enfermades, quizas ciudades
 #los de arriba son los encontrados en diferentes casos de analisis.

@@ -157,4 +157,7 @@ PATRONES_ACCIONANTE = [
     r'(?i)solicitud\s+de\s+tutela\s+impetrada\s+por\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+identificada\s+con\s+C\.?C\.?:\s*[\d.,\s]+,\s+en\s+contra',
     r'(?i)acci[oó]n\s+de\s+tutela\s+instaurada\s+por\s+la\s+se[ñn]ora\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+)\s+con\s+c[eé]dula',
     r'(?i)acci[oó]n\s+de\s+tutela,\s+instaurada\s+por\s+la\s+se[ñn]ora\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),',
+    r'(?i)acci[oó]n\s+de\s+tutela\s+interpuesta\s+por\s+la\s+se[ñn]ora\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+),',
+    r'(?i)ACCI[ÓO]N\s+DE\s+TUTELA,\s+impetrada\s+por\s+la\s+se[ñn]ora\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?),\s+en\s+nombre\s+propio',
+
 ]
