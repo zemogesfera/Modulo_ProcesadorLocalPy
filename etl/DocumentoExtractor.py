@@ -133,7 +133,7 @@ class DocumentoExtractor:
                 completo = f"{año}{numero}{sufijo}"
                 self.logger.debug(f"Encontrado número parcial completo: {completo}")
                 return completo
-            
+
             # Buscar después de "radicado" con cualquier tipo de guión o espacio
             patron_radicado = r'radicado\s+(?:No\.)?\s*(\d{4})\s*[-–—\s]+\s*(\d{1,5})(?:[-–—\s]+\d{2})?'
             match = re.search(patron_radicado, linea.lower())
@@ -142,8 +142,8 @@ class DocumentoExtractor:
                 numero = match.group(2).strip().zfill(5)
                 self.logger.debug(f"Encontrado número parcial: {año}-{numero}")
                 return f"{año}-{numero}"
-            
-        
+
+
             # Nuevo patrón para capturar formato YYYY-XXXXX-00
             patron_con_sufijo = r'\b(\d{4})\s*[-–—\s]+\s*(\d{1,5})\s*[-–—\s]+\s*\d{2}\b'
             match = re.search(patron_con_sufijo, linea)
@@ -152,28 +152,31 @@ class DocumentoExtractor:
                 numero = match.group(2).strip().zfill(5)
                 self.logger.debug(f"Encontrado número parcial con sufijo: {año}-{numero}")
                 return f"{año}-{numero}"
-                
+
             # Mantener el patrón original como respaldo
             patron_parcial = f'\\b({self.current_year}|{self.previous_year})-\\d{{5}}\\b'
             match = re.search(patron_parcial, linea)
             if match:
                 return match.group(0)
-            
+
             patron_parcial = r'radicacion\s+no\.\s+([\d\s-]+)'
             match = re.search(patron_parcial, linea)
             if match:
                 numero_radicacion = match.group(1)
                 numero_radicacion = re.sub(r'\s+', '', numero_radicacion)
                 return numero_radicacion
-            
+
             patron_parcial = r"radicacion:\s*(\d{4}-\d{5})"
             match = re.search(patron_parcial, linea)
             if match:
                 numero_radicacion = match.group(1)
                 return numero_radicacion
 
-
-
+            patron_parcial = r"radicacion:\s*(\d{4})\s*-\s*(\d{3})"
+            match = re.search(patron_parcial, linea)
+            if match:
+                numero_radicacion = f"{match.group(1)}-{match.group(2)}"
+                return numero_radicacion
 
         return None
 
@@ -185,13 +188,13 @@ class DocumentoExtractor:
     Si no puede construir el número completo, retorna la información parcial encontrada.
     """
         try:
-            
+
         # Primero intentar con los patrones originales
             for linea in self.lines:
                 linea = linea.lower().strip()
                 sinonimos_radicacion = ['radicado', 'radicación', 'rad', 'radicacion', 'ref']
                 if any(termino in linea for termino in sinonimos_radicacion):
-                    #self.logger.debug(f"Analizando línea con 'radicado': {linea}")               
+                    #self.logger.debug(f"Analizando línea con 'radicado': {linea}")
 
                     patron_nuevo_cali = r'\b(\d{5})-(\d{4})-(\d{3})-(\d{4})-(\d{5})-(\d{2})\b'
                     match_cali = re.search(patron_nuevo_cali, linea)
@@ -211,7 +214,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón espaciado 21: {numero}")
                         if len(numero) >= 21:
                             return numero
-                    
+
                     # Nuevo patrón para formato con espacios (76001 41 05 004 2024 00613 00)
                     patron_espacios = r'\b(\d{5})\s+(\d{2})\s+(\d{2})\s+(\d{3})\s+(\d{4})\s+(\d{5})\s+(\d{2})\b'
                     match_espacios = re.search(patron_espacios, linea)
@@ -220,7 +223,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón espaciado: {numero}")
                         if len(numero) >= 21:
                             return numero
-                
+
                     # Nuevo patrón específico para el formato 76-111-3187-004-2024-00041-00
                     patron_completo_nuevo = r'\b(\d{2})-(\d{3})-(\d{4})-(\d{3})-(\d{4})-(\d{5})-(\d{2})\b'
                     match_completo_nuevo = re.search(patron_completo_nuevo, linea)
@@ -230,7 +233,7 @@ class DocumentoExtractor:
                         if len(numero) >= 21:
                             return numero
 
-                    # Nuevo patrón para el formato específico 
+                    # Nuevo patrón para el formato específico
                     patron_completo = r'\b(\d{2})-(\d{3})-(\d{4})-(\d{3})-(\d{4})-(\d{5})-\d{2}\b'
                     match_completo = re.search(patron_completo, linea)
                     if match_completo:
@@ -238,7 +241,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón completo: {numero}")
                         if len(numero) >= 21:
                             return numero
-                    
+
                     # Nuevo patrón para capturar números de 21 dígitos sin guiones ni espacios
                     patron_21_digitos = r'\b(\d{21})\b'
                     match_21 = re.search(patron_21_digitos, linea)
@@ -247,7 +250,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número de 21 dígitos: {numero}")
                         if len(numero) >= 21:
                             return numero
-                    
+
                     # Nuevo patrón específico para Tuluá con el formato XXXXXX-XXXX-XXXXX-XX
                     patron_tulua_nuevo = r'\b(\d{12})-(\d{4})-(\d{5})-(\d{2})\b'
                     match_tulua = re.search(patron_tulua_nuevo, linea)
@@ -256,7 +259,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón Tuluá: {numero}")
                         if len(numero) >= 21:
                             return numero
-                
+
                     patron_tulua = r'\b(\d{2})-\s*(\d{3})-(\d{2})-(\d{2})-(\d{3})-(\d{4})-(\d{5})-(\d{2})\b'
                     match_tulua = re.search(patron_tulua, linea)
                     if match_tulua:
@@ -273,7 +276,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón flexible: {numero}")
                         if len(numero) >= 21:
                             return numero
-                    
+
                     # Nuevo patrón para el formato específico encontrado
                     patron_espaciado = r'\b(\d{12})\s+(\d{4})\s+(\d{2})\s+(\d{3})\b'
                     match_espaciado = re.search(patron_espaciado, linea)
@@ -282,7 +285,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón espaciado: {numero}")
                         if len(numero) >= 21:
                             return numero
-                    
+
                     # Nuevo patrón para formato específico (12 dígitos - 4 dígitos - 5 dígitos - 00 al final)
                     patron_nuevo = r'\b(\d{12})-(\d{4})-(\d{5})\b'
                     match_nuevo = re.search(patron_nuevo, linea)
@@ -291,7 +294,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con nuevo patrón: {numero}")
                         if len(numero) >= 21:
                             return numero
-                    
+
                     # Patrón específico para el caso con espacios opcionales
                     patron_espacios_opcionales = r'\b(\d{5})-\s*(\d{2})-\s*(\d{2})-\s*(\d{3})-\s*(\d{4})-\s*(\d{5})-\s*(\d{2})\b'
                     match_espacios = re.search(patron_espacios_opcionales, linea)
@@ -307,7 +310,7 @@ class DocumentoExtractor:
                     if match_continuo:
                         if len(match_continuo.group(1)) >= 21:
                             return match_continuo.group(1)
-                    
+
                     # Nuevo patrón para capturar XXXXXXXXXXXXXX XXXXX XX
                     patron_espaciado_nuevo = r'\b(\d{16})\s+(\d{5})\s+(\d{2})\b'
                     match_espaciado_nuevo = re.search(patron_espaciado_nuevo, linea)
@@ -316,14 +319,14 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón espaciado nuevo: {numero}")
                         if len(numero) >= 21:
                             return numero
-                
+
                     # Formato de 20 dígitos continuos
                     patron_continuo = r'\b(\d{20})\b'
                     match_continuo = re.search(patron_continuo, linea)
                     if match_continuo:
                         if len(match_continuo.group(1)) >= 21:
                             return match_continuo.group(1)
-                    
+
                     # Nuevo patrón para el formato XXXXXXXXXX-YYYY-XXXXX-XX
                     patron_nuevo_formato = r'\b(\d{12})-\s*(\d{4})-\s*(\d{5})-\s*(\d{2})\b'
                     match_nuevo_formato = re.search(patron_nuevo_formato, linea)
@@ -341,7 +344,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón radicado con label: {numero}")
                         if len(numero) >= 21:
                             return numero
-                    
+
                     # Nuevo patrón para capturar el formato "RADICADO : XXXXXXXXXXXXXXXXXXXXXXX"
                     patron_radicado_con_labelv2 = r'(?i)RADICADO\s*:\s*(\d{16})-(\d{5})'
                     match_radicadov2 = re.search(patron_radicado_con_labelv2, linea)
@@ -368,7 +371,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón radicado 23: {numero}")
                         if len(numero) >= 21:
                             return numero
-                    
+
                     #patrón de 8 segmentos
                     patron_radicado_25 = r'\b(\d{2})-(\d{3})-(\d{2})-(\d{2})-(\d{3})-(\d{4})-(\d{5})-(\d{2})\b'
                     match_radicado_25 = re.search(patron_radicado_25, linea)
@@ -396,12 +399,12 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón radicado 23 desacato1: {numero}")
                         if len(numero) >= 21:
                             return numero
-                    
-                    patron_radicado_desacato2 = r'\b(\d{10})-(\d{2})-(\d{4})-(\d{5})-(\d{2})\b'   
+
+                    patron_radicado_desacato2 = r'\b(\d{10})-(\d{2})-(\d{4})-(\d{5})-(\d{2})\b'
                     match_radicado_desacato2 = re.search(patron_radicado_desacato2, linea)
 
                     if match_radicado_desacato2:
-                        numero_radicado_desacato2 = ''.join(match_radicado_desacato2.groups())  
+                        numero_radicado_desacato2 = ''.join(match_radicado_desacato2.groups())
                         self.logger.debug(f"Encontrado número de radicado desacato2: {numero_radicado_desacato2}")
                         if len(numero_radicado_desacato2) >= 21:
                             return numero_radicado_desacato2
@@ -429,7 +432,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número de radicado: {numero_radicado}")
                         if len(numero_radicado) >= 21:
                             return numero_radicado
-                    
+
                     # Patrón para capturar números de radicación con el formato XXXXXXXXXXXXXXXX-XXXXX-XX
                     patron_radicacion_guion = r'(?i)RADICACI[ÓO]N:\s*(\d{14,16})-(\d{5})-(\d{2})\b'
                     match_radicacion = re.search(patron_radicacion_guion, linea)
@@ -438,7 +441,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón radicación con guiones: {numero}")
                         if len(numero) >= 21:
                             return numero
-                    
+
                     # patrón desacato 3 XXXXXXXXXXXX-XXXX-XXXXXX-XX
                     patron_desacato_nuevo = r'(?i)RADICADO:\s*(\d{12})-(\d{4})-(\d{6})-(\d{2})\b'
                     match_desacato_nuevo = re.search(patron_desacato_nuevo, linea)
@@ -447,7 +450,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón desacato nuevo: {numero}")
                         if len(numero) >= 21:
                             return numero
-                    
+
                     # Patrón para capturar radicación con puntos 76.845.40.89.001.2025.00031.00
                     patron_fallopunto = r'(?i)Radicaci[oó]n\s*No\.\s*(\d{2})\.(\d{3})\.(\d{2})\.(\d{2})\.(\d{3})\.(\d{4})\.(\d{5})\.(\d{2})'
                     match_fallopunto = re.search(patron_fallopunto, linea)
@@ -456,7 +459,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón fallopunto: {numero}")
                         if len(numero) >= 21:  # Para asegurar la longitud esperada
                             return numero
-                    
+
                     # Patrón para capturar radicación con guiones
                     patron_auto_interlocutorio = r'(?i)Radicado\s*N[°º]?\s*[:.]?\s*(\d{5})[-\s](\d{2})[-\s](\d{2})[-\s](\d{3})[-\s](\d{4})[-\s](\d{4,6})[-\s](\d{2})'
                     match_auto_interlocutorio = re.search(patron_auto_interlocutorio, linea)
@@ -481,7 +484,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón radicado_fallo2: {numero}")
                         if len(numero) >= 21:
                             return numero
-                        
+
                     patron_radicado_nuevo = r'\b(\d{16})-?(\d{7})\b'
                     match_radicado_nuevo = re.search(patron_radicado_nuevo, linea)
                     if match_radicado_nuevo:
@@ -489,7 +492,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón radicado nuevo: {numero}")
                         if len(numero) >= 21:
                             return numero
-                        
+
                     patron_desacato3 = r'(?i)Rad\.?\s*(\d{16})-(\d{5})-(\d{2})'
                     match_desacato3 = re.search(patron_desacato3, linea)
                     if match_desacato3:
@@ -497,7 +500,7 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón radicado desacato 3 {numero}")
                         if len(numero) >= 21:
                             return numero
-                        
+
                     patron_admision2radicac = r'(?i)RADICAC\.?\s*No\.?\s*(\d{12})\s*-\s*(\d{4})\s*-\s*(\d{5})\s*-\s*(\d{2})'
                     match_admision2radicac = re.search(patron_admision2radicac, linea)
                     if match_admision2radicac:
@@ -505,7 +508,6 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón radicado admision 2 radic {numero}")
                         if len(numero) >= 21:
                             return numero
-                        
 
                     patron_radicacion23 = r'(?i)Radicaci[oó]n:?\s*(\d{5})-(\d{2})-(\d{2})-(\d{3})-(\d{4})-(\d{7})'
                     match_radicacion23 = re.search(patron_radicacion23, linea)
@@ -514,22 +516,22 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón _radicacion23: {numero}")
                         if len(numero) >= 21:
                             return numero
-                        
+
                     patron_desacato4 = r'(?i)Rad\.?\s*No\.?\s*(\d{2})\.(\d{3})\.(\d{2})\.(\d{2})\.(\d{3})\.(\d{4})-(\d{5})-(\d{2})'
                     match_desacato4 = re.search(patron_desacato4, linea)
                     if match_desacato4:
-                        numero = ''.join(match_desacato4.groups())  
+                        numero = ''.join(match_desacato4.groups())
                         self.logger.debug(f"Encontrado número con patrón desacato 4: {numero}")
                         if len(numero) >= 21:
                             return numero
-                        
+
                     patron_radicado = r'(?i)radicado:\s*(\d{2})\s*(\d{3})\s*(\d{2})\s*(\d{2})\s*(\d{3})\s*(\d{4})\s*(\d{5})\s*(\d{2})'
                     match_radicado = re.search(patron_radicado, linea)
                     if match_radicado:
                         numero = ''.join(match_radicado.groups())
                         self.logger.debug(f"Encontrado número con patrón radicado: {numero}")
                         if len(numero) >= 21:
-                            return numero    
+                            return numero
 
                     patron_radicadodesacato3 = r'(?i)radicacion:\s*(\d{12})\s*(\d{4})\s*(\d{5})'
                     match_radicadodesacato3 = re.search(patron_radicadodesacato3, linea)
@@ -537,7 +539,7 @@ class DocumentoExtractor:
                         numero = ''.join(match_radicadodesacato3.groups())
                         self.logger.debug(f"Encontrado número con patrón radicado desacato 3: {numero}")
                         if len(numero) >= 21:
-                            return numero       
+                            return numero
 
                     patron_fallo3 = r'(?i)RADICADO:?\s*(\d{2})-(\d{3})-(\d{2})-(\d{2})\s*-\s*(\d{3})-(\d{4})-(\d{5})-(\d{2})'
                     match_fallo3 = re.search(patron_fallo3, linea)
@@ -546,32 +548,33 @@ class DocumentoExtractor:
                         self.logger.debug(f"Encontrado número con patrón radicado fallo 3: {numero}")
                         if len(numero) >= 21:
                             return numero
+
+                    patron = r'(?i)\b(?:rad(?:icaci[óo]n)?|RAD)\s*:?\s*(\d{2}-\d{3}-\d{7}-\d{4}-\d{5}-\d{2})\b'
+                    match = re.search(patron, linea)
+                    if match:
+                        numero = match.group(1)
+                        numero = numero.replace('-', '')
+                        self.logger.debug(f"Encontrado número con patrón radicado: {numero}")
+                        if len(numero) >= 21:
+                            return numero
+
+                    # Patrones Genericos
+                    patrones = [
+                        r'tutela numero\s+((?:\d+\s*)+-\s*\d{2})',
+                        r'(?i)(?:radicado|radicaci[oó]n|rad\.?|rad:)\s+((?:\d+-)+\d+(?:\s+(?:\d+-)+\d+)*)',
                         
 
+                    ]
+                    for patron in patrones:
+                        match = re.search(patron, linea)
+                        if match:
+                            numero = match.group(1)
+                            numero = numero.replace('-', '')
+                            numero = numero.replace(' ', '')
+                            self.logger.debug(f"Encontrado número con patrón estándar: {numero}")
+                            if len(numero) >= 21:
+                                return numero
 
-                        
-
-                    # # Formatos con guiones
-                    # Se comentan patrones generales ya que no estan funcionando correctamente
-                    # patrones = [
-                    #     r'\b(\d{12})-(\d{4})-(\d{5})\b',  # Formato: 631303187002-2024-00096
-                    #     r'\b(\d{5}-\d{4}-\d{3}-\d{4}-\d{5}-\d{2})\b',
-                    #     r'\b(\d{2}-\d{3}-\d{2}-\d{2}-\d{3}-\d{4}-\d{5}-\d{2})\b',
-                    #     r'\b(\d{5}-\d{2}-\d{2}-\d{3}-\d{4}-\d{5}-\d{2})\b',
-                    #     r'\b(\d{2}-\d{3}-\d{2}-\d{2}-\d{4}-\d{5}-\d{2})\b',
-                    #     r'\b(\d{12}-\d{4}-\d{5}-\d{2})\b',
-                    #     r'(?i)(?:acción\s+de\s+tutela\s+No\.?\s*)?(\d{2}-\d{3}-\d{2}-\d{2}-\d{3}-\d{4}-\d{5}-\d{2})\b',
-                    #     r'\b(\d{9}-\d{3}-\d{4}-\d{5}-\d{2})\b',
-                    #     r'\b(\d{5}\s\d{2}\s\d{2}\s\d{3}\s\d{4}\s\d{7})\b'
-                    # ]
-                
-                    # for patron in patrones:
-                    #     match = re.search(patron, linea)
-                    #     if match:
-                    #         nmroRdcdoJdcl = match.group(1)
-                    #         self.logger.debug(f"Encontrado número con patrón estándar: {nmroRdcdoJdcl}")
-                    #         return nmroRdcdoJdcl.replace(" ", "").replace("-", "")
-            
             # Si no se encontró directamente, construir el número de radicado
             codigo_juzgado = self.buscar_CdgoJzgdo()
             numero_parcial = self.buscar_numero_parcial()
@@ -588,7 +591,7 @@ class DocumentoExtractor:
                 # Si el número parcial ya está sin guiones, extraer año y número
                     año = numero_parcial[:4]
                     numero = numero_parcial[4:]
-            
+
             # Construir el número completo concatenando código de juzgado + año + número
                 numero_completo = f"{codigo_juzgado}{año}{numero.zfill(5)}"
 
@@ -598,7 +601,7 @@ class DocumentoExtractor:
 
                 self.logger.info(f"Número de radicado construido: {numero_completo}")
                 return numero_completo
-            
+
             elif self.codigo_juzgado_acumulado and self.numero_parcial_acumulado:
                 codigo_juzgado = self.codigo_juzgado_acumulado
                 numero_parcial = self.numero_parcial_acumulado
@@ -609,7 +612,7 @@ class DocumentoExtractor:
                 # Si el número parcial ya está sin guiones, extraer año y número
                     año = numero_parcial[:4]
                     numero = numero_parcial[4:]
-            
+
                 # Construir el número completo concatenando código de juzgado + año + número
                 numero_completo = f"{codigo_juzgado}{año}{numero.zfill(5)}"
 
@@ -619,12 +622,12 @@ class DocumentoExtractor:
 
                 self.logger.info(f"Número de radicado construido: {numero_completo}")
                 return numero_completo
-        
+
         # Si solo tenemos el número parcial, lo retornamos
             elif numero_parcial:
                 self.logger.info(f"Retornando número parcial encontrado: {numero_parcial}")
             # Si el número parcial tiene guiones, los removemos
-                return numero_parcial.replace('-', '')            
+                return numero_parcial.replace('-', '')
 
             self.logger.warning("No se encontró ningún número de radicado")
             return None
@@ -1240,7 +1243,7 @@ class DocumentoExtractor:
                 r'\bCarrera\b',
                 r'\bRADICAC[IÓ]?[OÓ]N\s*(?:N[o°]?\.*\s*)?(?:\d+-)?\d*\b',
                 r'\bRAD[.: ]+\d*\b',
-                r'\bRda\b.*',  
+                r'\bRda\b.*',
                 r'\bACCION\b',
                 r'\bAuto\b',
                 r'\bproceso\b',
@@ -1267,12 +1270,13 @@ class DocumentoExtractor:
                 r'\bcodigo\b',
                 r'\bCalle\b',
                 r'\btutelasincidentesj04pmpayan\b',
+                r'\bj09fccali\b',
                 r'\bFALLO\b',
                 r'\bPagina\b',
-                r'\bj09fccali\b',
                 r'\bj25pmcali\b',
                 r'\bj4padocgcali\b',
-
+                r'\bbajo el radicado 76\b',
+                r'\bconcedio\b',
 
                 
 

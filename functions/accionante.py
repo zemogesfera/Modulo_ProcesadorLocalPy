@@ -2,13 +2,16 @@ import re
 
 from palabras_prohibidas import palabras_prohibidas
 from patrones import PATRONES_ACCIONANTE
+from nombres_prohibidos import nombres_prohibidos
+from documentos_prohibidos import documentos_prohibidos  
+
 
 def identificar_accionante(objeto):
 
     try:
         if objeto.es_empresa:
             return None
-    
+
         patrones = PATRONES_ACCIONANTE
 
         def limpiar_nombre(nombre):
@@ -18,19 +21,19 @@ def identificar_accionante(objeto):
                 if nombre_lower.startswith(prefijo):
                     nombre = nombre[len(prefijo):].strip()
                     break#solo elimina un prefijo (cambio)
-        
+
             palabras = nombre.split()
             palabras_limpias = [palabra for palabra in palabras if palabra.lower() not in palabras_prohibidas]
             return ' '.join(palabras_limpias).strip()
-        
+
         def limpiar_representante(texto):
             """
             Busca en el texto utilizando una lista de patrones predefinidos y retorna
             el texto después del primer patrón que coincida.
-            
+
             Args:
                 texto (str): El texto en el que se buscarán los patrones.
-            
+
             Returns:
                 str: El texto después del patrón encontrado, o None si no se encuentra ningún patrón.
             """
@@ -43,7 +46,7 @@ def identificar_accionante(objeto):
                 r"quien\s+actua.*?como\s+representante\s+legal\s+de",
                 r"quien\s+actua.*?como\s+representante\s+de",
             ]
-            
+
             for patron_representante in patrones_representante:
                 # Usamos una expresión regular para buscar el patrón y capturar el texto después de él
                 regex = re.compile(f"{patron_representante}(.+)", re.IGNORECASE | re.DOTALL)
@@ -65,12 +68,17 @@ def identificar_accionante(objeto):
 
                 objeto.logger.info(f"Nombre encontrado antes de validar: {nombre_limpio}")
 
+                # Verificar si el nombre limpio está en la lista de nombres prohibidos (insensible a mayúsculas/minúsculas)
+                if any(nombre_limpio.lower() == nombre_prohibido.lower() for nombre_prohibido in nombres_prohibidos):
+                    objeto.logger.info(f"Nombre '{nombre_limpio}' encontrado en lista de nombres prohibidos, continuando búsqueda...")
+                    continue    
+
 
                 palabras_nombre = nombre_limpio.split()
                 if palabras_nombre and not any(palabra.lower() in palabras_prohibidas for palabra in palabras_nombre):
                     nombre_encontrado = nombre_limpio
                     break
-        
+
         if nombre_encontrado:
         # Verificar si es representante legal después de encontrar el nombre
             patron_representante = rf'(?i)(?:representada?\s+legalmente\s+por|en\s+calidad\s+de\s+representante\s+legal|obrando\s+como\s+representante\s+legal)\s+{re.escape(nombre_encontrado)}'
@@ -87,7 +95,7 @@ def identificar_accionante(objeto):
             if re.search(patron_empresa, nombre_encontrado):
                 objeto.es_empresa = True
                 return None
-        
+
         return nombre_encontrado
 
     except Exception as e:
@@ -104,7 +112,7 @@ def identificar_documento_identidad(objeto):
         # nmbreCmpltoAccnnte = objeto.buscar_nmbreCmpltoAccnnte()
         # if not nmbreCmpltoAccnnte:
         #     return None
-        
+
         # Si no tengo nada en objeto.nmbre_cmplto_accnnte busco con buscar_nmbreCmpltoAccnnte
             # Si buscar_nmbreCmpltoAccnnte devuelve el nombre, se lo asigno a objeto.nmbre_cmplto_accnnte
             # Si buscar_nmbreCmpltoAccnnte no devuelve el nombre, se retorna None
@@ -117,7 +125,7 @@ def identificar_documento_identidad(objeto):
                 return None
         else:
             nmbreCmpltoAccnnte = objeto.nmbre_cmplto_accnnte
-        
+
 
         def limpiar_y_validar_numero(numero):
             """
@@ -130,8 +138,12 @@ def identificar_documento_identidad(objeto):
             numero_limpio = re.sub(r'[.,\s-]', '', numero)
             # Validar que el número tenga entre 7 y 11 dígitos
             if re.match(r'^\d{7,11}$', numero_limpio):
+                          # Verificar que el número no esté en la lista de documentos prohibidos
+                if numero_limpio in documentos_prohibidos:
+                    objeto.logger.info(f"Número de documento '{numero_limpio}' encontrado en lista de documentos prohibidos, ignorando...")
+                    return None    
                 return numero_limpio
-            
+
         patrones = []
 
         def crear_patrones(nombre_completo_accionante):
@@ -183,6 +195,11 @@ def identificar_documento_identidad(objeto):
                 rf"(?i){re.escape(nombre_completo_accionante)},?\s+identificado\s+con\s+(?:el\s+)?[Rr]egistro\s+[Cc]ivil\s+de\s+[Nn]acimiento\s+(\d+)",
                 rf"(?i){re.escape(nombre_completo_accionante)},?\s+identificado\s+con\s+tarjeta\s+de\s+identidad\s+(?:Nro\.?|No\.?|N[°º])?\s*([\d\.]+)",
                 rf"(?i){re.escape(nombre_completo_accionante)}\s+identificado\s+con\s+la\s+cedula\s+de\s+ciudadan[ií]a\s+N\.?°?\s*([\d\.]+)",
+                rf"{re.escape(nombre_completo_accionante)},\s*(?:identificad[ao])\s+con\s+(?:c\.?c\.?|cc|cedula de ciudadan[aí]a)\s+(?:nro\.?|numero)\s+([\d.]+)",
+                rf"{re.escape(nombre_completo_accionante)}\s*(?:con|identificad[ao])\s+(?:c\.?c\.?|cc|cedula de ciudadan[ía])\s*(?:no\.?|nro\.?|numero)?\s*([\d.,]+)",
+                rf"(?i){re.escape(nombre_completo_accionante)}[\w\s]*,?\s*(?:mayor\s+y\s+vecina\s+de\s+esta\s+ciudad,?\s*)?identificad[ao]\s+con\s+(?:cedula\s+de\s+ciudadan[ií]a|c\.?c\.?|cc)\s*(?:no\.?|n[°ºo]\.?|nro\.?|numero)?\s*([\d.,]+)",
+                rf"{re.escape(nombre_completo_accionante)},?\s*titular\s+de\s+la\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:Nro\.?|No\.?|n[°ºo]\.?)?\s*([\d.,]+)",
+                rf"(?i){re.escape(nombre_completo_accionante)}\s+identificada\s+con\s+cedula\s+de\s+ciudadania\s+N[°º\s]?\s*([\d.,]+)",
 
             ]
 
@@ -190,27 +207,27 @@ def identificar_documento_identidad(objeto):
         # Patrones ordenados por especificidad
         patrones.extend([
 
-                
+
             #patrones de autoidentifación
 
-            # Patrones en pruenbas 
-            
-            
+            # Patrones en pruenbas
+
+
             # Patrón para captura directa con C.C.
-            
+
             #se comentan ya que son generales
             r"[Ii]dentificado\s+con\s+documento\s*:\s*([\d.,\s-]+)",
             r"[Ii]dentificado\s+con\s+documento\s+[Nn]o\.\s*:\s*([\d.,\s-]+)",
             r"[Ii]dentificada?\s+con\s+documento\s*:\s*([\d.,\s-]+)",
-            #patrones de reformación de los 3 anteriores 
+            #patrones de reformación de los 3 anteriores
             #pendiente los 3 de reformación
 
             # Nuevo patrón para capturar el formato específico del caso mencionado, se comenta ya que captura cualquier número de cc y se asigna el nuevo
             #r"identificado\s+con\s+c[eé]dula\s+de\s+ciudadan[íi]a\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)(?:\s*[,\.]|$)",
             # Patrón para el formato específico "C.C N.° 1.005.944.947 de [ciudad]"
             r"C\.?C\.?\s*N\.?°?\s*([\d.,\s]+)\s+de\b",
-                
-            # Patrón específico para capturar casos como "C.C No. 1.107.978.306" se comenta ya que es un proceso generalizado. y se agrega una nueva versión en pruebas 
+
+            # Patrón específico para capturar casos como "C.C No. 1.107.978.306" se comenta ya que es un proceso generalizado. y se agrega una nueva versión en pruebas
             #r"(?:C\.?C\.?|c[eé]dula\s+de\s+ciudadan[íi]a)\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)",
 
             # Otros patrones
@@ -221,26 +238,26 @@ def identificar_documento_identidad(objeto):
 
             # Patrón más general para capturas simples
             r"(?:n[úu]mero|No\.?\s+)?([\d.,\s]+)(?:\s+expedida)?",
-            
+
             # Patrón específico para casos donde el número está entre comas
             r",\s*(?:n[úu]mero|No\.?\s+)?([\d.,\s]+)\s*[,\.]",
 
                             # Nuevo patrón para capturar "C.C. No. 16.278.340 y portador"
             r"C\.?C\.?\s*No\.?\s*([\d.,\s]+)\s+y\s+portador\b",
-            
+
             # Patrón general para "C.C No. 16.278.340" se comenta ya que no incluye el accionante se incluye uno nuevo en pruebas
             #r"C\.?C\.?\s*(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)\b",
-            
+
             r"(?:N°|No\.?\s+)([\d.,\s]+)",
             r"[Cc]edula\s+de\s+[Cc]iudadan[ií]a\s+(?:Nro\.?|[Nn][úu]mero\.?)\s*([\d.,\s-]+)",
-            
+
             # Patrón directo con "Yo, {Nombre} identificado con..."
 
             #  Patrón general con el nombre antes de la identificación
 
             # Variación con "portador de cédula"
 
-            #nuevo contexto:EGIDIO QUINTERO VEGA  
+            #nuevo contexto:EGIDIO QUINTERO VEGA
             #CC No. 16214057
             r"(?:C\.?C\.?|c[eé]dula\s+de\s+ciudadan[íi]a)\s+(?:n[úu]mero|No\.?)?\s*([\d.,\s]+)",
             r"identificad[oa]\s+con\s+numero\s+de\s+C\.?C\.?\s*[:.]?\s*([\d.,-]+)",
@@ -248,7 +265,7 @@ def identificar_documento_identidad(objeto):
             r"identificad[oa]\s+con\s+C[eé]dula\s+de\s+Ciudadan[íi]a\s+n[úu]mero\.?\s*([\d.,\s-]+)",
             r"identificado con la CC Nro\. (\d+)",
             r"identificada con cédula de ciudadanía Núm\. ([\d\.]+)"
-            
+
         ])
 
         texto_original = objeto.texto
@@ -279,7 +296,7 @@ def identificar_documento_identidad(objeto):
         if segundo_apellido:
             nombres_validar.append(f"{primer_apellido} de {segundo_apellido}")
             nombres_validar.append(f"{primer_apellido} del {segundo_apellido}")
-        
+
         posiciones_nombre = []
         for nombre in nombres_validar:
             patrones_creados = crear_patrones(nombre)
@@ -289,7 +306,7 @@ def identificar_documento_identidad(objeto):
             # Encuentra todas las posiciones del nombre del accionante en el texto
             posiciones_nombre.extend([m.start() for m in re.finditer(re.escape(nombre), texto)])
             posiciones_nombre = list(set(posiciones_nombre))
-            
+
         # Para cada aparición del nombre, busca el número de documento en el contexto siguiente
         for pos in posiciones_nombre:
             # Toma el texto después de esta aparición del nombre (limitado a 70 caracteres)
@@ -304,7 +321,7 @@ def identificar_documento_identidad(objeto):
                     if numero_limpio:
                         for nombre in nombres_validar:
                             distancia = contexto_relevante.find(numero) - contexto_relevante.find(nombre)  # Calcula la distancia
-                            if distancia > 1 and distancia <= 100:  # Asegurar que la distancia sea válida
+                            if distancia > 1 and distancia <= 105:  # Asegurar que la distancia sea válida
                                 objeto.logger.debug(f"Encontrado número de identificación: {numero_limpio} con distancia: {distancia} al nombre '{nombre}'")
                                 objeto.agregar_nmro_idntfccn_accnnte(numero_limpio, distancia)
 
@@ -342,7 +359,7 @@ def identificar_tipo_documento(objeto):
         if nmbreCmpltoAccnnte:
             patrones.extend(
                 [
-                    
+
                     rf"{re.escape(nmbreCmpltoAccnnte)}.*?(RC|C\.?C\.?|T\.?I\.?)\.",
                 ]
             )
@@ -359,7 +376,7 @@ def identificar_tipo_documento(objeto):
             r'cédula\s+de\s+ciudadan[ií]a\s+No\.\s*(\d{1,2}(\.\d{1,3}){2,3})',
             r'cédula\s+de\s+ciudadan[ií]a\s+No\.\s*([\d\.\-]+)',
             r'ACCIONANTE:.*?\s(C\.?C\.?|T\.?I\.?|RC|CE|P\.?P\.?)\b',
-            
+
         ])
 
         # Mapeo para normalizar y clasificar los tipos de documentos
@@ -419,7 +436,8 @@ def identificar_tipo_documento(objeto):
 
                 # Patrón más flexible
                     fr'(?:{primer_palabra}\s+{segunda_palabra}).*?CC\.?',
-                    
+
+
                 ]
 
                 # Buscar con los nuevos patrones
@@ -430,7 +448,7 @@ def identificar_tipo_documento(objeto):
 
         # Si no se encontró ningún tipo de documento pero hay número de identificación, retornar CC por defecto
         return 'CC'
-    
+
     except Exception as e:
         objeto.logger.error(f"Error en buscar_cdgoTpoIdntfccn: {e}")
         return None

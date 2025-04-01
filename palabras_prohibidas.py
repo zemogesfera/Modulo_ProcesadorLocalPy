@@ -73,7 +73,10 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'intento','patologias','oncologicas','suscribio','adicionales','solicitadas',
 'presenta','dolor','digna','ordenar','ordenara','recibe','oncologico','perece',
 'tomo','dialisis','concedio','solicitada','ordeno','mismo','ii','tipo','cambio',
-'inconforme','anterior','aduciendo','brindados',
+'inconforme','anterior','aduciendo','brindados','quiern','prensetar','superintendencia',
+'nacional','nino','sro','companero','permanente','excolaboradora','gerente','experencial',
+'usuario','sede','jefe','excolaborador',
+
 
 #pendiente incluir enfermades, quizas ciudades
 #los de arriba son los encontrados en diferentes casos de analisis.
