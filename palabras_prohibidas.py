@@ -75,7 +75,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'tomo','dialisis','concedio','solicitada','ordeno','mismo','ii','tipo','cambio',
 'inconforme','anterior','aduciendo','brindados','quiern','prensetar','superintendencia',
 'nacional','nino','sro','companero','permanente','excolaboradora','gerente','experencial',
-'usuario','sede','jefe','excolaborador',
+'usuario','sede','jefe','excolaborador','sino','todo','precisando',
 
 
 #pendiente incluir enfermades, quizas ciudades
