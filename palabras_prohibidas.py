@@ -75,8 +75,15 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'tomo','dialisis','concedio','solicitada','ordeno','mismo','ii','tipo','cambio',
 'inconforme','anterior','aduciendo','brindados','quiern','prensetar','superintendencia',
 'nacional','nino','sro','companero','permanente','excolaboradora','gerente','experencial',
-'usuario','sede','jefe','excolaborador','sino','todo','precisando',
-
+'usuario','sede','jefe','excolaborador','sino','todo','precisando','carnet','afiliacion',
+'incidentante','perugia','remision','nivel','lv','remplazos','articulares','revision',
+'protesica','inferior','femur','hospitalizacion','ortopedia','aun','obtenido','iv',
+'contenido','conocimiento','corresponde','conceda','integral','efecto','tumor',
+'desconozco','terminos','personas','privadas','mencionadas','precedencia',
+'obligaciones','obligacion','dos','claro','negro','trabajador','trabajadora',
+'asiste','valoracion','carcinoma','cuelo','cargo','exclusivo','confirmado',
+'contuso','nasal','demandados','acude','decidase','decidi','decidio','tengan',
+'continuidad','fisicas','faltantes',
 
 #pendiente incluir enfermades, quizas ciudades
 #los de arriba son los encontrados en diferentes casos de analisis.
@@ -147,7 +154,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 
 # Títulos en el ámbito político
 'presidente', 'presidenta', 'senador', 'senadora', 'diputado', 'diputada',
-' alcaldesa', 'gobernador', 'gobernadora', 'ministro', 'ministra',
+'alcaldesa', 'gobernador', 'gobernadora', 'ministro', 'ministra',
 
 # Títulos en el ámbito social
 'voluntario', 'voluntaria', 'activista', 'líder', 'lideresa',
@@ -623,7 +630,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'teniendo', 'cuenta', 'accion', 'tutela', 'formulada', 'considerando', 
 'vista', 'presente', 'accionados', 'admitir', 'interpuesta', 'afectada',
 'usted', 'oficiosa', 'como', 'identificado', 'traves', 'mediante',
-'solicitud', 'recurso', 'amparo', 'proteccion', 'vulneracion',
+'solicitud', 'recurso','proteccion', 'vulneracion',
 'presuntamente', 'considera', 'manifiesta', 'expone', 'argumenta',
 'indica', 'refiere', 'sostiene', 'impetrar', 'promover',
 
@@ -3489,7 +3496,6 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 "medellin",
 "cali",
 "barranquilla",
-"cartagena",
 "bucaramanga",
 "pereira",
 "manizales",
@@ -3692,5 +3698,10 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 "epidemico",
 "epidemicos",
 "epidemica",
+"reitera",
+"ofendido",
+"ordenara",
+"recibe",
+"kentificacion",
 }
 

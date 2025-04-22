@@ -1277,6 +1277,8 @@ class DocumentoExtractor:
                 r'\bj4padocgcali\b',
                 r'\bbajo el radicado 76\b',
                 r'\bconcedio\b',
+                r'\bRECIBIDO\b',
+
 
                 
 
