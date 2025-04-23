@@ -83,7 +83,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'obligaciones','obligacion','dos','claro','negro','trabajador','trabajadora',
 'asiste','valoracion','carcinoma','cuelo','cargo','exclusivo','confirmado',
 'contuso','nasal','demandados','acude','decidase','decidi','decidio','tengan',
-'continuidad','fisicas','faltantes',
+'continuidad','fisicas','faltantes','promovido','autoridad','contesto','contesta',
 
 #pendiente incluir enfermades, quizas ciudades
 #los de arriba son los encontrados en diferentes casos de analisis.
@@ -819,7 +819,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 
 # Términos de derechos y obligaciones
 'derecho', 'obligación', 'responsabilidad', 'compromiso', 'garantía',
-'protección', 'tutela', 'respaldo', 'amparo', 'defensa',
+'protección', 'tutela', 'respaldo','defensa',
 
 # Términos de normatividad y regulación
 'reglamento', 'normativa', 'ley', 'decreto', 'resolución',
@@ -1425,7 +1425,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 # Términos de derechos fundamentales
 'derecho fundamental', 'garantía constitucional',
 'derecho humano', 'libertad', 'igualdad', 'dignidad',
-'protección', 'tutela', 'amparo', 'defensa',
+'protección', 'tutela', 'defensa',
 
 # Términos de procedimiento
 'procedimiento', 'trámite', 'diligencia', 'actuación',
@@ -2253,7 +2253,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 
 # Términos de derechos
 'derecho', 'fundamental', 'constitución', 'garantía',
-'protección', 'amparo', 'tutela', 'vulneración',
+'protección','tutela', 'vulneración',
 'restablecimiento', 'reparación', 'compensación',
 
 # Términos de derechos fundamentales
@@ -2348,7 +2348,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 
 # Términos de derechos
 'derecho', 'fundamental', 'constitución', 'garantía',
-'protección', 'amparo', 'tutela', 'vulneración',
+'protección', 'tutela', 'vulneración',
 'restablecimiento', 'reparación', 'compensación',
 
 # Términos de derechos fundamentales
