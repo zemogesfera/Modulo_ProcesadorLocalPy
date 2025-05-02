@@ -84,6 +84,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'asiste','valoracion','carcinoma','cuelo','cargo','exclusivo','confirmado',
 'contuso','nasal','demandados','acude','decidase','decidi','decidio','tengan',
 'continuidad','fisicas','faltantes','promovido','autoridad','contesto','contesta',
+'lleguen','llego','aportar','allegan','hacen','reconocera','personeria','garantizando',
 
 #pendiente incluir enfermades, quizas ciudades
 #los de arriba son los encontrados en diferentes casos de analisis.
