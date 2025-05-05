@@ -85,6 +85,9 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'contuso','nasal','demandados','acude','decidase','decidi','decidio','tengan',
 'continuidad','fisicas','faltantes','promovido','autoridad','contesto','contesta',
 'lleguen','llego','aportar','allegan','hacen','reconocera','personeria','garantizando',
+'estaba','cotizante','ratifica','amparo','invoca','cuanto',
+
+
 
 #pendiente incluir enfermades, quizas ciudades
 #los de arriba son los encontrados en diferentes casos de analisis.
@@ -1003,7 +1006,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'conclusivamente', 'en definitiva',
 
 # Frases de aclaración
-'vale la pena señalar', 'es importante destacar', 
+'es importante destacar', 
 'cabe mencionar', 'es relevante indicar', 
 'debe tenerse en cuenta', 'es necesario aclarar',
 
@@ -1087,7 +1090,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'para finalizar', 'en conclusión',
 
 # Frases de aclaración
-'vale la pena señalar', 'es importante destacar', 
+'es importante destacar', 
 'cabe mencionar', 'es relevante indicar', 
 'debe tenerse en cuenta', 'es necesario aclarar',
 'para mayor claridad', 'en otras palabras',
@@ -1182,7 +1185,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'para finalizar', 'en conclusión', 'en resumen',
 
 # Frases de aclaración
-'vale la pena señalar', 'es importante destacar', 
+'es importante destacar', 
 'cabe mencionar', 'es relevante indicar', 
 'debe tenerse en cuenta', 'es necesario aclarar',
 'para mayor claridad', 'en otras palabras',
@@ -1376,7 +1379,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 
 # Términos legales adicionales
 'sobre', 'bajo', 'contra', 'desde', 'hacia', 'hasta', 
-'sin', 'según', 'durante', 'tras', 'so', 'so pena',
+'sin', 'según', 'durante', 'tras', 'so',
 'cc', 'cédula', 'ciudadanía', 'identificación', 'documento',
 'nombre', 'representación', 'calidad', 'propio', 'derecho',
 'instancia', 'jurisdicción', 'competencia', 'controversia',
@@ -1490,7 +1493,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 
 # Términos de derecho penal
 'derecho penal', 'tipo penal', 'conducta punible', 'dolo', 'culpa',
-'imputabilidad', 'responsabilidad penal', 'pena', 'sanción',
+'imputabilidad', 'responsabilidad penal', 'sanción',
 'delito', 'tipicidad', 'antijuridicidad', 'culpabilidad',
 'circunstancias', 'atenuantes', 'agravantes',
 
