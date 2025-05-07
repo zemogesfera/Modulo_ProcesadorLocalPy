@@ -85,8 +85,9 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'contuso','nasal','demandados','acude','decidase','decidi','decidio','tengan',
 'continuidad','fisicas','faltantes','promovido','autoridad','contesto','contesta',
 'lleguen','llego','aportar','allegan','hacen','reconocera','personeria','garantizando',
-'estaba','cotizante','ratifica','amparo','invoca','cuanto',
-
+'estaba','cotizante','ratifica','amparo','invoca','cuanto','pronuncien','aporten','necesarias',
+'aquel','fotografias','comprometido','mull','iples','comoreilidades','cronica','cronico',
+'resolvera','palmaria','necesidad','fueron','autorizadas',
 
 
 #pendiente incluir enfermades, quizas ciudades
