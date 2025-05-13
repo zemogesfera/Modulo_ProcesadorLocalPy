@@ -558,6 +558,7 @@ class DocumentoExtractor:
                         if len(numero) >= 21:
                             return numero
 
+
                     # Patrones Genericos
                     patrones = [
                         r'tutela numero\s+((?:\d+\s*)+-\s*\d{2})',
