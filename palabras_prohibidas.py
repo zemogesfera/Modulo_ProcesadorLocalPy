@@ -88,7 +88,8 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'estaba','cotizante','ratifica','amparo','invoca','cuanto','pronuncien','aporten','necesarias',
 'aquel','fotografias','comprometido','mull','iples','comoreilidades','cronica','cronico',
 'resolvera','palmaria','necesidad','fueron','autorizadas','peticion','busca','usuarios',
-'suspension','apoderada','constitucional','debido','negativa',
+'suspension','apoderada','constitucional','debido','negativa','fue','practicado','requeria',
+'recibo','reciba',
 
 
 #pendiente incluir enfermades, quizas ciudades
@@ -3707,7 +3708,6 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 "reitera",
 "ofendido",
 "ordenara",
-"recibe",
 "kentificacion",
 }
 
