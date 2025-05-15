@@ -89,7 +89,7 @@ palabras_prohibidas = {'que', 'la', 'el', 'entidad', 'de', 'y', 'a', 'no',
 'aquel','fotografias','comprometido','mull','iples','comoreilidades','cronica','cronico',
 'resolvera','palmaria','necesidad','fueron','autorizadas','peticion','busca','usuarios',
 'suspension','apoderada','constitucional','debido','negativa','fue','practicado','requeria',
-'recibo','reciba',
+'recibo','reciba','procedera','arriba','ciudadania','ingreso',
 
 
 #pendiente incluir enfermades, quizas ciudades
